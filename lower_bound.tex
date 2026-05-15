@@ -1,0 +1,263 @@
+
+
+
+\section{Lower Bound}\label{sec:lower bound}
+In this section, we prove \Cref{prop:lower bound}.
+A simple geometric fact is at heart of our lower bound proof:
+\begin{claim}\label{claim:uncertainty one particle}
+    Set $\ket{\chi_0}, \ket{\chi_1}, \ket{\chi_2}, \ket{\chi_3}$ to be as in the SIC-POVM. Then for all $1$-qubit bases $\{\ket{\phi}, \ket{\phi^\bot}\}$, there exists $b \in \{1,2,3\}$ such that
+    \begin{equation*}
+        %\abs{\braket{\phi}{\chi_0}\braket{\chi_b}{\phi}}+ \abs{\braket{\smash{\phi^\perp}}{\chi_0}\braket{\chi_b}{\smash{\phi^\perp}}} \leq 0.9.
+        \abs{\braket{\phi}{\chi_0}\braket{\chi_b}{\phi}}+ \abs{\braket{\smash{\phi^\perp}}{\chi_0}\braket{\chi_b}{\smash{\phi^\perp}}} \leq 0.99
+    \end{equation*}
+    for at least one of $b\in\{1,2,3\}$.
+\end{claim}
+\begin{proof}
+    The SIC-POVM vectors form a tetrahedron on the Bloch sphere. These vectors are far from coplanar, so the result follows.
+\end{proof}
+%\ryancomment{This is not a super-well-known concept, so I think a few additional words are needed.  I think one should: a) throw in an ``e.g.'' or ``say'' to make it clear that it's far from necessary to take this these specific 4 vectors to get things to work; b) ``remind'' the reader what these 4 states are; or simply say they form a regular tetrahedron on the Bloch sphere with one being $\ket{0}$ (or say they are 4 states at mutual inner product $\sqrt{1/3}$, trusting the reader to verify that such exist); c) it's tempting, but possibly a too-bold choice to call the states $\ket{1}, \ket{2}, \ket{3}$; quantum people extremely heavily associate this notation with the standard basis in $3$ (or $4$) dimensions, and in particular $\ket{1}$ is a weird notational clash.  As convenient as it would be, I think we must tediously call them something like $\ket{\psi_i}$ for $i = 0, 1, 2, 3$, or else extremely heavily warn the reader that in this section only, $\ket{1}, \ket{2}, \ket{3}$ have a very unusual meaning.  I'm willing to go with the latter if it greatly improves readability}
+
+
+\subsection{The Hard-to-Certify State}
+\begin{definition}
+    For $C \coloneqq (c^1\ldots c^N) \in \{0,1,2,3\}^n$, define the vector 
+    \begin{align*}
+        v_C\coloneq& \frac1{\sqrt{N}} \sum_{t\in[N]} \ket{\smash{\chi_{c^t_1}}}\otimes\dots\otimes \ket{\smash{\chi_{c^t_n}}}
+    \end{align*}
+    Define $\ket{\psi_C}$ to be the quantum state in the direction of $v_C$, and let $\ket{\psi_{c^t}}\coloneq \ket{\smash{\chi_{c^t_1}}}\otimes\dots\otimes \ket{\smash{\chi_{c^t_n}}}$.
+\end{definition}
+
+\begin{lemma}\label{lem:almost state}
+    Let $N=\floor{\smash{2^{10^{-10}n}}}$ and choose $C \coloneqq (c^1\ldots c^N )\in \{0,1,2,3\}^n$ i.i.d. With probability at least 0.9,
+    \[
+        1 - 2^{-0.1n} \leq \norm{v_C}^2 \leq 1 + 2^{-0.1n}.
+    \]
+\end{lemma}
+\begin{proof}
+    By a standard coding theory argument, we have that with probability at least $0.9$, for all $s\neq t$, it holds that $c^s$ and $c^t$ have distance at least $0.1n$. For any $i$ such that $c^s_i \neq c^t_i$, it holds that $\big|\braket{\smash{\chi_{c^s_i}}}{\smash{\chi_{c^t_i}}} \big| \leq \frac13$. Then, when we evaluate $\| v_C \|^2$, each of the $\binom{N}{2}$ cross terms is at most $\frac{1}{N}\cdot \big( \frac{1}{3} \big)^{0.1n}$. As such, the total contribution of the cross terms is at most $\binom{N}{2} \cdot \frac{1}{N}\cdot \big( \frac{1}{3} \big)^{0.1n} \leq 2^{-0.1n}$, and moreover, the diagonal terms sum to $1$.
+\end{proof}
+
+Therefore, $v_C$ is extremely close to being a quantum state $\ket{\psi_C}$. In the next section, we will show that it is also likely that $\ketbra{\psi_C}{\psi_C}$ is indistinguishable from the mixed state
+\begin{align*}
+    \rho_C&\coloneq \frac1{N}\sum_{s}\ketbra{\psi_{c^s}}{\psi_{c^s}}.
+\end{align*}
+
+\subsection{The Cross Term Operators}
+
+We will show that the advantage of distinguishing between $\ketbra{\psi_C}{\psi_C}$ and the mixed state $\rho_C$ is related to sum of the absolute values on the diagonal of the operator $\frac1{N}\sum_{s\neq t}\ketbra{\psi_{c^s}}{\psi_{c^t}}$, maximized over the set of product bases for $(\C^2)^{\otimes n}$. More formally we have:
+
+\begin{lemma}\label{lem:distinguishing probability operator diff meghal}
+    Let $\ket{\phi_x}$ with $x\in\{0,1\}^n$ form an orthonormal basis for $(\C^2)^{\otimes n}$. Suppose that $C$ of size $N=\floor{\smash{2^{10^{-10}n}}}$ satisfies the normalization condition of \Cref{lem:almost state}. Then for large enough $n$,
+    \begin{align*}
+        d_{\mathrm{TV}}(\calD_1,\calD_2) &\leq \frac1{N}\sum_{x}\abs{\sum_{s\neq t}\braket{\phi_x}{\smash{\psi_{c^s}}}\braket{\smash{\psi_{c^t}}}{\phi_x}} + 2^{-0.00 01n}.
+    \end{align*}
+\end{lemma}
+\begin{proof}
+    We directly compute
+    \begin{align*}
+        2d_{\mathrm{TV}}(\calD_1,\calD_2) &= \sum_x\abs{\braket{\phi_x}{\psi_C}\braket{\psi_C}{\phi_x}-\bra{\phi_x}\rho_C\ket{\phi_x}}=\sum_x\abs{{\bra{\phi_x}(\ketbra{\psi_C}{\psi_C}-\rho_C)\ket{\phi_x}}}.
+    \end{align*}
+    By \Cref{lem:almost state}, we can approximate the matrix in the middle up to spectral norm:
+    \begin{align*}
+        \ketbra{\psi_C}{\psi_C}-\rho_C \underset{N/2^{0.001n}}{\approx}v_Cv_C^\dag -\rho_C=\frac1{N}\sum_{s,t}\ketbra{\smash{\psi_{c^s}}}{\smash{\psi_{c^t}}}-\frac1{N}\sum_{s}\ketbra{\smash{\psi_{c^s}}}{\smash{\psi_{c^s}}}=\frac1{N}\sum_{s\neq t}\ketbra{\smash{\psi_{c^s}}}{\smash{\psi_{c^t}}}.
+    \end{align*}
+    Plugging in the value of $N$, we conclude the result when $n$ is large enough.
+\end{proof}
+
+For $S\subseteq[n]$, we say that $\{\ket{\phi_x}\}$ form an $\ell$-adaptive orthonormal basis for $(\C^2)^{\otimes n}$ if there exists $S\subseteq[n]$ of size $\leq\ell$ such that each basis element $\ket{\phi_x}$ takes the form 
+\begin{align*}
+    \ket{\phi_x} &= \bigotimes_{i\not\in S}\ket{\smash{\phi^{i}_{x_i}}} \otimes \ket{\phi_{x_S}}. 
+\end{align*}
+Measurement in such a basis can be done by measuring all of the qubits not in $S$ in a non-adaptive manner, and then measuring the qubits in $S$ in some basis depending on the outcome of the first $n-\ell$ measurements.
+
+To show that indeed a random $C$ will give a hard to distinguish state, we show the following:
+\begin{lemma}\label{lem:lower bound from concentration}
+    Let $C\coloneq (c^1\ldots c^N)$, where each $c^s$ is chosen independently  and uniformly at random from  $\{0,1,2,3\}^n$, and where $N\coloneq \floor{\smash{2^{10^{-10}n}}}$. Then if $n$ is large enough, with probability at least 0.9 we have for all $10^{-8}n$-adaptive bases $\{\ket{\phi_x}\}$ that
+    \begin{align*}
+        \sum_{x\in\{0,1\}^n}\abs{\sum_{s\neq t\in[N]}\braket{\phi_x}{\smash{\psi_{c^s}}}\braket{\smash{\psi_{c^t}}}{\phi_x}}\leq 5.
+    \end{align*}
+\end{lemma}
+\begin{proof}
+    Since the $\ket{\phi_x}$ form an $10^{-8}$-adaptive basis, there exists $S\subseteq[n]$ of size at most $10^{-8}n$ such that we can use the following expansion:
+    \begin{align*}
+        &\sum_{x\in\{0,1\}^n}\abs{\sum_{s\neq t}\braket{\phi_x}{\smash{\psi_{c^s}}}\braket{\smash{\psi_{c^t}}}{\phi_x}}\leq \sum_{x\in\{0,1\}^n}\sum_{s\neq t}\abs{\braket{\phi_x}{\smash{\psi_{c^s}}}\braket{\smash{\psi_{c^t}}}{\phi_x}}\\
+        &\leq\sum_{s\neq t}\sum_{x\in\{0,1\}^n}\prod_{i\not\in S}\abs{\braket{\smash{\phi^i_{x_i}}}{\chi_{c^s_i}}\braket{\chi_{c^t_i}}{\smash{\phi^i_{x_i}}}}= \sum_{s\neq t}\prod_{i\not\in S}\pbra{\abs{\braket{\smash{\phi^i_{0}}}{\chi_{c^s_i}}\braket{\chi_{c^t_i}}{\smash{\phi^i_{0}}}}+\abs{\braket{\smash{\phi^i_{1}}}{\chi_{c^s_i}}\braket{\chi_{c^t_i}}{\smash{\phi^i_{1}}}}}.
+    \end{align*}
+    Notice that the term inside the right-hand side expression is always at most $1$ and sometimes less than $1$. Our goal will be to show that or all product bases $\phi$, for most pairs $(s,t)$, the product will be close to 0. 
+    
+    For any state one qubit basis $\phi'$, denote by $b(\phi')$ the element in $\{1,2,3\}$ such that the inequality in \Cref{claim:uncertainty one particle} holds (any such $b$ if there are multiple). Say a pair $(s,t)$, is \emph{bad} for an $\ell$-adaptive basis $\{\ket{\phi_x}\}$ (with corresponding set $S$) if for at least $10^{-6}n$ indices $i\in [n]\setminus S$, it holds that $\{c^s_i,c^t_i\} = \{0, b(\phi^i)\}$. Note that if the pair $(s,t)$ is bad for such a basis $\{\ket{\phi_x}\}$, then
+    \[
+        \prod_{i\not\in S}\pbra{\abs{\braket{\smash{\phi^i_{0}}}{\chi_{c^s_i}}\braket{\chi_{c^t_i}}{\smash{\phi^i_{0}}}}+\abs{\braket{\smash{\phi^i_{1}}}{\chi_{c^s_i}}\braket{\chi_{c^t_i}}{\smash{\phi^i_{1}}}}} \leq 0.99^{10^{-6}n}.
+    \]
+    Consider any quintuple of distinct pairs whose elements are in $[N]$ denoted by $\{s_1,t_1\}\ldots \{s_5,t_5\}$. We will show that with probability at least $1-2^{-10^{-5}n}$ at least one pair in the quintuple is bad for any $10^{-8}n$-adaptive basis.
+    
+    Once we have shown this, taking a union bound over all of the at most $N^{10}$ quintuples of pairs, the probability that $C$ is such that for every $10^{-8}n$-adaptive basis, at least one pair in every quintuple is bad for that basis is at least
+    \[
+        1-2^{-10^{-5}n}\cdot N^{10} \geq 1-2^{-10^{-6}n}.
+    \]
+    When this event holds, $C$ will be such that for any $10^{-8}n$-adaptive basis $\{\ket{\phi_x}\}$, at most four pairs $\{s_k,t_k\}$ are not bad for that basis, so
+    \[
+        \sum_{s\neq t}\prod_{i}\pbra{\abs{\braket{\smash{\phi^i_{0}}}{\chi_{c^s_i}}\braket{\chi_{c^t_i}}{\smash{\phi^i_{0}}}}+\abs{\braket{\smash{\phi^i_{1}}}{\chi_{c^s_i}}\braket{\chi_{c^t_i}}{\smash{\phi^i_{1}}}}} \leq 4+N^2\cdot 0.99^{-10^{-6}n} \leq 5
+    \]
+    when $n$ is large enough, as desired.
+    
+    It suffices to show that with probability at least $2^{-10^{-5}n}$, the $c^{s_1},c^{t_1},\dots,c^{t_5}$ are such that for any $10^{-8}n$-adaptive basis, at least one of the pairs $\{s_k,t_k\}$ is bad for that basis. The graph on $[N]$ that the pairs form either has a vertex of degree 3 or consists of disjoint cycles and edges. This means that for a fixed index $i\in[n]$, there is a labeling $(x_{s_1},x_{t_1},\dots,x_{s_5},x_{t_5})\in \{0,1,2,3\}^{10}$ such that if $c^{s_1}_i=x_{s_1},\dots,c^{t_5}_i=x_{t_5}$ then
+    \begin{align*}
+        \{\{c^{s_1}_i,c^{t_1}_i\},\dots,\{c^{s_5}_i,c^{s_5}_i\}\}=\{\{0,1\},\{0,2\},\{0,3\}\}
+    \end{align*}
+    If this occurs, then for any choice of $\phi^i$, at least one pair $\{s_k,t_k\}$ will satisfy $\{c^{s_k}_i,c^{t_k}_i\} = \{0, b(\phi^i)\}$. Moreover, the probability of this labeling occurring among the three chosen pairs is at least $4^{-6}$.
+
+    Now let $w(\{s_1,t_1\},\dots \{s_5,t_5\})$ be the number of indices $i$ on which this happened. By a Chernoff bound, we have
+    \begin{align*}
+        \Pr\sbra{w(\{s_1,t_1\},\dots \{s_5,t_5\}) \leq \frac{4^{-6}n}{4}} \leq 2^{-10^{-5}n}.
+    \end{align*}
+    When this happens, there must be some pair $\{s_k,t_k\}$ where the condition holds for at least $4^{-6}n/20>10^{-5}n$ indices. Such a pair is bad for any $10^{-8}n$-adaptive basis, since $10^{-5}n-10^{-8}n\geq 10^{-6}n$. Thus, at least one of the five pairs is bad.
+\end{proof}
+
+
+
+
+
+
+
+\subsection{The Lower Bound}
+We complete this section by proving our lower bound:
+\begin{proof}[Proof of \Cref{prop:lower bound}]
+    Let $C$ be the collection of size $N=2^{10^{-10}n}$ which exists by \Cref{lem:lower bound from concentration}. Any $10^{-8}n$-adaptive algorithm is one that measures each copy of a state in an $10^{-8}$-adaptive basis and makes decisions based on these measurement outcomes. By \Cref{lem:distinguishing probability operator diff meghal,lem:lower bound from concentration}, the states $\ketbra{\psi_C}{\psi_C}$ and $\rho_C$ yield outcome distributions that have TV distance $\leq 2^{-\Omega(n)}$ in any $10^{-8}$-adaptive basis. By a standard coupling argument, this shows that if $\mathfrak{D}_1$ and $\mathfrak{D}_2$ are the distributions corresponding to measuring $2^{o(n)}$ copies of $\ketbra{\psi_C}{\psi_C}$ and $\rho_C$, respectively, in a sequence of potentially adaptive product bases, then $d_{\mathrm{TV}}(\mathfrak{D}_1,\mathfrak{D}_2)\leq 2^{-\omega(n)}$.
+    
+    On the other hand, a similar calculation as that in the proof of \Cref{lem:almost state} we have that $\bra{\psi_C}\rho_{C}\ket{\psi_C}\leq 2^{-\Omega(n)}$, so this yields a lower bound for certifying $\ket{\psi_C}$.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+% \section{Lower Bound}\label{sec:lower bound}
+
+% The geometric fact at the heart of our proof of this is the following:
+% \begin{claim}\label{claim:uncertainty one particle}
+%     There exists single-qubit pure states $\ket{1},\ket{2},\ket{3}$ such that the following holds. For all $\ket{\phi}\perp \ket{\smash{\phi^\perp}}\in\C^2$ it must be that
+%     \begin{align*}
+%         \abs{\braket{\phi}{0}\braket{b}{\phi}}+ \abs{\braket{\smash{\phi^\perp}}{0}\braket{b}{\smash{\phi^\perp}}}&\leq 0.9.
+%     \end{align*}
+%     for at least one of $\ket{b}\in\{1,2,3\}$.
+% \end{claim}
+% \begin{proof}
+%     Let $\ket{1},\ket{2},\ket{3}$ be as in the SIC-POVM.\ryancomment{This is not a super-well-known concept, so I think a few additional words are needed.  I think one should: a) throw in an ``e.g.'' or ``say'' to make it clear that it's far from necessary to take this these specific 4 vectors to get things to work; b) ``remind'' the reader what these 4 states are; or simply say they form a regular tetrahedron on the Bloch sphere with one being $\ket{0}$ (or say they are 4 states at mutual inner product $\sqrt{1/3}$, trusting the reader to verify that such exist); c) it's tempting, but possibly a too-bold choice to call the states $\ket{1}, \ket{2}, \ket{3}$; quantum people extremely heavily associate this notation with the standard basis in $3$ (or $4$) dimensions, and in particular $\ket{1}$ is a weird notational clash.  As convenient as it would be, I think we must tediously call them something like $\ket{\psi_i}$ for $i = 0, 1, 2, 3$, or else extremely heavily warn the reader that in this section only, $\ket{1}, \ket{2}, \ket{3}$ have a very unusual meaning.  I'm willing to go with the latter if it greatly improves readability}
+% \end{proof}
+
+
+% \subsection{The hard-to-certify state}
+% \ryancomment{We capitalizing subsection title words?}
+% \begin{definition}
+%     For $C \coloneqq c^1\ldots c^N \in \{0,1,2,3\}^n$,\ryancomment{boring things, like one should put parenthesis and commas around this sequence $c^1, \dots, c^N$, $2^{n^{0.99}}$ is not nec an integer\dots} define the vector 
+%     \begin{align*}
+%         v_C\coloneq& \frac1{\sqrt{N}} \sum_{t\in[N]} \ket{\smash{c^t_1}}\otimes\dots\otimes \ket{\smash{c^t_n}}
+%     \end{align*}
+%     Define $\ket{\psi_C}$ to be the quantum state in the direction of $v_C$.
+% \end{definition}
+
+% \begin{lemma}\label{lem:almost state}
+%     Let $N=2^{n^{0.99}}$\ryancomment{Oh, too much simplification here; qualitatively I think we want to achieve $2^{\Omega(n)}$ and not merely $2^{n^{1-\Omega(1)}}$}
+%     and choose $C \coloneqq c^1\ldots c^N \in \{0,1,2,3\}^n$ i.i.d. With probability at least 0.9,
+%     \[
+%         1 - 2^{-0.1n} \leq \abs{v_C}^2 \leq 1 + 2^{-0.1n}.
+%     \]
+% \end{lemma}
+% \begin{proof}
+%     Standard coding theory.
+% \end{proof}
+
+% Therefore, $v_C$ is extremely close to being a quantum state $\ket{\psi_C}$. In the next section, we will show that it is also likely that $\ketbra{\psi_C}{\psi_C}$ is indistinguishable from the mixed state
+% \begin{align*}
+%     \rho_C&\coloneq \frac1{N}\sum_{s}\ketbra{\psi_{c^s}}{\psi_{c^s}}.
+% \end{align*}
+
+% \subsection{The cross term operators}
+
+% We will show that the advantage of distinguishing between $\ketbra{\psi_C}{\psi_C}$ and the mixed state $\rho_C$ is related to sum of the absolute values on the diagonal of the operator $\frac1{N}\sum_{s\neq t}\ketbra{\psi_{c^s}}{\psi_{c^t}}$, maximized over the set of product bases for $(\C^2)^{\otimes n}$. More formally we have:
+
+% \begin{lemma}\label{lem:distinguishing probability operator diff meghal}
+%     Let $\ket{\phi_x}$ with $x\in\{0,1\}^n$ form an orthonormal basis for $(\C^2)^{\otimes n}$. Suppose that $C$ satisfies the normalization condition of \Cref{lem:almost state}. Then for large enough $n$,
+%     \begin{align*}
+%         d_{\mathrm{TV}}(\calD_1,\calD_2) &\leq \frac1{N}\sum_{x}\abs{\sum_{s\neq t}\braket{\phi_x}{\smash{c^s}}\braket{\smash{c^t}}{\phi_x}} + 2^{-0.001n}.
+%     \end{align*}
+% \end{lemma}
+% \begin{proof}
+%     We directly compute
+%     \begin{align*}
+%         2d_{\mathrm{TV}}(\calD_1,\calD_2) &= \sum_x\abs{\braket{\phi_x}{\psi_C}\braket{\psi_C}{\phi_x}-\bra{\phi_x}\rho_C\ket{\phi_x}}=\sum_x\abs{{\bra{\phi_x}(\ketbra{\psi_C}{\psi_C}-\rho_C)\ket{\phi_x}}}.
+%     \end{align*}
+%     By \Cref{lem:almost state}, we can approximate the matrix in the middle up to spectral norm:
+%     \begin{align*}
+%         \ketbra{\psi_C}{\psi_C}-\rho_C \underset{N/2^{0.001n}}{\approx}v_Cv_C^\dag -\rho_C=\frac1{N}\sum_{s,t}\ketbra{\smash{c^s}}{\smash{c^t}}-\frac1{N}\sum_{s}\ketbra{\smash{c^s}}{\smash{c^s}}=\frac1{N}\sum_{s\neq t}\ketbra{\smash{c^s}}{\smash{c^t}}.
+%     \end{align*}
+%     Using the bound on $N$ we conclude the result when $n$ is large enough.
+% \end{proof}
+
+% Finally, to show that indeed a random $C$ will give a hard to distinguish state, we show the following:
+% \begin{lemma}\label{lem:lower bound from concentration}
+%     Let $C:= c^1\ldots c^N \in \{0,1,2,3\}^n$ i.i.d. where \ryancomment{:= should be coloneqq and i.i.d.\ needs a nonbreaking space after it.  Also, I wonder why $C$ gets a coloneqq but $N$ doesn't}$N=2^{n^{0.99}}$. Then if $n$ is large enough, with probability at least 0.9 we have for all product bases $\ket{\phi_x}=\ket{\smash{\phi^1_{x_1}}}\otimes\dots\otimes\ket{\smash{\phi^n_{x_n}}}$ with $x\in\{0,1\}^n$ that
+%     \begin{align*}
+%         \sum_{x\in\{0,1\}^n}\abs{\sum_{s\neq t\in[N]}\braket{\phi_x}{\smash{c^s}}\braket{\smash{c^t}}{\phi_x}}\leq 5.
+%     \end{align*}
+% \end{lemma}
+% \begin{proof}
+%     Since the $\ket{\phi_x}$ form a product basis, we can use the following expansion:
+%     \begin{align*}
+%         &\sum_{x\in\{0,1\}^n}\abs{\sum_{s\neq t}\braket{\phi_x}{\smash{c^s}}\braket{\smash{c^t}}{\phi_x}}\leq \sum_{x\in\{0,1\}^n}\sum_{i\neq j}\abs{\braket{\phi_x}{\smash{c^s}}\braket{\smash{c^t}}{\phi_x}}\\
+%         &\leq\sum_{s\neq t}\sum_{x\in\{0,1\}^n}\prod_{i}\abs{\braket{\smash{\phi^i_{x_i}}}{\smash{c^s_i}}\braket{\smash{c^t_i}}{\smash{\phi^i_{x_i}}}}= \sum_{s\neq t}\prod_{i}\pbra{\abs{\braket{\smash{\phi^i_{0}}}{\smash{c^s_i}}\braket{\smash{c^t_i}}{\smash{\phi^i_{0}}}}+\abs{\braket{\smash{\phi^i_{1}}}{\smash{c^s_i}}\braket{\smash{c^t_i}}{\smash{\phi^i_{1}}}}}.
+%     \end{align*}
+%     Notice that the term inside the right-hand side expression is always at most $1$ and sometimes less than $1$. Our goal will be to show that or all product bases $\phi$, for most pairs $(s,t)$, the product will be close to 0. 
+    
+%     For any state one qubit basis $\phi'$, denote by $b(\phi')$ the element in $\{1,2,3\}$ such that the inequality in \Cref{claim:uncertainty one particle} holds (any such $b$ if there are multiple). Say a pair $(s,t)$, is \emph{bad} for a product basis $\phi$ if for at least $10^{-5}n$ indices $i\in [n]$, it holds that $\{c^s_i,c^t_i\} = \{0, b(\phi^i)\}$. Note that if the pair $(s,t)$ is bad, then
+%     \[
+%         \prod_{i}\pbra{\abs{\braket{\smash{\phi^i_{0}}}{\smash{c^s_i}}\braket{\smash{c^t_i}}{\smash{\phi^i_{0}}}}+\abs{\braket{\smash{\phi^i_{1}}}{\smash{c^s_i}}\braket{\smash{c^t_i}}{\smash{\phi^i_{1}}}}} \leq 2^{-10^{-6}n}
+%     \]
+
+%     Consider any quintuple of distinct pairs whose elements are in $[N]$ denoted by $\{s_1,t_1\}\ldots \{s_5,t_5\}$. We will show that with probability at least $2^{-10^{-5}n}$, at least one pair is bad. 
+    
+%     Once we have shown this, taking a union bound over all of the at most $N^{10}$ quintuples of pairs, the probability that in every quintuple, at least one pair is bad is at least
+%     \[
+%         1-2^{-10^{-5}n}\cdot N^{10} \geq 1-2^{-10^{-6}n}.
+%     \]
+%     When this event holds, at most four pairs $(s,t)$ are not bad and so 
+%     \[
+%         \sum_{s\neq t}\prod_{i}\pbra{\abs{\braket{\smash{\phi^i_{0}}}{\smash{c^s_i}}\braket{\smash{c^t_i}}{\smash{\phi^i_{0}}}}+\abs{\braket{\smash{\phi^i_{1}}}{\smash{c^s_i}}\braket{\smash{c^t_i}}{\smash{\phi^i_{1}}}}} \leq 4+N^2\cdot 2^{-10^{-7}n} \leq 5.
+%     \]
+%     as desired.
+    
+%     Thus, it suffices to show that with probability at least $2^{-10^{-5}n}$, at least one pair is bad. The graph on $[N]$ that this pairs form either has a vertex of degree 3 or consists of disjoint cycles and edges. This means that for a fixed index $i\in[n]$, there is a labeling $(x_{s_1},x_{t_1},\dots,x_{s_5},x_{t_5})\in \{0,1,2,3\}^{10}$ such that if $c^{s_1}_i=x_{s_1},\dots,c^{t_5}_i=x_{t_5}$ then
+%     \begin{align*}
+%         \{\{c^{s_1}_i,c^{t_1}_i\},\dots,\{c^{s_5}_i,c^{s_5}_i\}\}=\{\{0,1\},\{0,2\},\{0,3\}\}
+%     \end{align*}
+%     If this occurs, then for any choice of $\phi^i$, at least one pair $\{s_k,t_k\}$ will satisfy $\{c^{s_k}_i,c^{t_k}_i\} = \{0, b(\phi^i)\}$. Moreover, the probability of this labeling occurring among the three chosen pairs is at least $4^{-6}$.
+
+%     Now let $w(\{s_1,t_1\},\dots \{s_5,t_5\})$ be the number of indices $i$ on which this happened. By a Chernoff bound, we have
+%     \begin{align*}
+%         \Pr\sbra{w(\{s_1,t_1\},\dots \{s_5,t_5\}) \leq 4^{-6}n} \leq 2^{-10^{-5}n}.
+%     \end{align*}
+%     When this happens, at least one pair satisfies $\{c^{s_k}_i,c^{t_k}_i\} = \{0, b(\phi^i)\}$, and so there must be some pair $\{s_k,t_k\}$ where the condition holds for at least $4^{-6}n/5>10^{-5}n$ indices. Thus, at least one of the five pairs is bad.
+% \end{proof}
+
+
+
+
+
+
+
+% \subsection{The Lower Bound}
+% We complete this section by proving our lower bound:
+% \begin{proof}[Proof of \Cref{prop:lower bound}]
+%     Let $C$ be the collection of size $N=2^{10^{-10}n}$ which exists by \Cref{cor:good code low value}.\ryancomment{broken} Any nonadaptive algorithm is one that measures a given state in a product basis and makes decisions based on these measurement outcomes. By \Cref{lem:distinguishing probability operator diff meghal,lem:lower bound from concentration}, the states $\ketbra{\psi_C}{\psi_C}$ and $\rho_C$ yield outcome distributions that have TV distance $\leq 2^{-\Omega(n)}$ in any product basis. By a standard coupling argument, this shows that if $\mathfrak{D}_1$ and $\mathfrak{D}_2$ are the distributions corresponding to measuring $2^{o(n)}$ copies of $\ketbra{\psi_C}{\psi_C}$ and $\rho_C$, respectively, in a sequence of potentially adaptive product bases, then $d_{\mathrm{TV}}(\mathfrak{D}_1,\mathfrak{D}_2)\leq o(1)$.
+    
+%     On the other hand, a similar calculation as that in the proof of \Cref{lem:almost state} we have that $\bra{\psi_C}\rho_{C}\ket{\psi_C}\leq 2^{-\Omega(n)}$, so this yields a lower bound for certifying $\ket{\psi_C}$.
+% \end{proof}

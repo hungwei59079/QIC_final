@@ -1,0 +1,505 @@
+\DeclarePairedDelimiterX\diverg[2]{(}{)}{#1 \mathrel{}\mathclose{}\delimsize{:}\mathopen{}\mathrel{} #2}
+\newcommand{\Del}[3]{\Delta_{#1}\diverg{#2}{#3}}
+\newcommand{\EFid}[3]{\mathrm{EFid}_{#1}\diverg{#2}{#3}}
+
+\newcommand{\ketbb}{\ket{\smash{b^\bot}}}
+\newcommand{\tpO}{\smash{\widetilde{\smash{\psi}}^0}}
+\newcommand{\ktpO}
+{\ket{\tpO}}
+\newcommand{\tpI}{\smash{\widetilde{\smash{\psi}}^1}}
+\newcommand{\ktpI}
+{\ket{\tpI}}
+\newcommand{\tfO}{\smash{\widetilde{\phi}^0}}
+\newcommand{\ktfO}
+{\ket{\tfO}}
+\newcommand{\tfI}{\smash{\widetilde{\phi}^1}}
+\newcommand{\ktfI}
+{\ket{\tfI}}
+\newcommand{\psip}{\smash{\psi'}}
+\newcommand{\phip}{\smash{\phi'}}
+\newcommand{\tarp}{\smash{\overline{\tar}}}
+\newcommand{\labp}{\smash{\overline{\lab}}}
+\newcommand{\tarz}{\smash{\tar^{0}}}
+\newcommand{\taro}{\smash{\tar^{1}}}
+\newcommand{\labz}{\smash{\lab^{0}}}
+\newcommand{\labo}{\smash{\lab^{1}}}
+
+\section{Introduction}
+A fundamental task in quantum information science is to test whether an unknown $n$-qubit state $\rho_{\lab}$ prepared in the lab is equal (or close) to a known target state~$\ket{\tar}$. This task is known as \emph{quantum state certification}. It is essential for benchmarking quantum devices, validating the outcomes of quantum experiments, and verifying the correctness of practical implementations of quantum algorithms and protocols. See e.g.\ \cite{buadescu2019quantum, zhu2019statistical, kliesch2021theory, huang2024certifying} for in-depth discussions of the importance and applications of quantum state certification. 
+
+More formally, we are given a classical description of a known pure state $\ket{\tar}$, along with copies of an unknown (possibly mixed) lab state $\rho_{\lab}$. Our goal is to decide whether the fidelity $\bra{\tar}\rho_{\lab}\ket{\tar}$ is close to $1$, in which case we \textsc{Accept}, or significantly smaller than $1$, in which case we \textsc{Reject}.
+
+If we ignore measurement complexity, the optimal-copy-complexity approach is straightforward: measure each copy of $\rho_{\lab}$ using the POVM $\{\ketbra{\tar}{\tar}, \Id - \ketbra{\tar}{\tar}\}$, and accept if the first outcome occurs frequently enough. This requires only $\Theta(1/\epsilon)$ copies to distinguish $\bra{\tar}\rho_{\lab}\ket{\tar} < 1 - \epsilon$ from $\bra{\tar}\rho_{\lab}\ket{\tar} = 1$ (or even $\geq 1 - \epsilon/2$).
+
+However, actually implementing this $n$-qubit measurement is roughly as hard as preparing the state~$\ket{\tar}$. Given that a main use of state certification is to verify that we can in fact prepare $\ket{\tar}$, it is almost circular to allow measurement of the POVM $\{\ketbra{\tar}{\tar}, \Id - \ketbra{\tar}{\tar}\}$. What we would  actually like is a much simpler algorithm for certifying a state --- ideally something that's polynomially complex even when preparing $\ket{\tar}$ is exponentially complex (as it is for most states). These considerations motivate certification algorithms that use only single-qubit measurements: This would allow for efficient certification even when preparation is more complex and unreliable.
+
+Prior to this work, it was unknown whether all pure states $\ket{\tar}$ could be certified using only few single-qubit measurements.\footnote{We remark that if $\ket{\tar}$ is allowed to be a mixed state, it is known that certification in general requires exponentially many copies, even when arbitrarily complex measurements are allowed~\cite{CHW07,swan1swan2_21}.} Several algorithms had been developed for this task, but each required some significant concession. For example, some algorithms require exponentially many copies of $\rho_{\lab}$: \cite{flammia2011direct,da2011practical, aolita2015reliable}. Others apply only to restricted classes of hypothesis states or restricted noise models:~\cite{hayashi2006study,flammia2011direct,aolita2015reliable,hayashi2015verifiable,morimae2016quantum,morimae2017verification,takeuchi2018verification,gluza2018fidelity,hayashi2019verifying,li2019efficient,liu2019efficient,yu2019optimal,zhu2019efficient,li2021verification,huang2024certifying}. 
+
+Indeed, given each of these prior results comes with caveats, it was natural to suspect that fully general certification using only polynomially many single-qubit measurements might be impossible. Even after Huang, Preskill, and Soleimanifar~\cite{huang2024certifying} gave such an algorithm for Haar-random target states $\ket{\tar}$ (which are typically highly entangled), they left it open to identify an explicit state $\ket{\tar}$ for which certification with single-qubit measurements requires super-polynomially many copies.
+
+Perhaps surprisingly, this work shows that there is no such state: Efficient certification with single-qubit measurements is possible for \emph{all} quantum states. We present a simple, general quantum state certification algorithm that works for every pure hypothesis state $\ket{\tar}$, and which uses only single-qubit measurements applied to $O(n/\epsilon)$ copies of $\rho_{\lab}$:
+
+\begin{maintheorem}\label{thm:main with repetitions}
+    There exists an algorithm that given parameters $0 < \eps, \delta < 1$, oracle access to the classical description of a pure state $\ket{\tar}$ (via the model in \Cref{def:access model}), and $O(n\epsilon^{-1}\ln(1/\delta))$ copies of $\rho_{\lab}$, makes only single-qubit measurements to the copies of $\rho_{\lab}$ and outputs:
+    \begin{itemize}
+        \item \textsc{Accept} with probability at least $1-\delta$ if $\bra{\tar}\rho_{\lab}\ket{\tar} \geq 1 - \frac{\epsilon}{2n}$.
+        \item \textsc{Reject} with probability at least $1-\delta$ if $\bra{\tar}\rho_{\lab}\ket{\tar}\leq 1-\eps$.
+    \end{itemize}
+    Moreover, the algorithm runs in time linear in the number of measurements.\vspace{1ex}
+\end{maintheorem}
+
+This theorem follows directly from \Cref{thm:main} below, together with repetition and a Chernoff bound:
+\begin{theorem}\label{thm:main}
+    There exists an algorithm that given oracle access to the classical description of a pure state $\ket{\tar}$ via the model in \Cref{def:access model} and \emph{one} copy of a mixed state $\rho_{\lab}$, makes only single-qubit measurements to $\rho_{\lab}$ and outputs: 
+    \begin{itemize}
+        \item \textsc{Accept} with probability at least $\text{Fid} \coloneqq \bra{\tar}\rho_{\lab}\ket{\tar}$;
+        \item \textsc{Reject} with probability at least $\text{Infid}/n \coloneqq (1-\bra{\tar}\rho_{\lab}\ket{\tar})/n$.
+    \end{itemize}
+    Moreover, the algorithm runs in time linear in the number of measurements.
+\end{theorem}
+
+Our algorithm also shows the power of \emph{adaptive} measurements.  For each copy of $\rho_{\lab}$, how our algorithm measures the next qubit sometimes depends on the outcomes of the previous measurements (though our algorithm is nonadaptive across copies).  This is in contrast to the fully non-adaptive algorithm appearing in~\cite{huang2024certifying}. %is that our algorithm's measurements are adaptive within a single copy (though not across copies).  That is, the way in which the next qubit in a copy is measured depends on the outcome of the previous measurements. 
+%Our algorithm is that the measurement bases are adaptive. Under our access model, the next basis to measure in can be computed efficiently, but nonetheless, it would be preferable to use a fixed, non-adaptive set of measurements. 
+The use of adaptivity turns out to be necessary; we show an exponential copy-complexity lower bound against algorithms that are non-adaptive or only use a small amount of adaptivity.
+
+To be precise, we say that an algorithm is $\ell$-adaptive if for each copy of $\rho_{\lab}$ it receives, there is some $S\subseteq[n]$ with $|S|\leq \ell$ such that it measures the qubits in $[n]\setminus S$ in a product basis $\bigotimes_{i\in[n]\setminus S}\calB_i$ (each $\calB_i = \{\ket{\smash{b_i}}, \ket{\smash{b_i^\bot}}\}$ a $1$-qubit basis) and measures the rest of the qubits in some arbitrary basis, potentially depending on the previous outcomes.  We allow the algorithm to act adaptively across copies; that is, the product basis it uses for the $t$th copy may depend on measurement outcomes from the preceding copies.
+%\Cref{prop:lower bound} in .
+%In our next result, we show that this is not possible: there exists a state $\ket{\tar}$ that we cannot certify with non-adaptive single-qubit measurements using a sub-exponential number of copies of $\rho_{\lab}$.
+%Nonadaptive algorithms are those that measure each copy of $\rho_{\lab}$ in a product basis (a basis of $\ket{\phi_x}=\ket{\phi^1_{x_1}}\otimes\dots\otimes \ket{\phi^n_{x_n}}$)\ryancomment{I don't think this adequately describes a product basis}, stores the result, and measures the next copy in a product basis that may depend on the result of the previous copy. 
+\begin{theorem}\label{prop:lower bound}
+    There exist $c_1, c_2, c_3 ,c_4> 0$ such that the following holds. For $n\geq1$, there exists an $n$-qubit pure state $\ket{\tar}$ and an $n$-qubit mixed state $\rho_{\lab}$ such that: $\bra{\tar}\rho_{\lab}\ket{\tar}\leq 2^{-c_1n}$, but any $c_2n$-adaptive certification algorithm making that succeeds with probability at least $1/2 + 2^{-c_3 n}$ in distinguishing $\ketbra{\tar}{\tar}$ from $\rho_{\lab}$ must use at least $2^{c_4 n}$ copies of~$\rho_{\lab}$. 
+    %for constant distance parameter $\epsilon$ and failure probability $\delta$.
+\end{theorem}
+We prove \Cref{prop:lower bound} in \Cref{sec:lower bound}.
+
+
+\paragraph{Future directions.} Several natural questions remain open for future work. We state a few here:
+
+First, a basic information-theoretic argument shows that any certification algorithm for a pure target state $\ket{\tar}$ must use at least $\Omega(1/\epsilon)$ copies of $\rho_{\lab}$, even without restricting to single-qubit measurements. Can stronger lower bounds be proven for algorithms limited to single-qubit measurements? In particular, our algorithm uses $O(n/\epsilon)$ copies --- is this dependence on $n$ necessary?
+
+Second, our algorithm is only $1/n$-tolerant: To guarantee $\rho_{\lab}$ is accepted with high probability, it needs to satisfy $\bra{\tar}\rho_{\lab}\ket{\tar} \geq 1 - \Omega(\epsilon/n)$, rather than $1-\Omega(\eps)$. Can this dependence on $n$ be improved or even eliminated? For instance, is it possible to design a certification algorithm with similar complexity that distinguishes between $\bra{\tar}\rho_{\lab}\ket{\tar} \geq 1 - \epsilon/2$ and $\bra{\tar}\rho_{\lab}\ket{\tar} \leq 1 - \epsilon$?
+
+\Cref{prop:lower bound} shows that adaptivity is required to certify a worst-case state with single-qubit measurements. Unfortunately, adaptivity is a significant downside for practical implementations. In contrast to our lower bound, Huang et al.~\cite{huang2024certifying} showed that for an average-case state, adaptivity is not necessary. Can we classify the set of states that require adaptivity to certify? Moreover, for states that do require adaptivity to certify, how much is necessary? Our algorithm requires $n$ rounds of adaptivity, but perhaps this can be reduced.
+
+
+%
+% Finally, it is known that if $\ket{\lab}$ is a mixed state, it may not be possible to certify it with polynomially many measurements -- even if they can be arbitrary measurements, not just single-qubit measurements. However, 
+
+% \subsection{Related Work}
+% The problem of quantum state certification of mixed states has also received much attention~\cite{pallister2018optimal,buadescu2019quantum,kliesch2021theory}. The flavor of this task is somewhat different, since it is known that certifying the maximally mixed state requires exponential sample complexity, even for general (many-qubit) measurements.
+
+% The learning analog of the certification task is called \textit{quantum state tomography}, where one wants to learn a full description of a particular state, given the ability of measure copies of the state. This problem is also well-studied~\cite{swan1swan2_2016efficient,swan1swan2_2017efficient,haah2016sample,kueng2017low}.
+
+% \section{So}
+
+% \begin{lemma}
+%     Let $\ket{\psi^0}, \ket{\psi^1}$ be $m$-qubit states. Then there is a DT basis $\calT$, and a unitary $U$ that is diagonal in basis $\calT$, such that $\ket{\psi^1} = U\ket{\psi^0}$.
+% \end{lemma}
+
+\section{The Algorithm}
+
+In this section we prove \Cref{thm:main}.
+
+\subsection{DT Bases}
+%We begin by defining ``decision tree bases'':
+At a high level, our algorithm will pick a random $k\in [n]$, measure the first $k-1$ qubits in the computational basis, then measure the last $n-k$ qubits in some carefully constructed basis, and finally measure the $k$th qubit. We begin with some definitions and facts that will help us understand the carefully constructed basis in which the last $n-k$ qubits are measured.
+\begin{definition}
+    Let $\calT$ be a depth-$n$ binary tree~$\calT$ in which each internal node's two outgoing edges are labeled by orthogonal single-qubit states. 
+    %Given a node $v \in \calT$ at depth $0 \leq k \leq n$, we write $\ket{v}$ for the $k$-qubit state given by the tensor product of the states along the root-to-$v$ path.\ryancomment{I doubt we need this notation any longer.  I think we only need the notation for leaves.}    
+    %Finally, by abuse of notation we identify $\calT$ with the orthonormal basis $\{\ket{\ell} : \ell \text{ a leaf in } \calT\}$, and call $\calT$ a \emph{decision tree (DT) basis} for $(\C^2)^{\otimes n}$. 
+    By a slight abuse of notation, we identify $\calT$ with the orthonormal basis $\{\ket{\ell} : \ell \text{ a leaf in } \calT\}$, and call $\calT$ a \emph{decision tree (DT) basis} for $(\C^2)^{\otimes n}$.
+
+    \textcolor{blue}{\textbf{Note}: We spell out the components.
+    \begin{enumerate}
+        \item \emph{Tree structure.} A depth-$n$ binary tree consists of $2^k$ \emph{nodes} at each depth $k \in \{0, 1, \ldots, n\}$. The unique depth-$0$ node is the \emph{root}. Each node at depth $k < n$ is an \emph{internal node} and has two children at depth $k+1$, connected to it by two \emph{outgoing edges}. Nodes at depth $n$ have no children and are called \emph{leaves}; the $2^n$ leaves are each joined to the root by a unique path of $n$ edges.
+        \item \emph{Edge labels.} For each internal node $v$, we fix a single-qubit basis $\calB_v = \{\ket{b_v}, \ket{b_v^\bot}\}$ of $\C^2$ and label $v$'s two outgoing edges by $\ket{b_v}$ and $\ket{b_v^\bot}$ respectively. The two labels are thus orthogonal single-qubit states (this is what is meant by ``orthogonal'' in the definition above).
+        \item \emph{Leaf states.} For a leaf $\ell$, let $\ket{c_1}, \ldots, \ket{c_n}$ denote the single-qubit edge labels encountered along the root-to-$\ell$ path (in order from root to leaf). Define
+    \end{enumerate}
+    \[
+        \ket{\ell} \coloneqq \ket{c_1} \otimes \ket{c_2} \otimes \cdots \otimes \ket{c_n}.
+    \]
+    Every basis element is therefore a tensor product of $n$ single-qubit states---no entangled states arise. Because $\calB_v$ can differ between nodes at the same depth, the basis $\{\ket{\ell}\}$ is generally not a product basis (cf.\ the remark below).
+    }
+\end{definition}
+% \begin{remark}
+%      We may sometimes think of a single-qubit basis~$\calB$ as a depth-$1$ DT basis.
+% \end{remark}
+\begin{remark}
+    Note that given an $n$-qubit DT basis $\calT$, one can measure an $n$-qubit state in this basis by using adaptive single-qubit measurements.
+    Indeed, a deterministic adaptive algorithm that measures qubits in the order $1 \dots n$ is \emph{equivalent} to a DT basis.
+    We also comment that although $\calT$ is a \emph{basis of product states}, this is a more general object than a \emph{product basis}, the latter being what a non-adaptive algorithm uses to measure each copy.
+\end{remark}
+
+\begin{definition}
+    Recall that qudit $\ket{\phi} \in \C^d$ is said to be a \emph{phase state} in basis $\mathcal{L} = \{ \ket{1}, \dots, \ket{d} \}$ if it can be written as
+    \begin{equation*}
+        \ket{\phi} = \frac{1}{\sqrt{d}} \sum_{\ell=1}^d \omega_\ell \ket{\ell} \qquad \text{for some phases $\omega_\ell$}.
+    \end{equation*}
+    In other words, measuring in basis $\cal{L}$ yields each outcome with equal probability.
+    % every amplitude has the same magnitude:
+    % \[
+    %     \ket{\phi}=\frac{1}{\sqrt{2^n}}\sum_{i=1}^{2^{n}} \omega_i\ket{e_i}\qquad
+    %     \text{for some phases }\omega_i.
+    % \]
+\end{definition}
+%\ryancomment{Are we insulting the reader's intelligence by cautioning about this? If so, we can delete the latter half of this remark.} william: eh i think it's okay; i think we've all skill issued about this at some point...
+
+% Given an $n$-qubit state~$\ket{\psi}$ and a DT basis, we sometimes consider measuring just the first $0 \leq k \leq n$ qubits of~$\ket{\psi}$, using just the top~$k$ layers of the DT basis. These top~$k$ layers themselves constitute a $k$-qubit DT basis.
+% We introduce some associated notation:
+% \begin{notation}
+%     Let $\calT$ be an  $n$-qubit DT basis and $0 \leq k \leq n$.
+%     We write $\calT_{\leq k}$ for the $k$-qubit DT basis given by the top~$k$ layers of~$\calT$.
+%     Suppose further that $\ket{\psi}$ is an $n$-qubit state.  We write $\calT_{\leq k}(\ket{\psi})$ for the probability distribution on depth-$k$ nodes~$v$ of~$\calT$ gotten by measuring the first $k$ qubits of~$\ket{\psi}$ using the DT basis $\calT_{\leq k}$.
+%     We write $\Pr_{\calT_{\leq k}(\ket{\psi})}[v]$ for the probability of obtaining outcome~$v$ (or just $\Pr_{\ket{\psi}}[v]$ if $\calT_{\leq k}$ is understood).
+%     We also write $\ket{\psi_{|v}}$ for the reduced $(n-k)$-qubit state conditioned on this outcome.
+%\end{notation}
+%
+% \begin{notation}
+%     Let $\ket{\psi}$ be an $n$-qubit state, $\calT$ a $n$-qubit DT basis, $0 \leq k \leq n$, and~$\ell$ a leaf in~$\calT$.
+%     Suppose we measure $\ket{\psi}$ in basis~$\calT$.  We write $\Pr_{\ket{\psi}}[\ell]$ for the probability of obtaining the outcome corresponding to~$\ell$, and $\ket{\psi}_{|\ell}$ for the reduced $(n-k)$-qubit state conditioned on this outcome.
+% \end{notation}
+%
+%We also consider bottom subtrees:
+%\begin{notation}
+%Finally,
+    %If $\calT$ is an $n$-qubit DT basis, and $v$ is a node in $\calT$ at depth~$k$, 
+%    we write $\calT_v$ for the $(n-k)$-qubit DT basis formed by the subtree with root~$v$.\ryancomment{Do we use this $\calT_v$ notation?}
+% \end{notation}
+
+
+\begin{lemma}\label{lem:perpy}
+    Let $\rho^0$ and $\rho^1$ be single-qubit \emph{mixed} states. Then there exists a $1$-qubit basis $\calB = \{\ket{b}, \ketbb\}$ such that for $i = 0, 1$, measuring $\rho^i$ in basis $\calB$ yields each outcome $\ket{b}$ and $\ketbb$ with probability~$\frac12$.
+\end{lemma}
+\begin{proof}
+     It suffices to choose qubit $\ket{b}$ so that its Bloch sphere representation is orthogonal to that of $\rho^0, \rho^1$ (this choice is unique up to sign unless $\rho^0, \rho^1$ are collinear in the Bloch ball).  For such a $\ket{b}$, and its Bloch-antipode $\ketbb$, 
+     measuring $\rho^i$ with respect to~$\{\ket{b}, \ketbb\}$ indeed gives each outcome with probability~$\frac12$.
+\end{proof}
+
+\textcolor{blue}{\textbf{Note}: Consider $\rho^i = \frac{1}{2}(\mathbb{I} + \vec{a_i} \cdot \vec{\sigma})$ for $i=0,1$, 
+where $\vec{a_i}$ is the Bloch vector of $\rho^i$. The probability of getting outcome b: 
+\[
+\begin{aligned}
+    \text{Pr}(b) &= \bra{b} \rho^i \ket{b}  = \text{tr}[(\ket{b}\bra{b})\frac{1}{2}(\mathbb{I} + \vec{a_i} \cdot \vec{\sigma})] \\
+    &= \frac{1}{4}\text{tr}[(\mathbb{I} + \vec{b} \cdot \vec{\sigma})(\mathbb{I} + \vec{a_i} \cdot \vec{\sigma})] \\
+\end{aligned}
+\]
+Note that the product of Pauli matrices can be expressed as $\sigma_j \sigma_k = \delta_{jk} \mathbb{I} + i \epsilon_{jkl} \sigma_l$, 
+where $\delta_{jk}$ is the Kronecker delta and $\epsilon_{jkl}$ is the Levi-Civita symbol. Moreover, Pauli matrices are traceless. Therefore,
+\[ 
+\begin{aligned}
+    \text{Pr}(b) &= \frac{1}{4}\text{tr}[\mathbb{I} + \vec{a_i} \cdot \vec{\sigma} + \vec{b} \cdot \vec{\sigma} + (\vec{b} \cdot \vec{\sigma})(\vec{a_i} \cdot \vec{\sigma})] \\
+    &= \frac{1}{2} + \text{tr}(a_xb_x \sigma_x^2 + a_yb_y \sigma_y^2 + a_zb_z \sigma_z^2) \\
+    &= \frac{1}{2} 
+\end{aligned}
+\]
+where the last equality follows from the fact that $\vec{a_i}$ and $\vec{b}$ are orthogonal. A similar calculation shows that $\text{Pr}(b^\bot) = \frac{1}{2}$ as well.
+}
+
+
+% \begin{lemma}\label{lem:perpy}
+%     Let $\ket{\phi^0}$ and $\ket{\phi^1}$ be $n$-qubit quantum states. Then there exists a $1$-qubit basis $\calB = \{\ket{b}, \ketbb\}$ such that for $i = 0, 1$, measuring the first qubit of $\ket{\phi^i}$ in basis $\calB$ yields each outcome with probability~$\frac12$. (In other words, $\Pr_{\ket{\phi^i}}[b] = \Pr_{\ket{\phi^i}}[b^\bot] = \frac12$ for $i = 0, 1$.)
+% \end{lemma}
+% \begin{proof}
+%      We may as well trace out qubits $2 \dots n$, resulting in $1$-qubit mixed states $\rho^0, \rho^1$. Now it suffices to choose qubit $\ket{b}$ so that its Bloch sphere representation is orthogonal to that of $\rho^0, \rho^1$ (this choice is unique up to sign unless $\rho^0, \rho^1$ are collinear in the Bloch ball).  For such a $\ket{b}$, and its Bloch-antipode $\ketbb$, 
+%      measuring $\rho^i$ with respect to~$\{\ket{b}, \ketbb\}$ indeed gives each outcome with probability~$\frac12$.
+% \end{proof}\ryancomment{``Phase state'' is not currently defined.  Nor is the notation $\calT_{\leq k}$.  But we don't really need that notation.  I guess we should put in a definition of phase state, but then we can probably simplify the notation/explanation in this corollary}\footnote{This corollary can also be obtained from the algorithm in~\cite[Sec.~III]{zhou2020saturating}, by taking its matrix $\tilde{M}$ to be $(1+\mathfrak{i})\ketbra{\phi^0}{\phi^0} - \ketbra{\phi^1}{\phi^1} - \mathfrak{i} \cdot \Id/2^n$.} \meghalcomment{defined phase state, but i want to pigeon on the $\calT_{\leq k}$ thing.}
+
+\begin{corollary} \label{cor:perpy}
+     Let $\ket{\phi^0}$ and $\ket{\phi^1}$ be $m$-qubit quantum states. Then there exists a decision tree basis~$\calT$ for $(\C^2)^{\otimes n}$ in which they are both phase states.\footnote{This corollary can also be obtained from the algorithm in~\cite[Sec.~III]{zhou2020saturating}, by taking its matrix $\tilde{M}$ to be $(1+\mathfrak{i})\ketbra{\phi^0}{\phi^0} - \ketbra{\phi^1}{\phi^1} - \mathfrak{i} \cdot \Id/2^n$.}
+\end{corollary}
+\begin{proof}
+    For $k = 1 \dots m$, we inductively build the labels on the edges at depth at most $k$ so that for both $i = 0, 1$ and all depth-$k$ nodes~$w$, the probability of obtaining outcome~$w$ when measuring $\ket{\phi^i}$ with the tree (so far) is~$2^{-k}$.
+    For the base case of $k = 1$, we apply \Cref{lem:perpy}; the resulting $1$-qubit basis $\calB = \{\ket{b}, \ketbb\}$ serves as the edge labels out from the root of $\calT$.
+    Now to extend from $k$ to $k+1$ we need, for each node $w$ at depth~$k$, a $1$-qubit basis $\calB_w = \{\ket{b_w}, \ket{b_w^\bot}\}$ such that measuring each of the reduced states $\ket{(\phi^0)^{w}}, \ket{(\phi^1)^{w}}$ in basis~$\calB_w$ yields each outcome with probability~$\frac12$. This may be obtained by applying \Cref{lem:perpy} to $\ket{(\phi^0)^{w}}, \ket{(\phi^1)^{w}}$.
+
+    \textcolor{blue}{\textbf{Note}: For a depth-$k$ node $w$, let $\ket{c_1}, \ldots, \ket{c_k}$ denote the single-qubit edge labels along the root-to-$w$ path. Then $\ket{(\phi^i)^{w}}$ is the $(m-k)$-qubit reduced state of $\ket{\phi^i}$ on qubits $k+1, \ldots, m$, conditioned on having measured qubits $1, \ldots, k$ and observed the outcomes $\ket{c_1}, \ldots, \ket{c_k}$. When extending from depth $k$ to depth $k+1$, we are choosing how to measure only the $(k+1)$-th qubit; to apply \Cref{lem:perpy}, we trace out qubits $k+2, \ldots, m$ from $\ket{(\phi^0)^{w}}$ and $\ket{(\phi^1)^{w}}$ to obtain the single-qubit mixed states it requires.
+    Finally, the corollary's conclusion is exactly the $k = m$ case of the invariant: the depth-$m$ nodes are precisely the $2^m$ leaves of $\calT$, so measuring $\ket{\phi^i}$ in the basis $\calT$---i.e., applying the projective measurement $\{\ketbra{\ell}{\ell}\}_{\ell}$ over all leaves $\ell$---yields every outcome with probability $\abs{\braket{\ell}{\phi^i}}^2 = 2^{-m}$. Since all $2^m$ outcomes are equally likely, $\ket{\phi^i}$ is a phase state in $\calT$ for both $i = 0, 1$, as claimed.
+    }
+    % This is a suitable basis labeling for  the root of~$\calT$. 
+    % Now for $i = 0, 1$, measuring $\ket{\phi^i}$ in basis~$\calB$ yields $\ket{b}$ with probability~$1/2$, and some reduced state $\ket{\phi^{ib}}$.
+    % We inductively get a DT basis in which $\ket{\phi^{0b}}$ and $\ket{\phi^{1b}}$ are phase states; this will be the subtree of~$\calT$ corresponding to edge~$\ket{b}$.  Finally, we similarly get the subtree of~$\calT$ corresponding to edge~$\ketbb$ by applying induction to the reduced states $\ket{\phi^{0b^\bot}},\ket{\phi^{1b^\bot}}$ that result from $\ket{\phi^0}, \ket{\phi^1}$ upon first qubit measurement outcome~$\ketbb$.
+    % To find $\{\ket{b}, \ketbb\}$, we may as well trace out qubits $2 \dots n$, resulting in $1$-qubit mixed states $\rho^0, \rho^1$. Now it suffices to choose state $\ket{b}$ so that its Bloch sphere representation is orthogonal to that of $\rho^0, \rho^1$ (this choice is unique up to sign unless $\rho^0, \rho^1$ are collinear in the Bloch ball).  For such a $\ket{b}$, and its Bloch-antipode $\ketbb$, 
+    % measuring $\rho^i$ with respect to~$\{\ket{b}, \ketbb\}$ indeed gives each outcome with probability~$1/2$, as desired.
+\end{proof}
+
+% \begin{remark} \label{rem:itsfine}
+%     We will use this corollary momentarily to show that for any $(m+1)$-qubit state~$\ket{Q}$, there is a DT basis $\calT$ for the last $m$ qubits such that $\ket{Q}$ may be expressed as
+%     \begin{equation}
+%         \ket{Q} = \sqrt{1/2} \cdot \ket{0} \otimes \ket{Q^0} + 
+%         \sqrt{1/2} \cdot \ket{1} \otimes \ket{Q^1}
+%     \end{equation}
+%     where $\ket{Q^0}, \ket{Q^1}$ are simultaneously phase states in basis~$\calT$.
+%     In fact, our analysis will only need the slightly weaker statement, that $\ket{Q}$ may be expressed as 
+%     \begin{equation}
+%         \ket{Q} = \sqrt{q_0} \cdot \ket{0} \otimes \ket{Q^0} + \sqrt{q_1} \cdot \ket{1} \otimes D \ket{Q^0}
+%     \end{equation}
+%     for some diagonal unitary~$D$.%; i.e., our analysis will not need $q_0 = q_1 = 1/2$.
+% \end{remark}
+
+% We now come to an important definition:
+% \begin{definition}
+%     Let $\ket{\psi}$ be an $n$-qubit state.
+%     We say that $\calB \otimes \calT'$ is a \emph{nice basis} for~$\ket{\psi}$ if $\calB$ is a $1$-qubit basis, $\calT'$ is an $(n-1)$-qubit DT basis, and $\ket{\psi}$ is a phase state with respect to $\calB \otimes \calT'$.  
+% \end{definition}
+% Note that this is a stronger concept than having a DT basis~$\calT$ in which $\ket{\psi}$ is a phase state: if one thinks of $\calB \otimes \calT'$ as an $n$-qubit DT basis, then crucially, it is one in which \emph{the root's two child subtrees are identical up to phase}.
+% \begin{lemma}   \label{lem:nice}
+%     Every $n$-qubit state~$\ket{\psi}$ has a nice basis.
+% \end{lemma}
+% \begin{proof}
+%     Apply \Cref{lem:perpy} with $\ket{\phi^0} = \ket{\psi}$, ignoring its $\ket{\phi^1}$. This yields a $1$-qubit basis $\calB = \{\ket{b}, \ketbb\}$ such that we may write 
+%     \begin{equation}
+%         \ket{\psi} = \frac{1}{\sqrt{2}} \ket{b} \otimes \ket{\psi^0} + \frac{1}{\sqrt{2}} \ketbb \otimes \ket{\psi^1}
+%     \end{equation}
+%     Now $\calT'$ is obtained by applying \Cref{cor:perpy} to $\ket{\psi^0}, \ket{\psi^1}$.
+%     % It now suffices to find an $(n-1)$-qubit DT basis~$\calT$ in which $\ket{\psi^0}$ and $\ket{\psi^1}$ are simultaneously phase states. 
+%     % We do this inductively, by repeatedly applying \Cref{lem:perpy}.
+%     % Applying the lemma initially to $\ket{\psi^0}, \ket{\psi^1}$, we get a $1$-qubit basis $\mathcal{E} = \{\ket{e}, \ket{e^\bot}\}$ such that measuring the first qubit of each of $\ket{\psi^0}, \ket{\psi^1}$ in~$\mathcal{E}$ yields each outcome with probability~$1/2$.
+%     % This basis~$\mathcal{E}$ will go at the root of our~$\calT$.  
+%     % Then we make the $\ket{e}$-subtree of~$\calT$ by inductively repeating the process for $\ket{\psi^0}$ and $\ket{\psi^1}$ conditioned on first qubit measurment outcome~$\ket{e}$.  And we similarly inductively make the $\ket{e^\bot}$-subtree of~$\calT$.
+% \end{proof}
+
+% \begin{definition}
+%     Let $\ket{\psi}$ be an $n$-qubit state, let $\calT$ be an $n$-qubit DT basis, and let $v$ be an internal node of~$\calT$ at some depth $k-1$ (for $k \in [n]$). 
+%     Write $\calB_v$ for the $1$-qubit basis labeling~$v$'s outgoing edges.
+%     We say that $\calT$ is \emph{special for $\ket{\psi}$ at~$v$} if $\calB_v$ can be extended to a nice basis $\calB_v \otimes \calT'$ for $\ket{\psi_{|v}}$.
+% \end{definition}
+
+% We finally construct the basis in which we will analyze a given $\ket{\tar}$:
+% \begin{definition}
+%     Let $\ket{\psi}$ be an $n$-qubit state.  We say that~$\calT$ is a \emph{special} DT basis for~$\ket{\psi}$ if it is special for $\ket{\psi}$ at all internal nodes.
+% \end{definition}
+% \begin{lemma}   \label{lem:special}
+%     Every $n$-qubit state $\ket{\psi}$ has a special DT basis~$\calT$.
+% \end{lemma}
+% \begin{proof}
+%     We create~$\calT$ inductively, from the root downward.  To get the $1$-qubit basis labeling internal node~$v$, we use \Cref{lem:nice} to get a nice basis $\calB_v \otimes \calT_v$ for $\ket{\psi_{|v}}$.  Then we let this $\calB_v$ be the labeling for $v$'s outgoing edges in~$\calT$.  By construction, this makes our~$\calT$ special for~$\ket{\psi}$ at~$v$.
+% \end{proof}
+
+\subsection{Our Algorithm and Its Key Subtest}
+\newcommand{\tarline}{\ket{\tar'}}
+\newcommand{\labline}{\ket{\lab'}}
+Let $\ket{\tar}$ be the $n$-qubit state to be certified. In our proof of \Cref{thm:main}, we may assume without loss of generality that the lab state is a pure one,~$\ket{\lab}$. This is because we can regard $\rho_{\lab}$ as a probability distribution over pure states, since our algorithm may only perform measurements to a single copy of lab. (This equivalence can be shown by linearity of expectation.)
+%and \Cref{thm:main}'s bounds are linear in~$\rho_{\lab}$. %since in the case where have access to only a single copy, the two scenarios are equivalent. 
+Also, for expositional simplicity, in this section we regard $\ket{\tar}$ as completely ``known''; we will not be concerned with the complexity of interacting with $\ket{\tar}$.  The straightforward details of the access model we actually assume, and the running time, are deferred to \Cref{sec:access model}.
+
+We will use a collection of DT bases $\calT_x$, for $x\in \{0,1\}^{\leq n}$.
+%\ryancomment{not to be annoying, but I guess it should be in $\{0,1\}^k$, right?  I guess I'd call it $x$ at this point, too, rather than $v$ (was for `v'ertex)} for $\ket{\tar}$ that will be useful to our analysis. 
+For all $1\leq k\leq n$ and all binary strings $x\in\{0,1\}^{k-1}$, let $\ket{\tar^x}$ and $\ket{\lab^x}$ be the reduced states of $\ket{\tar}$ and $\ket{\lab}$, respectively, after measuring the first $k-1$ qubits of these states in the computational basis and observing $x$. For all $x\in\{0,1\}^{\leq n}$, define the DT basis $\calT_x$ so that in this basis, both $\ket{\tar^{x0}}$ and $\ket{\tar^{x1}}$ are phase states; we know this DT basis exists by \Cref{cor:perpy}.
+
+We may now state our algorithm:
+
+\begin{algorithm}[H]
+    \vspace{0.3em}
+    \textbf{Input:} Full classical description of $\ket{\tar}$ and one copy of an unknown state $\ket{\lab}$. \\
+    \textbf{Output:} \textsc{Accept} or \textsc{Reject}.
+    \begin{algorithmic}[1]
+    \State \textbf{Sample} $k\in[n]$ uniformly at random.
+    \State \textbf{Measure} the first $k-1$ qubits of $\ket{\lab}$ in the computational basis, obtaining~$x\in\{0,1\}^{k-1}$.    
+    \State \textbf{Measure} the last $n-k$ qubits of $\ket{\lab^x}$ in the basis $\calT_x$, obtaining~$\ell$.
+    \State Let $\labline$ be the resulting $1$-qubit state; let $\tarline$ denote $\ket{\tar}$ conditioned on outcomes $x, \ell$.
+    
+    \noindent \textbf{Measure} $\labline$ in a basis containing $\tarline$, %, \ket{{\overline{\tar}}^\bot})$, 
+    and \textbf{Output} \textsc{Accept} iff the outcome is $\tarline$.
+    \end{algorithmic}
+    \caption{\textsc{Certify}$(\ket{\lab}, \ket{\tar})$}
+    \label{alg:main}
+\end{algorithm}
+
+\textcolor{blue}{\textbf{Note}: The resulting state $\labline$ is $1$-qubit because Steps 2--3 together measure all but one qubit of the $n$-qubit state $\ket{\lab}$.} 
+\begin{definition}
+    We refer to Steps 3--4 of our algorithm as the \emph{subtest} performed on the \mbox{$(n-k)$}-qubit states $\ket{\tar^x}$ and $\ket{\lab^x}$, with DT basis $\calT_x$.  We will also use the notation $\textsc{SubTest}_{\calT_x}(\ket{\lab^x}: \ket{\smash{\tar^x}})$.
+\end{definition}
+%\ryancomment{I always wondered if this notation could be shortened.  Maybe it can be, now}
+
+
+
+The key to analyzing the $\textsc{Certify}$ algorithm is to compare the subtest acceptance probability %$\textrm{EFid}_{\calT_x}(\ket{\lab^x}, \ket{\tar^x})$ 
+to the following quantity:
+%analyze the \textsc{Accept}/\textsc{Reject} probability of the subtest.  %This is controlled by the quantity in the definition below.  We forewarn the reader that this definition will be used more generally with $\ket{\tar}$ and $\ket{\lab}$ being the $(n-k)$-qubit states  $\ket{\smash{\tar^{x}}}$ and $\ket{\smash{\lab^{x}}}$.
+%\ryancomment{First, I think the current notation has $\ket{\tar_{|v}}$, not $\ket{\tar^v}$. This is also a problem in the upcoming definition.  I actually don't care which we use, we should just be consistent.  Also, at this point I'm kinda leaning towards Meghal's suggestion to not use hyp and lab in the following definition.  We could perhaps go back to just $\phi$ and $\psi$.}
+
+\begin{definition}
+    For $(n-k+1)$-qubit states $\ket{\lab^x}, \ket{\tar^x}$ as in $\textsc{Certify}$, %$\ket{\hyp^x}$ Let $\ket{\tar'}, \ket{\lab'}$ be $m$-qubit states.
+    we define their \emph{fidelity gap} to be%of $\ket{\tar'}, \ket{\lab'}$ with respect to~$\calB$} to be
+    \begin{equation*}
+        \Delta(\ket{\lab^x}: \ket{\tar^x}) \coloneqq \mathop{\E}_{b}\left[\abs{\braket{\tar^{xb}}{\lab^{xb}}}^2\right]- \abs{\braket{\tar^x}{\lab^x}}^2.
+    \end{equation*}
+    Here the expectation is over the random outcome $b \in \{0,1\}$ obtained when measuring the first qubit of $\ket{\lab^x}$ in the computational basis. %Note that the expression is not symmetric in $\ket{\tar'}$ and $\ket{\lab'}$ because $b$ is drawn by measuring $\ket{\lab'}$, not $\ket{\tar'}$. 
+\end{definition}
+\begin{remark} \label{rem:nonneg}
+    $\Delta(\ket{\lab^x}: \ket{\tar^x}) \geq 0$ always. This follows from the data processing inequality for fidelity, and is also a direct consequence of the Cauchy--Schwarz inequality.
+\end{remark}
+
+\textcolor{blue}{\textbf{Note}: We spell out the Cauchy--Schwarz argument. Decompose $\ket{\tar^x}$ and $\ket{\lab^x}$ according to their first qubit in the computational basis:
+\[
+    \ket{\tar^x} = \ket{0}\otimes u^0 + \ket{1}\otimes u^1, \qquad \ket{\lab^x} = \ket{0}\otimes v^0 + \ket{1}\otimes v^1,
+\]
+where $u^b, v^b$ are (in general unnormalized) vectors on the remaining qubits. Measuring the first qubit of $\ket{\lab^x}$ yields outcome $b$ with probability $\Pr[b] = \norm{v^b}^2$, and the conditioned reduced states are $\ket{\tar^{xb}} = u^b/\norm{u^b}$ and $\ket{\lab^{xb}} = v^b/\norm{v^b}$. Taking the inner product of the two decompositions (the cross terms vanish since $\braket{0}{1} = 0$) and substituting $u^b = \norm{u^b}\ket{\tar^{xb}}$, $v^b = \norm{v^b}\ket{\lab^{xb}}$ gives
+\[
+    \braket{\tar^x}{\lab^x} = \braket{u^0}{v^0} + \braket{u^1}{v^1} = \sum_{b \in \{0,1\}} \norm{u^b}\,\norm{v^b}\,\braket{\tar^{xb}}{\lab^{xb}}.
+\]
+Now apply the Cauchy--Schwarz inequality $\abs{\sum_b \alpha_b \beta_b}^2 \leq \left(\sum_b \abs{\alpha_b}^2\right)\left(\sum_b \abs{\beta_b}^2\right)$ to this two-term sum over $b$, with $\alpha_b = \norm{u^b}$ and $\beta_b = \norm{v^b}\,\braket{\tar^{xb}}{\lab^{xb}}$:
+\[
+    \abs{\braket{\tar^x}{\lab^x}}^2 \leq \left(\sum_b \norm{u^b}^2\right)\left(\sum_b \norm{v^b}^2\,\abs{\braket{\tar^{xb}}{\lab^{xb}}}^2\right).
+\]
+The first factor is $\sum_b \norm{u^b}^2 = \norm{\ket{\tar^x}}^2 = 1$, and the second factor is exactly $\mathop{\E}_b\!\left[\abs{\braket{\tar^{xb}}{\lab^{xb}}}^2\right]$ since $\Pr[b] = \norm{v^b}^2$. Hence $\abs{\braket{\tar^x}{\lab^x}}^2 \leq \mathop{\E}_b\!\left[\abs{\braket{\tar^{xb}}{\lab^{xb}}}^2\right]$, which is precisely $\Delta(\ket{\lab^x} : \ket{\tar^x}) \geq 0$.}
+
+
+The central analysis in our proof will be the following:
+%We can now give the central component of our proof, an analysis of the subtest.  (Again, when we use this analysis, $n$ will be some $n-k$, and it will be applied to some $\ket{\smash{\tar^{v}}}$ and $\ket{\smash{\lab^{v}}}$.)
+\begin{theorem} \label{thm:subtest}
+        With $\calT_x$ being a (DT) basis in which $\ket{\tar^{x0}}$ and $\ket{\lab^{x1}}$ are both phase states, %orthonormal basis $\calT'$
+        %such that $\ket{\smash{\tar'^{0}}}$and $\ket{\smash{\tar'^{1}}}$ are both phase states in $\calT'$, 
+        the following holds:
+     \begin{align}
+         \Pr[\textsc{SubTest}_{\calT_x}(\ket{\lab^x} : \ket{\smash{\tar^x}}) \text{ rejects}] %&= 1 - \textrm{EFid}_{\calT_x}(\ket{\lab^x}, \ket{\tar^x}) 
+         &\geq \Delta(\ket{\lab^x}: \ket{\tar^x}), \label{eqn:reject}\\
+         \Pr[\textsc{SubTest}_{\calT_x}(\ket{\lab^x} : \ket{\tar^x}) \text{ accepts}]
+         &\geq \abs{\braket{\tar^x}{\lab^x}}^2. \label{eqn:accept}
+     \end{align}
+\end{theorem}
+We defer the proof of \Cref{thm:subtest} to \Cref{sec:subtest} and conclude assuming it holds. For now, we use \Cref{thm:subtest} to complete the analysis of our algorithm $\textsc{Certify}$. 
+
+\begin{proposition}
+    It holds that
+    \[
+        \mathop{\E}_{x} \sbra{ \Delta(\ket{\lab^x}: \ket{\tar^x}) } = \frac1n\cdot \left(1- \abs{\braket{\tar}{\lab}}^2 \right)
+    \]
+    Here, $x$ is sampled by performing steps 1--2 of our algorithm. In other words, $x$ is sampled by first choosing a uniformly random $k \in [n]$ and then measuring the first $k-1$ qubits of $\ket{\lab}$ to obtain $x$. 
+\end{proposition}
+
+\begin{proof}
+    For $0\leq k \leq n$, define the quantity
+    \begin{equation*}
+        \Phi^k \coloneqq \mathop{\E}_{x} \left[\abs{\braket{\tar^{x}}{\lab^{x}}}^2\right].
+    \end{equation*}
+    where $x$ is sampled by measuring the first $k$ qubits of $\ket{\lab}$. Then,
+    \begin{align*}
+        \mathop{\E}_{x} \sbra{ \Delta(\ket{\lab^x}: \ket{\tar^x}) } &= \mathop{\E}_{k\in [n]} \sbra{ \mathop{\E}_{\substack{x, \\ |x| = k-1}}  \mathop{\E}_{b}\left[\abs{\braket{\tar^{xb}}{\lab^{xb}}}^2\right] -  \mathop{\E}_{\substack{x, \\ |x| = k-1}} \sbra{ \abs{\braket{\tar^x}{\lab^x}}^2. }}\\
+        &= \mathop{\E}_{k\in [n]} \sbra{ \mathop{\E}_{\substack{x, \\ |x| = k}}  \left[\abs{\braket{\tar^{xb}}{\lab^{xb}}}^2\right] -  \mathop{\E}_{\substack{x, \\ |x| = k-1}} \sbra{ \abs{\braket{\tar^x}{\lab^x}}^2. }}\\
+        &= \mathop{\E}_{k\in [n]} \sbra{ \Phi^k - \Phi^{k-1} } \\
+        &= \frac{1}{n}\cdot (\Phi^n-\Phi^0) = \frac1n\cdot \left(1- \abs{\braket{\tar}{\lab}}^2 \right),
+    \end{align*}
+    where the last line follows by a telescoping sum.
+\end{proof}
+
+It follows from \Cref{thm:subtest} that
+\begin{align*}
+    \Pr[\textsc{Certify} \text{ rejects}] &= \mathop{\E}_{x} \Pr[\textsc{SubTest}_{\calT_x}(\ket{\lab^x} : \ket{\smash{\tar^x}}) \text{ rejects}]  \\
+    &\geq  \mathop{\E}_{x}\ [\Delta(\ket{\lab^{x}}: \ket{\tar^{x}})]\\
+    &= \frac1n\cdot \left(1- \abs{\braket{\tar}{\lab}}^2 \right)
+\end{align*}
+as claimed. As for the acceptance probability,
+\begin{align*}
+    \Pr[\textsc{Certify} \text{ accepts}] &= \mathop{\E}_{x} \Pr[\textsc{SubTest}_{\calT_x}(\ket{\lab^x}: \ket{\smash{\tar^x}}) \text{ accepts}]  \\
+    &\geq \mathop{\E}_{x} \sbra{ \abs{\braket{\tar^x}{\lab^x}}^2 }\\
+    &\geq \abs{\braket{\tar}{\lab}}^2,
+\end{align*}
+where the last inequality follows by \Cref{rem:nonneg}. This concludes the proof of \Cref{thm:main}.
+
+\subsection{Analysis of the Subtest (Proof of \Cref{thm:subtest})} \label{sec:subtest}
+
+
+We will analyze $\textsc{SubTest}_{\calT}(\ket{V}: \ket{U})$ for any two $m$ qubit states $\ket{V}$ and $\ket{U}$ and any $m-1$ qubit orthonormal basis $\calL$ in which $\ket{U^0}$ and $\ket{U^1}$ are both phase states. (Here, $\ket{U^b}$ denotes the reduced state if one were to measure the first qubit of $\ket{U}$ and observe $b$.) We denote the basis vectors of $\calL$ by $\ket{\ell}$, where $\ell \in [2^{m-1}]$.
+Write
+\begin{equation*}
+    \ket{U} = \ket{0}\otimes u^0 + \ket{1}\otimes u^1, \qquad 
+    \ket{V} = \ket{0}\otimes v^0 + \ket{1}\otimes v^1.
+\end{equation*}
+Since both $\ket{U^0}$ and $\ket{U^1}$ are phase states in the basis $\calL$, there is a unitary $D$ that is diagonal in $\calL$ such that $\ket{U^1} = D\ket{U^0}$. Define $\widetilde{v}^1 \coloneqq D^\dagger v^1$. Also, for ease of notation let $a^0=\norm{\smash{u^0}}$ and $a^1 = \norm{\smash{u^1}}$.
+\begin{proposition} \label{prop:subtest}
+    The following two inequalities hold:
+    \begin{align} 
+        \Pr[\textsc{SubTest} \text{ accepts}] &= \left\|a^0 v^0 + a^1 \widetilde{v}^1\right\|^2. \label{eqn:acc0} \\
+        \Pr[\textsc{SubTest} \text{ rejects}] &= \left\|a^1 v^0 - a^0 \widetilde{v}^1\right\|^2. \label{eqn:start}
+    \end{align}
+\end{proposition}
+
+\begin{proof}
+We will first show \Cref{eqn:acc0}. Write $v^0= \sum_\ell v^0_\ell \ket{\ell}$ and similarly decompose $v^1$ and $\widetilde{v}^1$. Denote the first qubit of $\ket{V}$ conditioned on observing $\ket{\ell}$ by $ \ket{V_\ell}$, and the first qubit of $\ket{U}$ conditioned on observing $\ket{\ell}$ by $ \ket{U_\ell} \coloneqq a^0\ket{0} + a^1\zeta_\ell \ket{1}$, where $\zeta_\ell$ denotes the diagonal entry of $D$ corresponding to the basis vector $\ket{\ell}$. Then, the probability of the subtest  accepting is the expected fidelity of $\ket{U_\ell}$ and $\ket{V_\ell}$ upon measuring $\ket{V}$:
+\[
+     \mathop{\E}_\ell \abs{ \braket{U_\ell}{V_\ell} }^2 = \sum_\ell \abs{ \bra{U_\ell}(v^0_\ell\ket{0} + v^1_\ell\ket{1}) }^2 = \sum_\ell \abs{ a^0v^0_\ell + a^1 \overline{\zeta_\ell} v^1_\ell\ket{1}) }^2 =  \sum_\ell \abs{ a^0v^0_\ell + a^1 \widetilde{v}^1_\ell }^2,
+\]
+where the last equality uses that $\widetilde{v}^1_\ell = \overline{\zeta_\ell}v^1_\ell$. Using the Pythagorean theorem now yields the claimed \Cref{eqn:acc0}.
+
+To show \Cref{eqn:start}, it suffices to prove that the claimed rejection probability is 1 minus the above. Indeed, by expanding, we see that
+\begin{align*}
+    \left\|a^0 v^0 + a^1 \widetilde{v}^1\right\|^2 + \left\|a^1 v^0 - a^0 \widetilde{v}^1\right\|^2 &= \left( (a^0)^2+(a^1)^2 \right) \left( \| v^0 \|^2 + \| \widetilde{v}^1 \|^2 \right) \\
+    &\quad~~ + \left( a^0a^1-a^1a^0 \right) \left( v^{0\dag} \widetilde{v}^1 + \widetilde{v}^{1\dag} v^0 \right)\\
+    &= 1,
+\end{align*}
+where the last line holds because both $(a^0)^2+(a^1)^2$ and $\| v^0 \|^2 + \| \widetilde{v}^1 \|^2$ are equal to 1.
+\end{proof}
+
+    We now use these expressions to establish \Cref{thm:subtest}. Note that we have $\ket{V^b} = \frac{v^b}{\|v^b\|}$ and $\ket{U^b} = \frac{u^b}{\norm{u^b}}$ for $b = 0, 1$.
+    Thus
+    \begin{align*}
+        \abs{\braket{U}{V}}^2 
+        &= \left|a^0\cdot \bra{U^0}v^0 + a^1\cdot \bra{U^1}v^1\right|^2 
+        = \left|a^0\cdot \bra{U^0}v^0 + a^1\cdot \bra{U^0}\widetilde{v}^1\right|^2\\
+        &= \left|\bra{U^0}\left(a^0 v^0 + a^1 \widetilde{v}^1\right)\right|^2
+        \leq \left\|a^0 v^0+a^1 \widetilde{v}^1\right\|^2, \label{eqn:expre}
+    \end{align*}
+    where we used $\bra{U^1}v^1 = \bra{U^0}D^\dagger D \widetilde{v}^1 = \bra{U^0}\widetilde{v}^1$.
+    In combination with \Cref{eqn:acc0}, this shows the subtest acceptance probability is at least the fidelity $\abs{\braket{U}{V}}^2$, confirming \Cref{eqn:accept}. 
+    
+    To show \Cref{eqn:reject} it will be helpful to re-express $\Delta(\ket{V} : \ket{U})$:
+    \begin{proposition}
+        It holds that
+        \[
+            \Delta(\ket{V} : \ket{U}) = \left|a^1 \bra{U^0}v^0 - a^0 \bra{U^1}v^1\right|^2
+        \]
+    \end{proposition}
+    \begin{proof}
+        This follows by expanding:
+        \begin{align*}
+            \Delta(\ket{V} : \ket{U}) &= \|v^0\|^2 \cdot \left|\braket{U^0}{V^0}\right|^2 + \|v_1\|^2 \cdot \left|\braket{U^1}{V^1}\right|^2  
+            %\|v_1\|^2 \left(\frac{\left|\braket{u_1}{v_1}\right|}{\tfrac{1}{\sqrt{2}} \|v_1\|}\right)^2 
+            - \left|\braket{U}{V}\right|^2 \\
+            &= \left|\bra{U^0}v^0\right|^2 + \left|\bra{U^1}v^1\right|^2 - \left|a^0 \bra{U^0}v^0 + a^1 \bra{U^1}v^1\right|^2 \\
+            &= \left( 1- (a^0)^2 \right) \left|\bra{U^0}v^0\right|^2 + \left( 1- (a^1)^2 \right) \left|\bra{U^1}v^1\right|^2 - 2a^0a^1\Re \left( v^0\ket{U^0}\bra{U^1}v^1 \right) \\
+            &= (a^1)^2\left|\bra{U^0}v^0\right|^2 + (a^0)^2 \left|\bra{U^1}v^1\right|^2 - 2a^0a^1\Re \left( v^0\ket{U^0}\bra{U^1}v^1 \right) \\
+            &=\left|a^1 \bra{U^0}v^0 - a^0 \bra{U^1}v^1\right|^2 \qedhere
+        \end{align*}
+    \end{proof}
+    Then, using that $\bra{U^1}v^1 = \bra{U^0}\widetilde{v}^1$ gives
+    \[
+        \Delta(\ket{V} : \ket{U}) = \left|a^1 \bra{U^0}v^0 - a^0 \bra{U^1}v^1\right|^2 = \left|\bra{U^0}\left(a^1 v^0-a^0 \widetilde{v}^1\right)\right|^2 \leq \left\|a^1 v^0 - a^0 \widetilde{v}^1\right\|^2.
+    \]
+    In combination with \Cref{eqn:start}, this shows the subtest rejection probability is at least $\Delta(\ket{V} : \ket{U})$, confirming \Cref{eqn:reject}.
+
+
+
+
+\subsection{Access Model and Computational Efficiency}\label{sec:access model}
+Thus far we have not constrained how the target state $\ket{\tar}$ is represented classically and granted ourselves unlimited classical computation to compute any properties of it. Hence, while our procedure is quantum-efficient, it is not yet classically efficient.
+
+Because an explicit classical description of $\ket{\tar}$ can be exponentially large, we should not allow ourselves to work with a full description of $\ket{\tar}$. Instead, we work in an \emph{oracle-access model} mirroring Huang et al.~\cite{huang2024certifying}. In that work, the oracle provides the value of $\braket{x}{\tar}$ for any queried computational‑basis string $x\in\{0,1\}^{n}$.  We adopt a natural extension: for any sequence of single-qubit measurements and outcomes, the oracle tells us the probability of obtaining that specific outcome sequence:
+
+
+\begin{definition}\label{def:access model}
+We consider oracle access to a state
+$\ket{\psi}$  supporting the following type of query: For any operator $\Pi=\Pi_1\otimes\dots\otimes \Pi_n$ that is a tensor product of single-qubit projectors on $\mathbb{C}^{2}$, the querying with $\Pi$ returns the value $\bra{\psi} \Pi \ket{\psi}$. Note that it is possible for individual tensor factors to be $\Pi_k=\Id$.
+\end{definition}
+
+It is useful to observe, for example, that if we had a description of $\ket{\tar}$ as a matrix product state of small bond dimension, we could efficiently emulate the oracle.
+
+Now, we will show that this access model allows us to adaptively compute a DT basis as in \Cref{cor:perpy} and implement the corresponding measurements efficiently.% We now clarify the access model to $\ket{\tar}$ that our algorithm works under, and analyze the running time in this access model. Essentially, we show that \Cref{alg:main} does not require computation of all the $\calT_x$'s; rather, computation of a suitable $\calT_x$ can be done on the fly.
+
+
+%\meghalcomment{change to $O(n)$ time}\ryancomment{Would it not be better to just say, ``We can implement measuring in the basis defined in \Cref{lem:angle bisector}?''}\ryancomment{Not sure what the meaning of t is here.  Or Id, either.  Do we not mean that $\Pi$ starts out as the empty product?  In other words, $1$, not $\Id$?}.\ryancomment{Are there typos in the above? Should it say we query for $\bra{\smash{\psi^j}}\Pi\ket{\smash{\psi^j}}$ for $j = 0, 1$ where $\Pi = \Pi_\ell \otimes \ketbra{b}{b} \otimes \Id^{\otimes (n - \ell - 1)}$?} 
+\begin{lemma}\label{lem:computational efficiency}
+    Given access to $\ket{\smash{\psi^{ 0}}}$ and $\ket{\smash{\psi^{ 1}}}$ via this model, we can implement measuring in the DT basis defined in \Cref{cor:perpy} (making $\ket{\smash{\psi^0}}$ and $\ket{\smash{\psi^1}}$ phase states), using $O(n)$ time and single-qubit measurements.
+\end{lemma}
+\begin{proof}
+    The algorithm will initialize $t=0$, $\ket{\smash{\psi^0_t}}=\ket{\smash{\psi^0}}$, $\ket{\smash{\psi^1_t}}=\ket{\smash{\psi^1}}$, and an initially empty tensor product of projections $\Pi_t=1$ that corresponds to the measurement outcomes observed up to the $t$th single-qubit measurement. While $t<n$, we compute the reduced states $\rho^0_t = \Tr_{[n]\setminus \{t+1\}}(\ketbra{\smash{\psi^0_t}}{\smash{\psi^0_t}})$ and $\rho^0_t = \Tr_{[n]\setminus \{t+1\}}(\ketbra{\smash{\psi^1_t}}{\smash{\psi^1_t}})$. This can be done by querying the oracle for the quantities
+    \begin{align*}
+        \bra{\smash{\psi^0}}\Pi\ket{\smash{\psi^0}}\text{ and }\bra{\smash{\psi^1}}\Pi\ket{\smash{\psi^1}},\text{ where }\Pi = \Pi_t \otimes \ketbra{b}{b} \otimes \Id^{\otimes (n - t - 1)}.
+    \end{align*}
+    for $b\in\{0,+,\mathfrak{i}\}$ and performing a single-qubit quantum state reconstruction algorithm. 
+    
+    As in \Cref{cor:perpy}, let $\ket{e_t}$ be perpendicular to both $\rho^0$ and $\rho^1$ on the Bloch sphere and measure the the $t$th qubit in the basis $\ket{e_t},\ket{\smash{e_t^\perp}}$. Then set $\Pi_{t+1}=\Pi_t \otimes\ketbra{b}{b}\otimes\Id$, where $\ket{b}\in \{\ket{e_t},\ket{\smash{e^\perp_t}}\}$ was the outcome of this measurement. Then $\ket{\smash{\psi^0_{t+1}}}\propto\Pi_{t+1}\ket{\smash{\psi^0}}$ and $\ket{\smash{\psi^1_{t+1}}}\propto\Pi_{t+1}\ket{\smash{\psi^1}}$ and we increase $t$ by $1$. Repeating for all $t$ gives a measurement outcome in a DT basis satisfying the conclusion of \Cref{cor:perpy}. Computing the $t$th measurement and updating the query take $O(1)$ time, so the overall runtime is $O(n)$.
+\end{proof}
+Given \Cref{lem:computational efficiency}, we see that \Cref{alg:main} can be implemented in time $O(n)$ under the access model of \Cref{def:access model}. For measurement in the decision tree basis $\calT_x$ (where $x$ is the outcome of measuring the first $k-1$ qubits), we use \Cref{lem:computational efficiency} with $\ket{\psi^0}=\ket{\tar^{x0}}$ and $\ket{\psi^1}=\ket{\tar^{x1}}$.
+
+

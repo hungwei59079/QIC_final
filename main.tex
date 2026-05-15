@@ -1,0 +1,62 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{style}
+\usepackage{thm-restate}
+\usepackage{thmtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{cancel}
+\usepackage{titling}
+\usepackage{multirow}
+\usepackage{cancel}
+\usepackage{quantikz}
+\usepackage{bm}
+%\usepackage{braket}
+%\usepackage{physics}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\newcommand{\violet}[1]{{\color{violet}{#1}}}
+\newcommand{\orange}[1]{{\color{orange}{#1}}}
+\newcommand{\blue}[1]{{{\color{blue}#1}}}
+\newcommand{\red}[1]{{{#1}}}
+\newcommand{\green}[1]{{\color{green} {#1}}}
+\newcommand{\pink}[1]{{\color{pink}{#1}}}
+\newcommand{\gray}[1]{{\color{gray}{#1}}}
+\newcommand{\ignore}[1]{}
+\newcommand{\bxy}{\smash{b^{x}_{y}}}
+\newcommand{\Pxy}{\smash{P^{x}_{y}}}
+\newcommand{\vzerox}{\smash{v^{0}_x}}
+\newcommand{\vonex}{\smash{v^{1}_x}}
+\definecolor{cb-salmon-pink}{RGB}{255, 182, 119}
+\crefname{enumi}{Step}{Steps}
+\usepackage{float}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\tr}{\mathrm{Tr}}
+
+\title{Few Single-Qubit Measurements Suffice\\to Certify Any Quantum State}
+\author{Meghal Gupta\thanks{UC Berkeley, \texttt{meghal@berkeley.edu}}\and William He\thanks{Carnegie Mellon University, \texttt{wrhe@cs.cmu.edu}}\and Ryan O'Donnell\thanks{Carnegie Mellon University, \texttt{odonnell@cs.cmu.edu}. Supported in part by a grant from Google Quantum AI.}}
+\begin{document}
+\allowdisplaybreaks
+\maketitle
+\begin{abstract}
+   
+    A fundamental task in quantum information science is \emph{state certification}: testing whether a lab-prepared $n$-qubit state is close to a given hypothesis state. In this work, we show that \emph{every} pure hypothesis state can be certified using only $O(n^2)$ single-qubit measurements applied to $O(n)$ copies of the lab state. Prior to our work, it was not known whether even subexponentially many single-qubit measurements could suffice to certify arbitrary states.
+    This resolves the main open question of Huang, Preskill, and Soleimanifar (FOCS 2024, QIP 2024).
+
+    
+    Our algorithm also showcases the power of \emph{adaptive measurements}: within each copy of the lab state,  previous measurement outcomes dictate how subsequent qubit measurements are made. We show that the adaptivity is necessary, by proving an exponential lower bound on the number of copies needed for any nonadaptive single-qubit measurement algorithm.  
+    %    show that this adaptivity is necessary. That is, there exist hypothesis states for which any nonadaptive single-qubit measurement algorithm requires exponentially many copies to certify.
+\end{abstract}
+\input{pvp}
+\input{lower_bound}
+
+\section*{Acknowledgments}
+We thank Mihir Singhal for helpful discussions, Omar Alrabiah for checking calculations, Mingyu Sun for pointing out errors in an earlier version of the paper, and Sisi Zhou for the reference~\cite{zhou2020saturating}. We also thank ChatGPT and Gemini for assistance. MG and WH are grateful to Angelos Pelecanos for his daily presence in Soda Hall.
+
+\bibliography{references}
+\bibliographystyle{alpha}
+
+%\input{failed GvH}
+
+\end{document}
