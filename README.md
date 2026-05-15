@@ -1,10 +1,10 @@
-# Few Single-Qubit Measurements Suffice to Certify Any Quantum State
+# Few Single-Qubit Measurements Suffice to Certify Any Quantum State - Notes Included
 
 LaTeX source for the paper by Meghal Gupta, William He, and Ryan O'Donnell
 ([arXiv:2506.11355](https://arxiv.org/abs/2506.11355)).
 
 ## Note
-The pdf file is gitignored in this repository. I will only force add it to update the comments when necessary, to prevent bloated commit history.
+The pdf file is gitignored in this repository, so beware that it might not be synchronized with the latest edited .tex files. I will only force add it to update the comments when necessary to prevent bloated commit history.
 
 -- Hung-Wei, Liu
 
