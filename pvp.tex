@@ -371,7 +371,7 @@ We defer the proof of \Cref{thm:subtest} to \Cref{sec:subtest} and conclude assu
 \begin{proof}
     For $0\leq k \leq n$, define the quantity
     \begin{equation*}
-        \Phi^k \coloneqq \mathop{\E}_{x} \left[\abs{\braket{\tar^{x}}{\lab^{x}}}^2\right].
+        \Phi^k \coloneqq \mathop{\E}_{\substack{x, \\ \textcolor{blue}{|x| = k}}} \left[\abs{\braket{\tar^{x}}{\lab^{x}}}^2\right].
     \end{equation*}
     where $x$ is sampled by measuring the first $k$ qubits of $\ket{\lab}$. Then,
     \begin{align*}
@@ -400,7 +400,8 @@ where the last inequality follows by \Cref{rem:nonneg}. This concludes the proof
 \subsection{Analysis of the Subtest (Proof of \Cref{thm:subtest})} \label{sec:subtest}
 
 
-We will analyze $\textsc{SubTest}_{\calT}(\ket{V}: \ket{U})$ for any two $m$ qubit states $\ket{V}$ and $\ket{U}$ and any $m-1$ qubit orthonormal basis $\calL$ in which $\ket{U^0}$ and $\ket{U^1}$ are both phase states. (Here, $\ket{U^b}$ denotes the reduced state if one were to measure the first qubit of $\ket{U}$ and observe $b$.) We denote the basis vectors of $\calL$ by $\ket{\ell}$, where $\ell \in [2^{m-1}]$.
+We will analyze $\textsc{SubTest}_{\calT}(\ket{V}: \ket{U})$ for any two $m$ qubit states $\ket{V}$ and $\ket{U}$ and any $m-1$ qubit orthonormal basis $\calL$ in which $\ket{U^0}$ and $\ket{U^1}$ are both phase states. 
+(Here, $\ket{U^b}$ denotes the reduced state if one were to measure the first qubit of $\ket{U}$ \textcolor{blue}{in the computational basis} and observe $b$.) We denote the basis vectors of $\calL$ by $\ket{\ell}$, where $\ell \in [2^{m-1}]$.
 Write
 \begin{equation*}
     \ket{U} = \ket{0}\otimes u^0 + \ket{1}\otimes u^1, \qquad 
