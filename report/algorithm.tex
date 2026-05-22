@@ -1,2 +1,230 @@
 \section{Algorithm}
-PlaceHolder
+In this section we denote the target state as $\ket{\psi_{target}}$ 
+and the state to be verified as $\ket{\psi_{lab}}$. 
+Let's directly present the algorihm first:
+
+\begin{algorithm}[H]
+    \vspace{0.3em}
+    \textbf{Input:} Full classical description of $\ket{\psi_{target}}$ 
+    and one copy of an unknown state $\ket{\psi_{lab}}$. \\
+    \textbf{Output:} \textsc{Accept} or \textsc{Reject}.
+    \begin{algorithmic}[1]
+    \State \textbf{Sample} $k\in[n]$ uniformly at random.
+    \State \textbf{Measure} the first $k-1$ qubits of $\ket{\psi_{lab}}$ 
+    in the computational basis, obtaining~$x\in\{0,1\}^{k-1}$. 
+    Let the reduced state of the last $n-k+1$ qubits be $\ket{\psi_{lab}^x}$ and 
+    that of $\ket{\psi_{target}}$ be $\ket{\psi_{target}^x}$ when the same outcome is obtained.
+    \State Let $\ket{\psi_{target}^x} = \alpha\ket{0}\ket{\psi_{target}^{x0}} + \beta\ket{1}\ket{\psi_{target}^{x1}}$, 
+    where $\ket{\psi_{target}^{x0}}$ and $\ket{\psi_{target}^{x1}}$ are states on the last $n-k$ qubits.
+    
+    \noindent Define $\mathcal{T}_x$ as the basis where both $\ket{\psi_{target}^{x0}}$ and $\ket{\psi_{target}^{x1}}$ are both 
+    phase states (*). 
+    \textbf{Measure} the last $n-k$ qubits of $\ket{\psi_{lab}^x}$ 
+    in the basis $\mathcal{T}_x$, obtaining~$\ell$.
+    \State Let $\ket{\psi_{lab}'}$ be the resulting $1$-qubit state; 
+    let $\ket{\psi_{target}'}$ denote $\ket{\psi_{target}}$ conditioned on outcomes $x, \ell$.
+    \noindent \textbf{Measure} $\ket{\psi_{lab}'}$ in a basis containing $\ket{\psi_{target}'}$,
+    and \textbf{Output} \textsc{Accept} iff the outcome is $\ket{\psi_{target}'}$.
+    \end{algorithmic}
+    \caption{\textsc{Certify}$(\ket{\psi_{lab}}, \ket{\psi_{target}})$}
+\end{algorithm}
+
+(*)Note: A state $\ket{\phi}$ on $m$ qubits is called a \emph{phase state} if it can be written as
+\[
+    \ket{\phi} = \frac{1}{\sqrt{2^m}} \sum_{y \in \{0,1\}^m} e^{i\theta_y} \ket{y},
+\]
+for some phases $\theta_y \in \mathbb{R}$, i.e.\ every computational basis amplitude has the same magnitude $1/\sqrt{2^m}$.
+The existence of the basis $\mathcal{T}_x$ need to be proven, and we will do so in the next subsection. 
+
+It suffices to show that the acceptance and rejection probabilities of the above algorithm are as claimed in section 1.
+
+\subsection{Acceptance and rejection probabilities}
+
+We refer to Steps 3--4 of our algorithm as the \emph{subtest} 
+performed on the $(n-k+1)$-qubit states $\ket{\psi_{target}^x}$ and 
+$\ket{\psi_{lab}^x}$ with the basis $\mathcal{T}_x$, and write
+\[
+    \textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)
+\]
+for the corresponding two-outcome experiment.
+The key to analyzing our algorithm is to compare the subtest acceptance 
+probability to the quantity defined below.
+
+\begin{definition}[Fidelity gap]
+    For $(n-k+1)$-qubit states $\ket{\psi_{lab}^x}$ and $\ket{\psi_{target}^x}$, 
+    we define their \emph{fidelity gap} to be
+    \[
+        \Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) \coloneqq \mathop{\mathbb{E}}_{b}\!\left[\,\abs{\braket{\psi_{target}^{xb}}{\psi_{lab}^{xb}}}^2\,\right] - \abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2.
+    \]
+    Here the expectation is over the random outcome $b \in \{0,1\}$ 
+    obtained when measuring the first qubit of $\ket{\psi_{lab}^x}$ in the computational basis.
+\end{definition}
+
+\begin{proposition}\label{rem:nonneg}
+    $\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) \geq 0$ always holds. 
+\end{proposition}
+
+\begin{proof}
+    Decompose $\ket{\psi_{target}^x}$ and $\ket{\psi_{lab}^x}$ according to their first qubit in the computational basis:
+\[
+    \ket{\psi_{target}^x} = \alpha\,\ket{0}\otimes\ket{\psi_{target}^{x0}} + \beta\,\ket{1}\otimes\ket{\psi_{target}^{x1}}, \qquad
+    \ket{\psi_{lab}^x} = \gamma\,\ket{0}\otimes\ket{\psi_{lab}^{x0}} + \delta\,\ket{1}\otimes\ket{\psi_{lab}^{x1}},
+\]
+where $\alpha, \beta \in \mathbb{C}$ are as in 
+the algorithm statement and $\gamma, \delta \in \mathbb{C}$ 
+are the analogous coefficients for $\ket{\psi_{lab}^x}$.
+Taking the inner product of the two decompositions gives
+\[
+    \braket{\psi_{target}^x}{\psi_{lab}^x}
+    = \overline{\alpha}\gamma\,\braket{\psi_{target}^{x0}}{\psi_{lab}^{x0}}
+    + \overline{\beta}\delta\,\braket{\psi_{target}^{x1}}{\psi_{lab}^{x1}}.
+\]
+Applying Cauchy--Schwarz $\abs{c_0 d_0 + c_1 d_1}^2 \leq (\abs{c_0}^2 + \abs{c_1}^2)(\abs{d_0}^2 + \abs{d_1}^2)$ with $c_0 = \overline{\alpha}$, $c_1 = \overline{\beta}$, $d_0 = \gamma\,\braket{\psi_{target}^{x0}}{\psi_{lab}^{x0}}$, and $d_1 = \delta\,\braket{\psi_{target}^{x1}}{\psi_{lab}^{x1}}$ yields
+\[
+    \abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2
+    \leq (\abs{\alpha}^2 + \abs{\beta}^2)\left(\abs{\gamma}^2\,\abs{\braket{\psi_{target}^{x0}}{\psi_{lab}^{x0}}}^2 + \abs{\delta}^2\,\abs{\braket{\psi_{target}^{x1}}{\psi_{lab}^{x1}}}^2\right).
+\]
+The first factor equals $1$, and the second factor is exactly $\mathop{\mathbb{E}}_b\!\left[\abs{\braket{\psi_{target}^{xb}}{\psi_{lab}^{xb}}}^2\right]$ since $\Pr[b=0] = \abs{\gamma}^2$ and $\Pr[b=1] = \abs{\delta}^2$. Hence
+\[
+    \abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2 \leq \mathop{\mathbb{E}}_b\!\left[\abs{\braket{\psi_{target}^{xb}}{\psi_{lab}^{xb}}}^2\right],
+\]
+which is precisely $\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) \geq 0$.
+\end{proof}
+
+\begin{theorem}\label{thm:subtest}
+    With $\mathcal{T}_x$ being a DT basis in which $\ket{\psi_{target}^{x0}}$ and $\ket{\psi_{target}^{x1}}$ are both phase states, the following holds:
+    \begin{align}
+        \Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ rejects}\right]
+            &\geq \Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}), \label{eqn:reject}\\
+        \Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ accepts}\right]
+            &\geq \abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2. \label{eqn:accept}
+    \end{align}
+\end{theorem}
+
+\begin{proof}[Proof of Theorem~\ref{thm:subtest}]
+We reuse the decomposition from the proof of Proposition~\ref{rem:nonneg}:
+\[
+    \ket{\psi_{target}^x} = \alpha\,\ket{0}\otimes\ket{\psi_{target}^{x0}} + \beta\,\ket{1}\otimes\ket{\psi_{target}^{x1}}, \qquad
+    \ket{\psi_{lab}^x} = \gamma\,\ket{0}\otimes\ket{\psi_{lab}^{x0}} + \delta\,\ket{1}\otimes\ket{\psi_{lab}^{x1}}.
+\]
+Since both $\ket{\psi_{target}^{x0}}$ and $\ket{\psi_{target}^{x1}}$ are phase states in $\mathcal{T}_x$, there is a unitary $D$ diagonal in $\mathcal{T}_x$ such that $\ket{\psi_{target}^{x1}} = D\ket{\psi_{target}^{x0}}$. We write the basis vectors of $\mathcal{T}_x$ as $\ket{\ell}$ for $\ell \in [2^{n-k}]$, 
+and let $\zeta_\ell$ be the corresponding diagonal entry of $D$ . Let
+\[
+    A \coloneqq \braket{\psi_{target}^{x0}}{\psi_{lab}^{x0}}, \qquad B \coloneqq \braket{\psi_{target}^{x1}}{\psi_{lab}^{x1}}.
+\]
+
+\medskip
+\noindent \textbf{Claim:}
+\begin{align}
+    \Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ accepts}\right]
+        &= \norm{\overline{\alpha}\gamma\,\ket{\psi_{lab}^{x0}} + \overline{\beta}\delta\,D^\dagger\ket{\psi_{lab}^{x1}}}^2, \label{eqn:acc-formula}\\
+    \Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ rejects}\right]
+        &= \norm{\beta\gamma\,\ket{\psi_{lab}^{x0}} - \alpha\delta\,D^\dagger\ket{\psi_{lab}^{x1}}}^2. \label{eqn:rej-formula}
+\end{align}
+
+\begin{proof}[Proof of claim]
+Let $f^0_\ell \coloneqq \braket{\ell}{\psi_{lab}^{x0}}$, $f^1_\ell \coloneqq \braket{\ell}{\psi_{lab}^{x1}}$, and $c_\ell \coloneqq \braket{\ell}{\psi_{target}^{x0}}$. The phase-state property gives $\abs{c_\ell}^2 = 1/2^{n-k}$ and $\braket{\ell}{\psi_{target}^{x1}} = \zeta_\ell c_\ell$. Measuring the last $n-k$ qubits of $\ket{\psi_{lab}^x}$ in basis $\mathcal{T}_x$ yields outcome $\ell$ with probability $p_\ell = \abs{\gamma f^0_\ell}^2 + \abs{\delta f^1_\ell}^2$. 
+After that, the reduced 1-qubit state is: 
+
+\[
+\ket{\psi_{lab}'} = (\gamma f^0_\ell\ket{0} + \delta f^1_\ell\ket{1})/\sqrt{p_\ell}
+\]
+The analogous calculation on $\ket{\psi_{target}^x}$ 
+shows that up to a global phase $\ket{\psi_{target}'} = \alpha\ket{0} + \beta\zeta_\ell\ket{1}$.
+Hence the conditional acceptance probability given outcome $\ell$ is
+\[
+    \abs{\braket{\psi_{target}'}{\psi_{lab}'}}^2 = \frac{\abs{\overline{\alpha}\gamma f^0_\ell + \overline{\beta}\,\overline{\zeta_\ell}\,\delta f^1_\ell}^2}{p_\ell}
+\]
+Multiplying by $p_\ell$, summing over $\ell$, 
+and using $\overline{\zeta_\ell}\,f^1_\ell = \braket{\ell}{D^\dagger\psi_{lab}^{x1}}$ gives
+\[
+    \Pr[\textsc{SubTest}\text{ accepts}] = \sum_\ell \abs{\overline{\alpha}\gamma f^0_\ell + \overline{\beta}\,\overline{\zeta_\ell}\,\delta f^1_\ell}^2 = \norm{\overline{\alpha}\gamma\,\ket{\psi_{lab}^{x0}} + \overline{\beta}\delta\,D^\dagger\ket{\psi_{lab}^{x1}}}^2,
+\]
+establishing \eqref{eqn:acc-formula}.
+
+For \eqref{eqn:rej-formula}, since $\Pr[\text{accepts}] + \Pr[\text{rejects}] = 1$ it suffices to verify that the two right-hand sides of \eqref{eqn:acc-formula} and \eqref{eqn:rej-formula} sum to $1$. Expanding,
+\[
+    \norm{\overline{\alpha}\gamma\,\ket{\psi_{lab}^{x0}} + \overline{\beta}\delta\,D^\dagger\ket{\psi_{lab}^{x1}}}^2 + \norm{\beta\gamma\,\ket{\psi_{lab}^{x0}} - \alpha\delta\,D^\dagger\ket{\psi_{lab}^{x1}}}^2 = (\abs{\alpha}^2 + \abs{\beta}^2)(\abs{\gamma}^2 + \abs{\delta}^2) = 1,
+\]
+since the cross terms cancel and $\norm{\ket{\psi_{lab}^{x0}}} = \norm{D^\dagger\ket{\psi_{lab}^{x1}}} = 1$.
+\end{proof}
+
+It remains to show $\abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2 \leq \norm{\overline{\alpha}\gamma\,\ket{\psi_{lab}^{x0}} + \overline{\beta}\delta\,D^\dagger\ket{\psi_{lab}^{x1}}}^2$ 
+and $\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) \leq \norm{\beta\gamma\,\ket{\psi_{lab}^{x0}} - \alpha\delta\,D^\dagger\ket{\psi_{lab}^{x1}}}^2$.
+\medskip
+
+Since $\ket{\psi_{target}^{x1}} = D\ket{\psi_{target}^{x0}}$, we have $\bra{\psi_{target}^{x1}} = \bra{\psi_{target}^{x0}}D^\dagger$, and so
+\[
+    \braket{\psi_{target}^x}{\psi_{lab}^x} = \overline{\alpha}\gamma A + \overline{\beta}\delta B = \bra{\psi_{target}^{x0}}\!\left(\overline{\alpha}\gamma\,\ket{\psi_{lab}^{x0}} + \overline{\beta}\delta\,D^\dagger\ket{\psi_{lab}^{x1}}\right).
+\]
+The Cauchy--Schwarz inequality $\abs{\braket{u}{w}}^2 \leq \norm{w}^2$ for unit vector $\ket{u}$ ($\ket{u} = \ket{\psi^{x0}_{target}}$ and $\ket{w} = \overline{\alpha}\gamma\,\ket{\psi_{lab}^{x0}} + \overline{\beta}\delta\,D^\dagger\ket{\psi_{lab}^{x1}}$) then gives
+\[
+    \abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2 \leq \norm{\overline{\alpha}\gamma\,\ket{\psi_{lab}^{x0}} + \overline{\beta}\delta\,D^\dagger\ket{\psi_{lab}^{x1}}}^2 \stackrel{\eqref{eqn:acc-formula}}{=} \Pr[\textsc{SubTest}\text{ accepts}],
+\]
+which is \eqref{eqn:accept}.
+
+\medskip
+On the other hand, we first re-express the fidelity gap as
+\begin{equation}\label{eqn:delta-reexp}
+    \Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) = \abs{\beta\gamma A - \alpha\delta B}^2.
+\end{equation}
+Indeed, since $\Pr[b=0] = \abs{\gamma}^2$ and $\Pr[b=1] = \abs{\delta}^2$,
+\begin{align*}
+    \Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x})
+        &= \abs{\gamma}^2\abs{A}^2 + \abs{\delta}^2\abs{B}^2 - \abs{\overline{\alpha}\gamma A + \overline{\beta}\delta B}^2 \\
+        &= (1-\abs{\alpha}^2)\abs{\gamma}^2\abs{A}^2 + (1-\abs{\beta}^2)\abs{\delta}^2\abs{B}^2 - 2\Re\!\left(\overline{\alpha}\beta\gamma\overline{\delta}\,A\overline{B}\right) \\
+        &= \abs{\beta}^2\abs{\gamma}^2\abs{A}^2 + \abs{\alpha}^2\abs{\delta}^2\abs{B}^2 - 2\Re\!\left(\overline{\alpha}\beta\gamma\overline{\delta}\,A\overline{B}\right) = \abs{\beta\gamma A - \alpha\delta B}^2.
+\end{align*}
+Again using $\bra{\psi_{target}^{x1}} = \bra{\psi_{target}^{x0}}D^\dagger$, we have
+\[
+    \beta\gamma A - \alpha\delta B = \bra{\psi_{target}^{x0}}\!\left(\beta\gamma\,\ket{\psi_{lab}^{x0}} - \alpha\delta\,D^\dagger\ket{\psi_{lab}^{x1}}\right),
+\]
+so by Cauchy--Schwarz and \eqref{eqn:rej-formula},
+\[
+    \Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) = \abs{\beta\gamma A - \alpha\delta B}^2 \leq \norm{\beta\gamma\,\ket{\psi_{lab}^{x0}} - \alpha\delta\,D^\dagger\ket{\psi_{lab}^{x1}}}^2 = \Pr[\textsc{SubTest}\text{ rejects}],
+\]
+which is \eqref{eqn:reject}.
+\end{proof}
+
+With Theorem~\ref{thm:subtest} in hand, the remaining ingredient is the following telescoping identity.
+
+\begin{proposition}\label{prop:expectation}
+    It holds that
+    \[
+        \mathop{\mathbb{E}}_{x}\!\left[\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x})\right] = \frac{1}{n}\cdot\left(1 - \abs{\braket{\psi_{target}}{\psi_{lab}}}^2\right).
+    \]
+    Here, $x$ is sampled by performing Steps 1--2 of : first choose a uniformly random $k\in[n]$, then measure the first $k-1$ qubits of $\ket{\psi_{lab}}$ in the computational basis to obtain $x$.
+\end{proposition}
+
+\begin{proof}
+    For $0\leq k\leq n$, define the quantity
+    \[
+        \Phi^k \coloneqq \mathop{\mathbb{E}}_{\substack{x,\\ |x|=k}}\!\left[\abs{\braket{\psi_{target}^{x}}{\psi_{lab}^{x}}}^2\right],
+    \]
+    where $x$ is sampled by measuring the first $k$ qubits of $\ket{\psi_{lab}}$ in the computational basis. Then,
+    \begin{align*}
+        \mathop{\mathbb{E}}_{x}\!\left[\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x})\right]
+        &= \mathop{\mathbb{E}}_{k\in[n]}\!\left[\mathop{\mathbb{E}}_{\substack{x,\\ |x|=k-1}}\mathop{\mathbb{E}}_{b}\!\left[\abs{\braket{\psi_{target}^{xb}}{\psi_{lab}^{xb}}}^2\right] - \mathop{\mathbb{E}}_{\substack{x,\\ |x|=k-1}}\!\left[\abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2\right]\right]\\
+        &= \mathop{\mathbb{E}}_{k\in[n]}\!\left[\mathop{\mathbb{E}}_{\substack{x,\\ |x|=k}}\!\left[\abs{\braket{\psi_{target}^{x}}{\psi_{lab}^{x}}}^2\right] - \mathop{\mathbb{E}}_{\substack{x,\\ |x|=k-1}}\!\left[\abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2\right]\right]\\
+        &= \mathop{\mathbb{E}}_{k\in[n]}\!\left[\Phi^k - \Phi^{k-1}\right]\\
+        &= \frac{1}{n}\cdot(\Phi^n - \Phi^0) = \frac{1}{n}\cdot\left(1 - \abs{\braket{\psi_{target}}{\psi_{lab}}}^2\right),
+    \end{align*}
+    where the last line follows by a telescoping sum.
+\end{proof}
+
+Combining the two results, Theorem~\ref{thm:subtest} gives
+\begin{align*}
+    \Pr[\text{ rejects}]
+        &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ rejects}\right]\\
+        &\geq \mathop{\mathbb{E}}_{x}\!\left[\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x})\right]
+        = \frac{1}{n}\cdot\left(1 - \abs{\braket{\psi_{target}}{\psi_{lab}}}^2\right),
+\end{align*}
+as claimed. As for the acceptance probability,
+\begin{align*}
+    \Pr[\text{ accepts}]
+        &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ accepts}\right]\\
+        &\geq \mathop{\mathbb{E}}_{x}\!\left[\abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2\right]
+        \geq \abs{\braket{\psi_{target}}{\psi_{lab}}}^2,
+\end{align*}
+where the last inequality follows by Proposition~\ref{rem:nonneg}.
+
