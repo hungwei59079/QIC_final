@@ -1,2 +1,9 @@
-\section{Introduction}
-Placeholder
+\section{Introduction}\label{sec:intro}
+\begin{theorem}\label{thm:main}
+    There exists an algorithm that, given the classical description of an $n$-qubit pure state $\ket{\psi_{target}}$ and a single copy of an $n$-qubit (possibly mixed) state $\rho_{lab}$, performs only single-qubit measurements on $\rho_{lab}$ and outputs:
+    \begin{itemize}
+        \item \textsc{Accept} with probability at least $\mathrm{Fid} \coloneqq \bra{\psi_{target}}\rho_{lab}\ket{\psi_{target}}$;
+        \item \textsc{Reject} with probability at least $\mathrm{Infid}/n \coloneqq (1-\mathrm{Fid})/n$.
+    \end{itemize}
+\end{theorem}
+

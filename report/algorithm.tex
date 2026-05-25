@@ -1,5 +1,5 @@
-\section{Algorithm}
-In this section we denote the target state as $\ket{\psi_{target}}$ 
+\section{Algorithm}\label{sec:algorithm}
+In this section we denote the target state as $\ket{\psi_{target}}$
 and the state to be verified as $\ket{\psi_{lab}}$. 
 Let's directly present the algorihm first:
 
@@ -34,11 +34,10 @@ Let's directly present the algorihm first:
     \ket{\phi} = \frac{1}{\sqrt{2^m}} \sum_{y \in \{0,1\}^m} e^{i\theta_y} \ket{y},
 \]
 for some phases $\theta_y \in \mathbb{R}$, i.e.\ every computational basis amplitude has the same magnitude $1/\sqrt{2^m}$.
-The existence of the basis $\mathcal{T}_x$ need to be proven, and we will do so in the next subsection. 
+The existence of the basis $\mathcal{T}_x$ needs to be proven, and we will do so in Subsection~\ref{sec:basis-existence}. 
+Given its existence, it then suffices to show that the acceptance and rejection probabilities of the above algorithm are as claimed in Section~\ref{sec:intro}; we do this in Subsection~\ref{sec:accept-reject}.
 
-It suffices to show that the acceptance and rejection probabilities of the above algorithm are as claimed in section 1.
-
-\subsection{Acceptance and rejection probabilities}
+\subsection{Acceptance and rejection probabilities}\label{sec:accept-reject}
 
 We refer to Steps 3--4 of our algorithm as the \emph{subtest} 
 performed on the $(n-k+1)$-qubit states $\ket{\psi_{target}^x}$ and 
@@ -47,8 +46,18 @@ $\ket{\psi_{lab}^x}$ with the basis $\mathcal{T}_x$, and write
     \textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)
 \]
 for the corresponding two-outcome experiment.
-The key to analyzing our algorithm is to compare the subtest acceptance 
-probability to the quantity defined below.
+
+Note that the acceptance and rejection probabilities of \textsc{Certify} is
+directly related to the acceptance and rejection probabilities of the subtest as follows:
+\begin{align*}
+    \Pr[\textsc{Certify}\text{ accepts}] &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)\text{ accepts}\right],\\
+    \Pr[\textsc{Certify}\text{ rejects}] &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)\text{ rejects}\right].
+\end{align*}
+
+The key to analyzing our algorithm is find an appropriate lower bound 
+on the subtest acceptance and rejection probabilities. We will 
+show this bound in theorem~\ref{thm:subtest} below, but first we need the following
+definition and lemma:
 
 \begin{definition}[Fidelity gap]
     For $(n-k+1)$-qubit states $\ket{\psi_{lab}^x}$ and $\ket{\psi_{target}^x}$, 
@@ -60,9 +69,9 @@ probability to the quantity defined below.
     obtained when measuring the first qubit of $\ket{\psi_{lab}^x}$ in the computational basis.
 \end{definition}
 
-\begin{proposition}\label{rem:nonneg}
+\begin{lemma}\label{rem:nonneg}
     $\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) \geq 0$ always holds. 
-\end{proposition}
+\end{lemma}
 
 \begin{proof}
     Decompose $\ket{\psi_{target}^x}$ and $\ket{\psi_{lab}^x}$ according to their first qubit in the computational basis:
@@ -92,7 +101,7 @@ which is precisely $\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) \geq 0$.
 \end{proof}
 
 \begin{theorem}\label{thm:subtest}
-    With $\mathcal{T}_x$ being a DT basis in which $\ket{\psi_{target}^{x0}}$ and $\ket{\psi_{target}^{x1}}$ are both phase states, the following holds:
+    With $\mathcal{T}_x$ being a basis in which $\ket{\psi_{target}^{x0}}$ and $\ket{\psi_{target}^{x1}}$ are both phase states, the following holds:
     \begin{align}
         \Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ rejects}\right]
             &\geq \Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}), \label{eqn:reject}\\
@@ -193,7 +202,7 @@ With Theorem~\ref{thm:subtest} in hand, the remaining ingredient is the followin
     \[
         \mathop{\mathbb{E}}_{x}\!\left[\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x})\right] = \frac{1}{n}\cdot\left(1 - \abs{\braket{\psi_{target}}{\psi_{lab}}}^2\right).
     \]
-    Here, $x$ is sampled by performing Steps 1--2 of : first choose a uniformly random $k\in[n]$, then measure the first $k-1$ qubits of $\ket{\psi_{lab}}$ in the computational basis to obtain $x$.
+    Here, $x$ is sampled by performing Steps 1--2: first choose a uniformly random $k\in[n]$, then measure the first $k-1$ qubits of $\ket{\psi_{lab}}$ in the computational basis to obtain $x$.
 \end{proposition}
 
 \begin{proof}
@@ -212,19 +221,104 @@ With Theorem~\ref{thm:subtest} in hand, the remaining ingredient is the followin
     where the last line follows by a telescoping sum.
 \end{proof}
 
-Combining the two results, Theorem~\ref{thm:subtest} gives
-\begin{align*}
-    \Pr[\text{ rejects}]
-        &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ rejects}\right]\\
-        &\geq \mathop{\mathbb{E}}_{x}\!\left[\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x})\right]
-        = \frac{1}{n}\cdot\left(1 - \abs{\braket{\psi_{target}}{\psi_{lab}}}^2\right),
-\end{align*}
-as claimed. As for the acceptance probability,
-\begin{align*}
-    \Pr[\text{ accepts}]
-        &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ accepts}\right]\\
-        &\geq \mathop{\mathbb{E}}_{x}\!\left[\abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2\right]
-        \geq \abs{\braket{\psi_{target}}{\psi_{lab}}}^2,
-\end{align*}
-where the last inequality follows by Proposition~\ref{rem:nonneg}.
+With Theorem~\ref{thm:subtest} and Proposition~\ref{prop:expectation} in hand, we now prove our main result. We restate it for convenience.
+
+\begin{theorem}[Theorem~\ref{thm:main}, restated]
+    \textsc{Certify} 
+\begin{enumerate}
+    \item Accepts with probability at least $\mathrm{Fid} \coloneqq \bra{\psi_{target}}\rho_{lab}\ket{\psi_{target}}$.
+    \item Rejects with probability at least $\mathrm{Infid}/n \coloneqq (1-\mathrm{Fid})/n$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+    Combining the relation between \textsc{Certify} and the subtest stated above with Theorem~\ref{thm:subtest} and Proposition~\ref{prop:expectation},
+    \begin{align*}
+        \Pr[\textsc{Certify}\text{ rejects}]
+            &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)\text{ rejects}\right]\\
+            &\geq \mathop{\mathbb{E}}_{x}\!\left[\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x})\right]
+            = \frac{1}{n}\!\left(1 - \abs{\braket{\psi_{target}}{\psi_{lab}}}^2\right) = \frac{\mathrm{Infid}}{n}.
+    \end{align*}
+    Similarly,
+    \begin{align*}
+        \Pr[\textsc{Certify}\text{ accepts}]
+            &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)\text{ accepts}\right]\\
+            &\geq \mathop{\mathbb{E}}_{x}\!\left[\abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2\right]
+            \geq \abs{\braket{\psi_{target}}{\psi_{lab}}}^2 = \mathrm{Fid},
+    \end{align*}
+    For the last inequality, recall that $x$ is sampled by first choosing $k\in[n]$ uniformly at random and then measuring the first $k-1$ qubits of $\ket{\psi_{lab}}$ in the computational basis, so $\abs{x}$ ranges over $\{0, 1, \ldots, n-1\}$. Define
+    \[
+        \Phi^j \coloneqq \mathop{\mathbb{E}}_{\substack{x,\\\abs{x}=j}}\!\left[\abs{\braket{\psi_{target}^{x}}{\psi_{lab}^{x}}}^2\right]
+    \]
+    as in the proof of Proposition~\ref{prop:expectation}; 
+    with this notation the left-hand side rewrites as $\mathop{\mathbb{E}}_{k\in[n]}\!\left[\Phi^{k-1}\right]$, 
+    while the right-hand side is just $\Phi^0$. 
+    Applying Lemma~\ref{rem:nonneg} at every $x$ of length $j$ 
+    and taking the expectation over such $x$ gives $\Phi^j \leq \Phi^{j+1}$. Hence for every $k\in[n]$,
+    \[
+        \Phi^{k-1} - \Phi^0 = \sum_{j=1}^{k-1}\!\left(\Phi^j - \Phi^{j-1}\right) \geq 0,
+    \]
+    since every term in this telescoping sum is non-negative. 
+    Since the inequality holds for any $k$, the ineqaulity naturally 
+    still holds after taking the expectation over $k$ on both sides. 
+    That is exactly what the last inequality above states:
+    \[
+        \mathop{\mathbb{E}}_{x} \!\left[\abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2\right] \geq \abs{\braket{\psi_{target}}{\psi_{lab}}}^2. 
+    \]
+\end{proof}
+
+\subsection{Existence of $\mathcal{T}_x$}\label{sec:existence}
+It remains to verify that, for any two $(n-k)$-qubit pure states $\ket{\psi_{target}^{x0}}$ and $\ket{\psi_{target}^{x1}}$, a basis $\mathcal{T}_x$ exists in which both are phase states. We establish this through the following lemma and corollary, which work for any two states of the appropriate dimension.
+
+\begin{lemma}\label{lem:perpy}
+    Let $\rho^0$ and $\rho^1$ be single-qubit mixed states. Then there exists a single-qubit basis $\mathcal{B} = \{\ket{b}, \ket{b^\bot}\}$ such that for both $i = 0, 1$, measuring $\rho^i$ in basis $\mathcal{B}$ yields each outcome with probability $\tfrac{1}{2}$.
+\end{lemma}
+
+\begin{proof}
+    Choose $\ket{b}$ so that its Bloch vector is orthogonal in $\mathbb{R}^3$ to the Bloch vectors of both $\rho^0$ and $\rho^1$, and let $\ket{b^\bot}$ be its Bloch antipode.
+
+    To verify that the measurement of $\rho^i$ in $\{\ket{b}, \ket{b^\bot}\}$ yields each outcome with probability $\tfrac{1}{2}$, write $\rho^i = \tfrac{1}{2}\!\left(\mathbb{I} + \vec{a}_i\cdot\vec{\sigma}\right)$ and $\ketbra{b}{b} = \tfrac{1}{2}\!\left(\mathbb{I} + \vec{b}\cdot\vec{\sigma}\right)$, where $\vec{a}_i, \vec{b} \in \mathbb{R}^3$ are Bloch vectors and $\vec{\sigma} = (\sigma_x, \sigma_y, \sigma_z)$. Then
+    \[
+        \Pr[b] = \bra{b}\rho^i\ket{b} = \tr\!\left[\ketbra{b}{b}\,\rho^i\right] = \tfrac{1}{4}\tr\!\left[\!\left(\mathbb{I} + \vec{b}\cdot\vec{\sigma}\right)\!\left(\mathbb{I} + \vec{a}_i\cdot\vec{\sigma}\right)\right].
+    \]
+    Using the Pauli identity $\sigma_j\sigma_k = \delta_{jk}\mathbb{I} + i\epsilon_{jkl}\sigma_l$ (with $\delta$ the Kronecker delta and $\epsilon$ the Levi--Civita symbol) and the tracelessness of each Pauli matrix,
+    \[
+        \Pr[b] = \tfrac{1}{4}\tr\!\left[\mathbb{I} + \vec{a}_i\cdot\vec{\sigma} + \vec{b}\cdot\vec{\sigma} + (\vec{b}\cdot\vec{\sigma})(\vec{a}_i\cdot\vec{\sigma})\right] = \tfrac{1}{2} + \tfrac{1}{2}\,\vec{a}_i\cdot\vec{b} = \tfrac{1}{2},
+    \]
+    where the last equality uses our orthogonality choice $\vec{a}_i\cdot\vec{b} = 0$. An analogous calculation with $\vec{b}$ replaced by $-\vec{b}$ yields $\Pr[b^\bot] = \tfrac{1}{2}$.
+\end{proof}
+
+\begin{corollary}\label{cor:perpy}
+    Let $\ket{\phi^0}$ and $\ket{\phi^1}$ be $m$-qubit pure states. Then there exists a basis $\mathcal{T}$ of $(\mathbb{C}^2)^{\otimes m}$, in which both $\ket{\phi^0}$ and $\ket{\phi^1}$ are phase states.
+\end{corollary}
+
+\begin{proof}
+    We construct $\mathcal{T}$ in $m$ measurement rounds, maintaining the inductive invariant that after $k$ rounds every specific length-$k$ outcome sequence occurs with probability exactly $2^{-k}$ for both $i = 0, 1$.
+
+    \medskip
+    \noindent\textit{Base case ($k=1$).} Trace out qubits $2, \ldots, m$ from $\ket{\phi^0}$ and $\ket{\phi^1}$ to obtain single-qubit mixed states $\rho^0$ and $\rho^1$. Apply Lemma~\ref{lem:perpy} to get a single-qubit basis $\mathcal{B}_1$ in which measuring the first qubit of $\ket{\phi^i}$ yields each outcome with probability $\tfrac{1}{2}$ for both $i$.
+
+    \medskip
+    \noindent\textit{Inductive step.} Suppose the construction is complete through round $k$:
+    Any outcome of measuring the first $k$ qubits of $\ket{\phi^i}$ in the basis 
+    chosen in the first $k$ rounds occurs with probability $2^{-k}$.
+    
+    Fix any length-$k$ outcome sequence $w$. 
+    Let $\ket{(\phi^i)^w}$ denote the $(m-k)$-qubit residue of $\ket{\phi^i}$ on qubits 
+    $k+1, \ldots, m$, conditioned on having observed $w$ in the first $k$ rounds. 
+    To extend to round $k+1$ along the branch $w$, trace out qubits $k+2, \ldots, m$ 
+    from $\ket{(\phi^0)^w}$ and $\ket{(\phi^1)^w}$ to obtain single-qubit mixed states, 
+    and apply Lemma~\ref{lem:perpy} to obtain a single-qubit basis $\mathcal{B}_w$ 
+    in which measuring qubit $k+1$ yields each outcome with probability $\tfrac{1}{2}$ 
+    for both $i$. 
+    
+    Incorporate this one qubit basis with the basis selected in previous $k$ steps. 
+    It's clear that any length-$(k+1)$ outcome sequence then occurs 
+    with probability $2^{-k}\cdot\tfrac{1}{2} = 2^{-(k+1)}$ for both $i$.
+
+    Repeat the inductive step until $k=m$ to get the desired basis $\mathcal{T}$.
+\end{proof}
+
+Applying Corollary~\ref{cor:perpy} with $m = n-k$, $\ket{\phi^0} = \ket{\psi_{target}^{x0}}$, and $\ket{\phi^1} = \ket{\psi_{target}^{x1}}$ produces the basis $\mathcal{T}_x$ used in Step 3 of \textsc{Certify}.
+
 
