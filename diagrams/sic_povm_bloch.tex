@@ -1,0 +1,55 @@
+\begin{tikzpicture}[>=Stealth]
+
+% SIC-POVM positions (projected tetrahedron on Bloch sphere)
+\coordinate (chi0) at (0, 1.5);
+\coordinate (chi1) at (1.48, -0.21);
+\coordinate (chi2) at (-1.49, -0.13);
+\coordinate (chi3) at (-0.23, -1.48);
+
+% Measurement axis (arbitrary direction)
+\coordinate (phi)  at (1.15, 0.96);
+\coordinate (phip) at (-1.15, -0.96);
+
+% Sphere and equator
+\draw (0,0) circle (1.5);
+\draw[dashed, gray] (0,0) ellipse (1.5 and 0.4);
+
+% Tetrahedron edges
+\draw[thin, dotted]
+  (chi0) -- (chi1) -- (chi2) -- cycle
+  (chi0) -- (chi3)
+  (chi1) -- (chi3)
+  (chi2) -- (chi3);
+
+% SIC-POVM vectors
+\foreach \v/\lbl/\pos in {
+  chi0/{|\chi_0\rangle}/above,
+  chi1/{|\chi_1\rangle}/right,
+  chi2/{|\chi_2\rangle}/left,
+  chi3/{|\chi_3\rangle}/below} {
+  \draw[->, thick] (0,0) -- (\v);
+  \fill (\v) circle (1.5pt);
+  \node[\pos, font=\footnotesize] at (\v)
+    {$\lbl$};
+}
+
+% Measurement axis
+\draw[->, dashed] (0,0) -- (phi);
+\draw[->, dashed] (0,0) -- (phip);
+\node[above right, font=\footnotesize]
+  at (phi)  {$|\phi\rangle$};
+\node[below left, font=\footnotesize]
+  at (phip) {$|\phi^\perp\rangle$};
+
+% Annotation
+\node[font=\footnotesize, text width=5cm,
+  align=left, anchor=north west] at (2.2, 1.5)
+  {SIC-POVM vectors form a regular\\
+   tetrahedron on the Bloch sphere.\\[4pt]
+   For any basis
+   $\{|\phi\rangle,|\phi^\perp\rangle\}$,\\
+   $\exists\, b\!\in\!\{0,1,2,3\}$ such that
+   the pair $\{\chi_0,\chi_b\}$\\
+   is poorly resolved ($\leq 0.9/$).};
+
+\end{tikzpicture}

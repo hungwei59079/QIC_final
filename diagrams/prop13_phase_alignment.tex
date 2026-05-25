@@ -1,0 +1,82 @@
+\begin{tikzpicture}[>=Stealth]
+
+% --- Left: per-leaf target qubits with different phases ---
+\node[font=\small\bfseries] at (1.2, 3.2)
+  {Before $D^\dagger$: phases vary per leaf};
+
+% Three small circles representing Bloch equator slices
+% Each shows |U_ell> at a different azimuthal angle
+% but same polar angle (same a^0, a^1)
+
+% Leaf ell_1
+\draw (0, 1.5) circle (0.8);
+\draw[->, thick] (0, 1.5) -- ({0.8*cos(20)}, {1.5+0.8*sin(20)});
+\node[font=\scriptsize] at (0, 0.4) {leaf $\ell_1$};
+\node[font=\scriptsize, above right] at
+  ({0.8*cos(20)}, {1.5+0.8*sin(20)})
+  {$|U_{\ell_1}\rangle$};
+
+% Leaf ell_2
+\draw (2.4, 1.5) circle (0.8);
+\draw[->, thick] (2.4, 1.5)
+  -- ({2.4+0.8*cos(80)}, {1.5+0.8*sin(80)});
+\node[font=\scriptsize] at (2.4, 0.4) {leaf $\ell_2$};
+\node[font=\scriptsize, above right] at
+  ({2.4+0.8*cos(80)}, {1.5+0.8*sin(80)})
+  {$|U_{\ell_2}\rangle$};
+
+% Leaf ell_3
+\draw (4.8, 1.5) circle (0.8);
+\draw[->, thick] (4.8, 1.5)
+  -- ({4.8+0.8*cos(155)}, {1.5+0.8*sin(155)});
+\node[font=\scriptsize] at (4.8, 0.4) {leaf $\ell_3$};
+\node[font=\scriptsize, above left] at
+  ({4.8+0.8*cos(155)}, {1.5+0.8*sin(155)})
+  {$|U_{\ell_3}\rangle$};
+
+% Note: same radius = same (a^0, a^1)
+\node[font=\scriptsize, gray] at (2.4, -0.1)
+  {same $|a^0|,|a^1|$ everywhere;
+   only phase $\zeta_\ell$ differs};
+
+% --- Arrow for D-dagger ---
+\draw[->, thick] (6.2, 1.5) -- (7.6, 1.5)
+  node[midway, above, font=\footnotesize] {$D^\dagger$};
+
+% --- Right: after alignment, all point the same way ---
+\node[font=\small\bfseries] at (10.0, 3.2)
+  {After $D^\dagger$: common frame};
+
+% Three small circles, all arrows pointing same direction
+\draw (8.4, 1.5) circle (0.8);
+\draw[->, thick] (8.4, 1.5)
+  -- ({8.4+0.8*cos(50)}, {1.5+0.8*sin(50)});
+\node[font=\scriptsize] at (8.4, 0.4) {leaf $\ell_1$};
+
+\draw (10.0, 1.5) circle (0.8);
+\draw[->, thick] (10.0, 1.5)
+  -- ({10.0+0.8*cos(50)}, {1.5+0.8*sin(50)});
+\node[font=\scriptsize] at (10.0, 0.4) {leaf $\ell_2$};
+
+\draw (11.6, 1.5) circle (0.8);
+\draw[->, thick] (11.6, 1.5)
+  -- ({11.6+0.8*cos(50)}, {1.5+0.8*sin(50)});
+\node[font=\scriptsize] at (11.6, 0.4) {leaf $\ell_3$};
+
+\node[font=\scriptsize, gray] at (10.0, -0.1)
+  {phases absorbed into
+   $\widetilde{v}^1 = D^\dagger v^1$};
+
+% --- Bottom annotation ---
+\node[font=\footnotesize, text width=10cm,
+  align=left, anchor=north] at (6.0, -0.8)
+  {Per-leaf contributions
+   $|a^0 v^0_\ell + a^1\widetilde{v}^1_\ell|^2$
+   are now orthogonal components.\\
+   Pythagorean theorem:
+   $\sum_\ell|\cdots|^2
+   = \|a^0 v^0
+     + a^1\widetilde{v}^1\|^2
+   = \Pr[\textsc{Accept}]$.};
+
+\end{tikzpicture}

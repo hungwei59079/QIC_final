@@ -1,0 +1,73 @@
+\begin{tikzpicture}[>=Stealth]
+
+% Axes
+\draw[->] (-0.3, 0) -- (10.5, 0)
+  node[right, font=\footnotesize] {$k$};
+\draw[->] (0, -0.3) -- (0, 4.5)
+  node[above, font=\footnotesize] {$\Phi^k$};
+
+% Phi values (monotonically increasing from Phi^0 to Phi^n)
+% Phi^k = E[ |<tar^x | lab^x>|^2 ] after measuring k qubits
+% Phi^0 = |<tar|lab>|^2,  Phi^n = 1
+
+\coordinate (p0) at (0.0, 0.8);
+\coordinate (p1) at (2.0, 1.4);
+\coordinate (p2) at (4.0, 2.1);
+\coordinate (p3) at (6.0, 2.5);
+\coordinate (p4) at (8.0, 3.2);
+\coordinate (p5) at (10.0, 4.0);
+
+% Horizontal dashed lines at Phi^0 and Phi^n
+\draw[densely dashed, gray] (-0.2, 0.8) -- (10.2, 0.8);
+\draw[densely dashed, gray] (-0.2, 4.0) -- (10.2, 4.0);
+
+% Labels for Phi^0 and Phi^n
+\node[font=\footnotesize, left] at (-0.2, 0.8)
+  {$\Phi^0 = |\langle\psi|\phi\rangle|^2$};
+\node[font=\footnotesize, left] at (-0.2, 4.0)
+  {$\Phi^n = 1$};
+
+% Dots and step lines
+\foreach \i/\coord in {0/p0,1/p1,2/p2,3/p3,4/p4,5/p5} {
+  \fill (\coord) circle (2pt);
+}
+
+% Step gaps with vertical bars
+\draw[thick] (p0) -- (p1);
+\draw[thick] (p1) -- (p2);
+\draw[thick] (p2) -- (p3);
+\draw[thick] (p3) -- (p4);
+\draw[thick] (p4) -- (p5);
+
+% Gap braces on a few steps
+%\node[font=\scriptsize] at (4.4, 1.75)
+%  {$\left.\rule{0pt}{0.7cm}\right\}
+%   \;\Phi^2\!-\!\Phi^1$};
+%
+%\node[font=\scriptsize] at (8.4, 2.85)
+%  {$\left.\rule{0pt}{0.7cm}\right\}
+%   \;\Phi^4\!-\!\Phi^3$};
+
+% Tick labels
+\node[font=\scriptsize, below] at (0.0, -0.1) {$0$};
+\node[font=\scriptsize, below] at (2.0, -0.1) {$1$};
+\node[font=\scriptsize, below] at (4.0, -0.1) {$2$};
+\node[font=\scriptsize, below] at (8.0, -0.1)
+  {$n\!-\!1$};
+\node[font=\scriptsize, below] at (10.0, -0.1) {$n$};
+\node[font=\scriptsize] at (6.0, -0.3) {$\cdots$};
+
+% Big brace on right for total
+%\node[font=\footnotesize, anchor=west]
+%  at (10.5, 2.4)
+%  {$\left.\rule{0pt}{3.2cm}\right\}
+%   \;\Phi^n - \Phi^0
+%   = 1 - |\langle\psi|\phi\rangle|^2$};
+
+% Annotation below
+\node[font=\footnotesize, text width=8cm,
+  align=left, anchor=north west] at (0.5, -0.9)
+  {Each step $\Phi^k - \Phi^{k-1}
+   = \mathop{\mathbf{E}}_x[\Delta]$};
+
+\end{tikzpicture}

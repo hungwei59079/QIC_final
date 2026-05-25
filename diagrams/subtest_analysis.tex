@@ -1,0 +1,45 @@
+\begin{tikzpicture}[>=Stealth]
+
+\coordinate (O) at (0,0);
+\fill (O) circle (1.5pt);
+
+% |U^0> reference direction
+\draw[->, gray] (-0.3, 0) -- (4.5, 0)
+  node[right, font=\footnotesize] {$|U^0\rangle$};
+
+% --- Acceptance vector (above axis) ---
+\coordinate (Wa) at (3.2, 1.2);
+\coordinate (Pa) at (3.2, 0);
+
+\draw[->, thick] (O) -- (Wa)
+  node[above right, font=\footnotesize]
+  {$a^0 v^0 + a^1 \widetilde{v}^1$};
+\draw[densely dashed] (Wa) -- (Pa);
+\draw[thin] (3.0, 0) -- (3.0, 0.2) -- (3.2, 0.2);
+
+% --- Rejection vector (below axis) ---
+\coordinate (Wr) at (0.9, -1.3);
+\coordinate (Pr) at (0.9, 0);
+
+\draw[->, thick] (O) -- (Wr)
+  node[below right, font=\footnotesize]
+  {$a^1 v^0 - a^0 \widetilde{v}^1$};
+\draw[densely dashed] (Wr) -- (Pr);
+\draw[thin] (0.7, 0) -- (0.7, -0.2) -- (0.9, -0.2);
+
+% --- Annotation ---
+\node[font=\footnotesize, text width=5.5cm,
+  align=left, anchor=north west] at (5.2, 1.5)
+  {$\|a^0 v^0 + a^1 \widetilde{v}^1\|^2
+    = \Pr[\textsc{Accept}]$\\
+   $\|a^1 v^0 - a^0 \widetilde{v}^1\|^2
+    = \Pr[\textsc{Reject}]$\\[2pt]
+   These sum to $1$.\\[6pt]
+   Projecting onto $|U^0\rangle$
+   (Cauchy--Schwarz):\\[2pt]
+   $|\langle U|V\rangle|^2
+    \leq \Pr[\textsc{Accept}]$\\[2pt]
+   $\Delta(|V\rangle\!:\!|U\rangle)
+    \leq \Pr[\textsc{Reject}]$};
+
+\end{tikzpicture}

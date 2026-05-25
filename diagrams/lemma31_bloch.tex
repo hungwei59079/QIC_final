@@ -1,0 +1,52 @@
+\begin{tikzpicture}[>=Stealth]
+
+% Sphere outline
+\draw[gray!70] (0,0) circle (1.5);
+
+% Shaded equatorial plane = span(a_0, a_1)
+\fill[blue!6, opacity=0.6] (0,0) ellipse (1.5 and 0.45);
+\draw[dashed, gray!50] (0,0) ellipse (1.5 and 0.45);
+
+% Bloch vector a_0 (in the equatorial plane, pointing upper-left)
+\draw[->, thick, blue!70!black] (0,0) -- (-1.04, 0.18);
+\fill[blue!70!black] (-1.04, 0.18) circle (1.5pt);
+\node[above left, font=\footnotesize, blue!70!black]
+  at (-1.04, 0.18) {$\vec{a}_0\;(\rho^0)$};
+
+% Bloch vector a_1 (in the equatorial plane, pointing right)
+\draw[->, thick, red!70!black] (0,0) -- (0.98, 0.05);
+\fill[red!70!black] (0.98, 0.05) circle (1.5pt);
+\node[below right, font=\footnotesize, red!70!black]
+  at (0.98, 0.05) {$\vec{a}_1\;(\rho^1)$};
+
+% Measurement axis |b> (perpendicular to the plane = vertical)
+\draw[->, very thick, green!50!black] (0,0) -- (0, 1.5);
+\fill[green!50!black] (0, 1.5) circle (1.5pt);
+\node[above left, font=\footnotesize, green!50!black]
+  at (0, 1.5) {$\ket{b}$};
+
+% Opposite pole |b^perp>
+\draw[->, dashed, green!50!black] (0,0) -- (0, -1.5);
+\fill[green!50!black] (0, -1.5) circle (1.5pt);
+\node[below left, font=\footnotesize, green!50!black]
+  at (0, -1.5) {$\ket{b^\perp}$};
+
+% Right-angle mark showing perpendicularity
+\draw[thin] (0.15, 0) -- (0.15, 0.15) -- (0, 0.15);
+
+% Plane label
+\node[font=\scriptsize, gray!60, anchor=north west]
+  at (1.55, -0.5) {$\mathrm{span}(\vec{a}_0,\vec{a}_1)$};
+
+% Annotation
+%\node[font=\footnotesize, text width=5.2cm,
+%  align=left, anchor=north west] at (2.3, 1.5)
+%  {$\vec{b} \perp \mathrm{span}(\vec{a}_0,\vec{a}_1)$\\[3pt]
+%   $\Rightarrow\;\vec{b}\cdot\vec{a}_i = 0$
+%   for $i \in \{0,1\}$\\[3pt]
+%   $\Rightarrow\;P(\ket{b}\mid\rho^i)
+%   = \dfrac{1+\vec{b}\cdot\vec{a}_i}{2} = \dfrac{1}{2}$\\[6pt]
+%   Measuring in $\{\ket{b},\ket{b^\perp}\}$\\
+%   gives 50/50 outcomes for both states.};
+
+\end{tikzpicture}
