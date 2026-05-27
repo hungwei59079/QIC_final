@@ -1,68 +1,53 @@
-\begin{tikzpicture}[
-  node distance=1.6cm and 2.4cm,
-  >={Stealth[length=4pt]},
-  box/.style={
-    draw, rounded corners=2pt, align=center,
-    text width=5cm, inner sep=6pt,
-    font=\footnotesize
-  },
-  arr/.style={->}
-]
+\begin{tikzpicture}[>={Stealth[length=4pt]},
+  box/.style={draw, rounded corners=2pt, align=center,
+    text width=3cm, inner sep=4pt, font=\footnotesize}]
 
-% Row 1: independent starting points
-\node[box] (claim)
-  {Claim: SIC-POVM geometry\\
-   For any basis, $\exists\, b$ with
-   inner product $\leq 0.99$};
+% Row 1
+\node[box] (claim) at (0, 0)
+  {SIC-POVM claim\\[2pt]
+   $\exists\,b$: overlap $\leq 0.99$};
 
-\node[box, right=of claim] (norm)
-  {Lemma: Normalization\\
+\node[box] (norm) at (5.5, 0)
+  {Normalization\\[2pt]
    $\|v_C\|^2 = 1 \pm 2^{-0.1n}$};
 
 % Row 2
-\node[box, below=of claim] (conc)
-  {Lemma: Concentration\\
-   Cross-term sum $\leq 5$
-   for all $\ell$-adaptive bases};
+\node[box] (conc) at (0, -3)
+  {Concentration\\[2pt]
+   cross-term sum $\leq 5$};
 
-\node[box, below=of norm] (tvlem)
-  {Lemma: TV $\leq$ cross terms\\
-   $d_{\mathrm{TV}} \leq \tfrac{1}{N}
-   \sum_x|\cdots| + 2^{-0.0001n}$};
+\node[box] (tvlem) at (5.5, -3)
+  {TV $\leq$ cross terms\\[2pt]
+   $d_{\mathrm{TV}} \leq
+    \tfrac{1}{N}\!\sum|\cdots|$};
 
 % Row 3
-\node[box, below=1.6cm of
-  {$(conc.south)!0.5!(tvlem.south)$}] (percopy)
-  {Per-copy indistinguishability\\
-   $d_{\mathrm{TV}}(\mathcal{D}_1,
-   \mathcal{D}_2) \leq 2^{-\Omega(n)}$};
+\node[box] (percopy) at (2, -6)
+  {Per-copy\\[2pt]
+   $d_{\mathrm{TV}} \leq 2^{-\Omega(n)}$};
 
-\node[box, right=of percopy] (fid)
-  {Fidelity is small\\
-   $\langle\psi_C|\rho_C|\psi_C\rangle
-   \leq 2^{-\Omega(n)}$};
+\node[box] (fid) at (8, -6)
+  {Fidelity\\[2pt]
+   $\leq 2^{-\Omega(n)}$};
 
 % Row 4
-\node[box, below=of percopy] (coupling)
-  {Coupling over $2^{o(n)}$ copies\\
-   $d_{\mathrm{TV}}(\mathfrak{D}_1,
-   \mathfrak{D}_2) \leq 2^{-\omega(n)}$};
+\node[box] (coupling) at (2, -9)
+  {Coupling: $2^{o(n)}$ copies\\[2pt]
+   $d_{\mathrm{TV}} \leq 2^{-\omega(n)}$};
 
-% Row 5: conclusion
-\node[box, below=1.6cm of
-  {$(coupling.south)!0.5!(fid.south)$}]
-  (theorem)
-  {\textbf{Theorem:} $2^{\Omega(n)}$ copies
-   needed for $\ell$-adaptive certification};
+% Row 5
+\node[box] (theorem) at (4.5, -12)
+  {\textbf{Theorem:} $2^{\Omega(n)}$\\
+   copies needed};
 
 % Arrows
-\draw[arr] (claim) -- (conc);
-\draw[arr] (norm) -- (tvlem);
-\draw[arr] (norm) -- (fid);
-\draw[arr] (conc) -- (percopy);
-\draw[arr] (tvlem) -- (percopy);
-\draw[arr] (percopy) -- (coupling);
-\draw[arr] (coupling) -- (theorem);
-\draw[arr] (fid) -- (theorem);
+\draw[->] (claim) -- (conc);
+\draw[->] (norm) -- (tvlem);
+\draw[->] (norm) to[bend left=25] (fid);
+\draw[->] (conc) -- (percopy);
+\draw[->] (tvlem) -- (percopy);
+\draw[->] (percopy) -- (coupling);
+\draw[->] (coupling) -- (theorem);
+\draw[->] (fid) -- (theorem);
 
 \end{tikzpicture}
