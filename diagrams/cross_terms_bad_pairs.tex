@@ -1,0 +1,99 @@
+\begin{tikzpicture}[
+  >={Stealth[length=4pt]},
+  vtx/.style={
+    circle, draw, inner sep=0pt,
+    minimum size=14pt, font=\footnotesize},
+  elbl/.style={
+    font=\scriptsize, fill=white,
+    inner sep=1pt},
+  cell/.style={
+    draw, minimum size=10pt,
+    inner sep=0pt, font=\tiny},
+  covered/.style={cell, fill=black!20},
+  open/.style={cell}
+]
+
+% === Part (a): graph of five pairs ===
+\node[font=\small\bfseries] at (-1.2,3.8)
+  {(a) Five pairs form a graph};
+
+% Degree-3 vertex
+\node[vtx] (v) at (0,2.6) {$v$};
+\node[vtx] (w1) at (-1.8,1.0) {$w_1$};
+\node[vtx] (w2) at (0,0.8) {$w_2$};
+\node[vtx] (w3) at (1.8,1.0) {$w_3$};
+
+% Two extra vertices for remaining pairs
+\node[vtx] (u1) at (-2.2,3.0) {$u_1$};
+\node[vtx] (u2) at (-1.0,3.4) {$u_2$};
+
+\draw[thick] (v) -- (w1);
+\draw[thick] (v) -- (w2);
+\draw[thick] (v) -- (w3);
+\draw[thick] (u1) -- (u2);
+\draw[thick] (w1) -- (w2);
+
+% === Right side: coordinate-i labeling ===
+\node[font=\small\bfseries, anchor=west]
+  at (4.0,3.8)
+  {At coordinate $i$:};
+
+\node[vtx] (v2) at (5.5,2.6) {\textbf{0}};
+\node[vtx] (a2) at (4.0,1.0) {\textbf{1}};
+\node[vtx] (b2) at (5.5,0.8) {\textbf{2}};
+\node[vtx] (c2) at (7.0,1.0) {\textbf{3}};
+
+\draw[thick] (v2)
+  -- node[elbl,left] {$\{0,1\}$} (a2);
+\draw[thick] (v2)
+  -- node[elbl,right=-1pt] {$\{0,2\}$} (b2);
+\draw[thick] (v2)
+  -- node[elbl,right] {$\{0,3\}$} (c2);
+
+\node[font=\scriptsize, text width=3.8cm,
+  anchor=north west] at (3.8,-0.1)
+  {All three pair types covered.\\
+   For any $b(\phi^i)\in\{1,2,3\}$,\\
+   one pair is ``bad'' at $i$.};
+
+% === Part (b): coordinate positions ===
+\node[font=\small\bfseries] at (-1.2,-1.8)
+  {(b) Positions $i = 1,\ldots,n$};
+
+% Draw cells: first 9
+\foreach \i/\s in {
+  0/covered,1/open,2/covered,
+  3/open,4/covered,5/covered,
+  6/open,7/covered,8/open} {
+  \node[\s] (c\i) at ({\i*0.45-2.0},-2.6) {};
+}
+% Ellipsis
+\node[font=\footnotesize] at (2.3,-2.6) {$\cdots$};
+% Last 8
+\foreach \i/\s in {
+  0/open,1/covered,2/open,
+  3/covered,4/covered,5/open,
+  6/covered,7/open} {
+  \node[\s] (d\i)
+    at ({\i*0.45+3.0},-2.6) {};
+}
+
+% Key
+\node[covered, label={[font=\tiny]right:covered}]
+  at (7.0,-2.3) {};
+\node[open, label={[font=\tiny]right:not covered}]
+  at (7.0,-2.8) {};
+
+% Brace underneath
+\draw[decorate,
+  decoration={brace, mirror, amplitude=4pt}]
+  (-2.2,-3.0) -- (6.4,-3.0)
+  node[midway, below=5pt,
+  font=\scriptsize, text width=6cm,
+  align=center]
+  {By Chernoff, $\geq 4^{-6}n/4$
+   positions covered;\\
+   by pigeonhole, one pair is bad
+   at $\geq 10^{-6}n$ positions};
+
+\end{tikzpicture}

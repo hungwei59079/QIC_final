@@ -1,0 +1,58 @@
+\begin{tikzpicture}[>=Stealth]
+
+\coordinate (O) at (0,0);
+\fill (O) circle (1.5pt);
+
+% --- Original axes (gray, dashed) ---
+\draw[->, gray, dashed] (-0.5, 0) -- (3.8, 0)
+  node[right, font=\footnotesize] {$v^0$};
+\draw[->, gray, dashed] (0, -2.5) -- (0, 3.2)
+  node[above, font=\footnotesize]
+  {$\widetilde{v}^1$};
+
+% --- Rotated axes (black, solid) ---
+% theta = 25 deg;  a^0 = cos 25, a^1 = sin 25
+% w_acc direction: (cos 25, sin 25)
+% w_rej direction: (sin 25, -cos 25)
+\draw[->, thick] (O) -- ({3.3*cos(25)},{3.3*sin(25)})
+  node[above right, font=\footnotesize]
+  {$a^0 v^0 + a^1\widetilde{v}^1$};
+\draw[->, thick] (O) -- ({2.6*sin(25)},{-2.6*cos(25)})
+  node[right, font=\footnotesize]
+  {$a^1 v^0 - a^0\widetilde{v}^1$};
+
+% Angle arc from v^0 to w_acc
+\draw[thin] (1.0, 0) arc (0:25:1.0);
+\node[font=\scriptsize] at ({1.25*cos(12.5)},{1.25*sin(12.5)})
+  {$\theta$};
+
+% Right-angle mark between rotated axes
+\draw[thin]
+  ({0.45*cos(25)},{0.45*sin(25)})
+  -- ({0.45*cos(25)+0.45*sin(25)},
+      {0.45*sin(25)-0.45*cos(25)})
+  -- ({0.45*sin(25)},{-0.45*cos(25)});
+
+% --- Annotation ---
+\node[font=\footnotesize, text width=5.6cm,
+  align=left, anchor=north west] at (4.5, 3.2)
+  {$a^0 = \cos\theta = \|u^0\|$,\quad
+   $a^1 = \sin\theta = \|u^1\|$\\[6pt]
+   The matrix
+   $\left(\begin{smallmatrix}
+     a^0 & a^1 \\ a^1 & -a^0
+   \end{smallmatrix}\right)$
+   is orthogonal, so:\\[4pt]
+   $\|a^0 v^0 + a^1\widetilde{v}^1\|^2
+   + \|a^1 v^0 - a^0\widetilde{v}^1\|^2$\\
+   $\quad= \|v^0\|^2 + \|\widetilde{v}^1\|^2
+   = 1$\\[6pt]
+   $\Pr[\textsc{Accept}]
+   = \|a^0 v^0
+     + a^1\widetilde{v}^1\|^2$\\[2pt]
+   $\Pr[\textsc{Reject}]
+   = \|a^1 v^0
+     - a^0\widetilde{v}^1\|^2$\\[2pt]
+   Sum $= 1$\quad (complementary events)};
+
+\end{tikzpicture}
