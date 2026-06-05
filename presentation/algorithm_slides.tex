@@ -1,0 +1,316 @@
+\begin{frame}{The Certification Algorithm}
+    \begin{itemize}
+        \item \textbf{Target State:} $\ket{\psi_{\text{target}}}$ (known, full classical description available).
+        \item \textbf{Lab State:} $\ket{\psi_{\text{lab}}}$ (unknown, provided as a single copy).
+        \item \textbf{Goal:} Design a certification protocol \textsc{Certify}$(\ket{\psi_{\text{lab}}}, \ket{\psi_{\text{target}}})$ that outputs \textsc{Accept} or \textsc{Reject}.
+    \end{itemize}
+    \begin{algorithm}[H]
+        \small
+        \caption{\textsc{Certify}$(\ket{\psi_{\text{lab}}}, \ket{\psi_{\text{target}}})$}
+        \begin{algorithmic}[1]
+        \STATE \textbf{Sample} $k \in [n]$ uniformly at random.
+        \STATE \textbf{Measure} the first $k-1$ qubits of $\ket{\psi_{\text{lab}}}$ in the computational basis $\rightarrow x \in \{0,1\}^{k-1}$. \\
+        Post-measurement reduced states: $\ket{\psi_{\text{lab}}^x}$ and $\ket{\psi_{\text{target}}^x}$.
+        \STATE Expand $\ket{\psi_{\text{target}}^x} = \alpha\ket{0}\ket{\psi_{\text{target}}^{x0}} + \beta\ket{1}\ket{\psi_{\text{target}}^{x1}}$. \\
+        Find a basis $\mathcal{T}_x$ where both $\ket{\psi_{\text{target}}^{x0}}$ and $\ket{\psi_{\text{target}}^{x1}}$ are \textcolor{red}{phase states}. \\
+        \textbf{Measure} the last $n-k$ qubits of $\ket{\psi_{\text{lab}}^x}$ in $\mathcal{T}_x \rightarrow \ell$.
+        \STATE Let $\ket{\psi_{\text{lab}}'}$ be the resulting $1$-qubit state, and $\ket{\psi_{\text{target}}'}$ be the conditioned target state. \\
+        \textbf{Measure} $\ket{\psi_{\text{lab}}'}$ in a basis containing $\ket{\psi_{\text{target}}'}$. \\
+        \textbf{Output} \textsc{Accept} iff the outcome is $\ket{\psi_{\text{target}}'}$.
+        \end{algorithmic}
+    \end{algorithm}
+\end{frame}
+
+\begin{frame}{Key Challenges}
+    \begin{block}{Phase State Definition}
+        A state $\ket{\phi}$ on $m$ qubits is called a \emph{phase state} if it can be written as:
+        \[
+            \ket{\phi} = \frac{1}{\sqrt{2^m}} \sum_{y \in \{0,1\}^m} e^{i\theta_y} \ket{y}
+        \]
+        where $\theta_y \in \mathbb{R}$. Every computational basis amplitude has the same magnitude $1/\sqrt{2^m}$.
+    \end{block}
+    To establish the validity of the algorithm, two major pieces must be addressed:
+    \vfill
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{1. Existence of Basis $\mathcal{T}_x$}
+                We must guarantee that there always exists a basis $\mathcal{T}_x$ under which two arbitrary states $\ket{\psi_{\text{target}}^{x0}}$ and $\ket{\psi_{\text{target}}^{x1}}$ simultaneously become phase states.
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{2. Bounds on Probabilities}
+                Given the existence of $\mathcal{T}_x$, we show that the overall acceptance and rejection probabilities accurately reflect the fidelity to the target state.
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Illustrative Example: Setup}
+    Consider an $n=3$ qubit system to trace through the protocol steps:
+    \begin{itemize}
+        \item \textbf{Target State:} $\ket{\psi_{\text{target}}} = \frac{1}{\sqrt{3}}\left(\ket{100} + \ket{010} + \ket{001}\right)$
+        \item \textbf{Step 1 (Sampling):} Suppose we sample $k=2$.
+        \item \textbf{Step 2 (First Measurement):} Measure the first $k-1 = 1$ qubit of $\ket{\psi_{\text{lab}}}$. 
+        \item Assume the outcome is $x=0$. The conditioned target state becomes:
+        \[
+            \ket{\psi_{\text{target}}^x} = \frac{1}{\sqrt{2}}\left(\ket{01} + \ket{10}\right)
+        \]
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Illustrative Example: Basis Matching}
+    \begin{itemize}
+        \item \textbf{Step 3 (Decomposition):} We write the reduced target state as:
+        \[
+            \ket{\psi_{\text{target}}^x} = \frac{1}{\sqrt{2}}\ket{0} \otimes \ket{1} + \frac{1}{\sqrt{2}} \ket{1} \otimes \ket{0}
+        \]
+        Here, $\ket{\psi_{\text{target}}^{x0}} = \ket{1}$ and $\ket{\psi_{\text{target}}^{x1}} = \ket{0}$ on the last $n-k = 1$ qubit.
+        \item \textbf{Finding $\mathcal{T}_x$:} We need a basis where both $\ket{1}$ and $\ket{0}$ are phase states. 
+        \item Choosing the \textbf{Hadamard basis} $\mathcal{T}_x = \{\ket{+}, \ket{-}\}$ satisfies this perfectly since:
+        \[
+            \ket{0} = \frac{\ket{+} + \ket{-}}{\sqrt{2}}, \quad \ket{1} = \frac{\ket{+} - \ket{-}}{\sqrt{2}}
+        \]
+        \item Assume the measurement outcome \textbf{on lab state} in this basis is $\ell = +$. The reduced target state conditioned on this outcome is:
+        \[
+            \ket{\psi_{\text{target}}'} =\frac{1}{\sqrt{2}}(\ket{0} + \ket{1}) = \ket{+}
+        \]
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Illustrative Example: State Reduction}
+    Let's check what happens if the lab state contains a faulty component:
+    \[
+        \ket{\psi_{\text{lab}}} = \frac{1}{2}\left(\ket{100} + \ket{010} + \ket{001} + \ket{011}\right)
+    \]
+    Following the trajectory where $x=0$ and the second measurement gives $\ell = +$:
+    \begin{align*}
+        \ket{\psi_{\text{lab}}} &\xrightarrow{x=0} \frac{1}{\sqrt{3}} \ket{0} \otimes \ket{1} + \frac{1}{\sqrt{3}} \ket{1} \otimes (\ket{0} + \ket{1}) \\
+        &= \frac{1}{\sqrt{3}} \ket{0} \left(\frac{\ket{+} - \ket{-}}{\sqrt{2}}\right) + \sqrt{\frac{2}{3}} \ket{1}\ket{+} \\
+        &\xrightarrow{\ell = +} \left(\frac{1}{\sqrt{6}} \ket{0} + \sqrt{\frac{2}{3}} \ket{1}\right) \cdot A \\
+        &\xrightarrow{\text{Normalize}} \ket{\psi_{\text{lab}}'} = \frac{1}{\sqrt{5}} \ket{0} + \frac{2}{\sqrt{5}} \ket{1}
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Illustrative Example: Final Certification}
+    \begin{itemize}
+        \item According to step 4, we need to find a basis containing the target state conditioned on $x=0, \ell=+$:
+        \[
+            \ket{\psi_{\text{target}}'} = \frac{1}{\sqrt{2}}\left(\ket{0} + \ket{1}\right) = \ket{+}
+        \]
+        \item Therefore, We measure the final 1-qubit lab state $\ket{\psi_{\text{lab}}'}$ in the Hadamard basis, again. The acceptance probability for this specific branch is:
+        \[
+            P(\text{Accept} \mid x=0, \ell=+) = \left| \braket{+}{\psi_{\text{lab}}'} \right|^2 = \left| \frac{1}{\sqrt{2}}\left(\frac{1}{\sqrt{5}} + \frac{2}{\sqrt{5}}\right) \right|^2 = \frac{9}{10}
+        \]
+        \end{itemize}
+    \begin{block}{Remark}
+        While $9/10$ is high despite the state mismatch, this is only \textbf{one specific scenario}. To compute the total acceptance probability, we must take the expectation over all random paths ($k, x, \ell$), which rigorously bounds the error.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Acceptance and Rejection Probabilities - Setup}
+    We refer to Steps 3--4 of our algorithm as the \emph{subtest} 
+    performed on the $(n-k+1)$-qubit states $\ket{\psi_{target}^x}$ and 
+    $\ket{\psi_{lab}^x}$ with the basis $\mathcal{T}_x$, and write
+    \[
+    \textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)
+    \]
+    Note that the acceptance and rejection probabilities of \textsc{Certify} is
+    directly related to the acceptance and rejection probabilities of the subtest as follows:
+    \begin{align*}
+        \Pr[\textsc{Certify}\text{ accepts}] &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)\text{ accepts}\right],\\
+        \Pr[\textsc{Certify}\text{ rejects}] &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)\text{ rejects}\right].
+    \end{align*}
+    We just need to find the bounds on the subtest probabilities to complete the analysis.
+\end{frame}
+
+\begin{frame}{Theoretical Foundation: Fidelity Gap}
+    \begin{definition}[Fidelity Gap]
+        For $(n-k+1)$-qubit states $\ket{\psi_{\text{lab}}^x}$ and $\ket{\psi_{\text{target}}^x}$, 
+        their \emph{fidelity gap} is defined as:
+        \[
+            \Delta(\ket{\psi_{\text{lab}}^x} : \ket{\psi_{\text{target}}^x}) \equiv \mathop{\mathbb{E}}_{b}\!\left[\,\abs{\braket{\psi_{\text{target}}^{xb}}{\psi_{\text{lab}}^{xb}}}^2\,\right] - \abs{\braket{\psi_{\text{target}}^x}{\psi_{\text{lab}}^x}}^2
+        \]
+        where the expectation is over the random outcome $b \in \{0,1\}$ obtained when measuring the first qubit of $\ket{\psi_{\text{lab}}^x}$ in the computational basis.
+    \end{definition}
+
+    \vspace{0.5em}
+
+    \begin{theorem}\label{thm:subtest}
+        For any $x$, 
+        \begin{align}
+            \Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ rejects}\right]
+                &\geq \Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}), \label{eqn:reject}\\
+            \Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right) \text{ accepts}\right]
+                &\geq \abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2. \label{eqn:accept}
+        \end{align}
+    \end{theorem}
+\end{frame}
+
+\begin{frame}{From subtest bounds to overall acceptance/rejection probabilities}
+    \small % Shrinks the text and spacing slightly for the foundation blocks
+    \begin{theorem}
+    \vspace{-0.8em}
+        \begin{align*}
+            \Pr[\textsc{SubTest}_{\mathcal{T}_x}(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) \text{ rejects}] &\geq \Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) \\
+            \Pr[\textsc{SubTest}_{\mathcal{T}_x}(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}) \text{ accepts}] &\geq |\braket{\psi_{target}^x}{\psi_{lab}^x}|^2
+        \end{align*}
+    \end{theorem}
+
+    \begin{lemma}\label{rem:nonneg}
+        \begin{enumerate}
+            \item $\Delta(\ket{\psi_{lab}^x} : \ket{\psi_{target}^x}) \geq 0$ 
+            \item $\mathbb{E}_{x}[\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x})] = \frac{1}{n}(1 - |\braket{\psi_{target}}{\psi_{lab}}|^2)$
+        \end{enumerate}
+    \end{lemma}
+
+    \begin{center}
+        {\huge $\Downarrow$ } 
+    \end{center}
+
+    \normalsize % Restores normal size for the final punchline theorem
+    \begin{theorem} 
+        \begin{enumerate}
+            \item \textsc{Certify} accepts with probability at least $\mathrm{Fid}$.
+            \item \textsc{Certify} rejects with probability at least $(1-\mathrm{Fid})/n$.
+        \end{enumerate}
+    \end{theorem}
+\end{frame}
+
+\begin{frame}{Proof of the main theorem}
+    \renewcommand{\qedsymbol}{}
+    \begin{proof}
+    Combining the relation between \textsc{Certify} and the subtest stated above with Theorem~\ref{thm:subtest} and the theorem and lemma above:
+        \begin{align*}
+            \Pr[\textsc{Certify}\text{ rejects}]
+                &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)\text{ rejects}\right]\\
+                &\geq \mathop{\mathbb{E}}_{x}\!\left[\Delta(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x})\right]
+                = \frac{1}{n}\!\left(1 - \abs{\braket{\psi_{target}}{\psi_{lab}}}^2\right) = \frac{\mathrm{Infid}}{n}.
+        \end{align*}
+    Similarly,
+        \begin{align*}
+            \Pr[\textsc{Certify}\text{ accepts}]
+                &= \mathop{\mathbb{E}}_{x}\Pr\!\left[\textsc{SubTest}_{\mathcal{T}_x}\!\left(\ket{\psi_{lab}^x}:\ket{\psi_{target}^x}\right)\text{ accepts}\right]\\
+                &\geq \mathop{\mathbb{E}}_{x}\!\left[\abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2\right]
+                \geq \abs{\braket{\psi_{target}}{\psi_{lab}}}^2 = \mathrm{Fid},
+        \end{align*}
+        For the last inequality, recall $x$ is sampled by first choosing $k\in[n]$ at random and then measuring the first $k-1$ qubits of $\ket{\psi_{lab}}$ in the computational basis, 
+        so $\abs{x}$ ranges over $\{0, 1, \ldots, n-1\}$. 
+    \end{proof}
+\end{frame}
+
+\begin{frame}{Proof of the main theorem}
+    \begin{proof}
+        Define
+        \[
+            \Phi^j \equiv \mathop{\mathbb{E}}_{\substack{x,\\\abs{x}=j}}\!\left[\abs{\braket{\psi_{target}^{x}}{\psi_{lab}^{x}}}^2\right]
+        \]
+        with this  left-hand side rewrites as $\mathop{\mathbb{E}}_{k\in[n]}\!\left[\Phi^{k-1}\right]$, 
+        while right-hand side is just $\Phi^0$. 
+        Applying first equation of lemma at every $x$ of length $j$ 
+        and taking the expectation over such $x$ gives $\Phi^j \leq \Phi^{j+1}$. Hence for every $k\in[n]$,
+        \[
+            \Phi^{k-1} - \Phi^0 = \sum_{j=1}^{k-1}\!\left(\Phi^j - \Phi^{j-1}\right) \geq 0,
+        \]
+        Take the expectation over $k$ and then we're done.
+        \[
+            \mathop{\mathbb{E}}_{x} \!\left[\abs{\braket{\psi_{target}^x}{\psi_{lab}^x}}^2\right] \geq \abs{\braket{\psi_{target}}{\psi_{lab}}}^2. 
+        \]
+    \end{proof}
+\end{frame}
+
+\begin{frame}{Existence of the basis $\mathcal{T}_x$}
+    \begin{lemma}\label{lem:perpy}
+        Let $\rho^0$ and $\rho^1$ be single-qubit mixed states. Then there exists a single-qubit basis $\mathcal{B} = \{\ket{b}, \ket{b^\bot}\}$ such that for both $i = 0, 1$, measuring $\rho^i$ in basis $\mathcal{B}$ yields each outcome with probability $\tfrac{1}{2}$.
+    \end{lemma}
+
+    \begin{proof}
+        Choose $\ket{b}$ so that its Bloch vector is orthogonal to those of $\rho^0$ and $\rho^1$, and let $\ket{b^\bot}$ be its antipode.
+
+        To verify that the measurement of $\rho^i$ in $\{\ket{b}, \ket{b^\bot}\}$ yields each outcome with probability $\tfrac{1}{2}$, 
+        write $\rho^i = \tfrac{1}{2}\!\left(\mathbb{I} + \vec{a}_i\cdot\vec{\sigma}\right)$ and $\ketbra{b}{b} = \tfrac{1}{2}\!\left(\mathbb{I} + \vec{b}\cdot\vec{\sigma}\right)$, 
+        where $\vec{a}_i, \vec{b} \in \mathbb{R}^3$ are Bloch vectors and $\vec{\sigma} = (\sigma_x, \sigma_y, \sigma_z)$.
+        \vspace{-0.8em}
+        \[
+            \Pr[b] = \bra{b}\rho^i\ket{b} = \tr\!\left[\ketbra{b}{b}\,\rho^i\right] = \tfrac{1}{4}\tr\!\left[\!\left(\mathbb{I} + \vec{b}\cdot\vec{\sigma}\right)\!\left(\mathbb{I} + \vec{a}_i\cdot\vec{\sigma}\right)\right].
+        \]
+        Using the identity $\sigma_j\sigma_k = \delta_{jk}\mathbb{I} + i\epsilon_{jkl}\sigma_l$ ($\delta$: Kronecker; $\epsilon$: Levi--Civita) and the tracelessness of each matrix,
+        \vspace{-0.8em}
+        \[
+            \Pr[b] = \tfrac{1}{4}\tr\!\left[\mathbb{I} + \vec{a}_i\cdot\vec{\sigma} + \vec{b}\cdot\vec{\sigma} + (\vec{b}\cdot\vec{\sigma})(\vec{a}_i\cdot\vec{\sigma})\right] = \tfrac{1}{2} + \tfrac{1}{2}\,\vec{a}_i\cdot\vec{b} = \tfrac{1}{2},
+        \]
+        where the last equality uses our orthogonality choice $\vec{a}_i\cdot\vec{b} = 0$. Similar for $\ket{b^\bot}$.
+    \end{proof}
+\end{frame}
+
+\begin{frame}{Existence of the basis $\mathcal{T}_x$}
+    \begin{center}
+        \input{../diagrams/lemma31_bloch.tex}
+    \end{center}
+    \begin{theorem}
+        Let $\ket{\phi^0}$ and $\ket{\phi^1}$ be $m$-qubit pure states. Then there exists a basis $\mathcal{T}$ of $(\mathbb{C}^2)^{\otimes m}$, 
+        in which both $\ket{\phi^0}$ and $\ket{\phi^1}$ are phase states.
+    \end{theorem}
+    The basis could be readily constructed by applying the lemma reductively. Instead of showing a abstract proof, we'll illustrate the step by an example. 
+\end{frame}
+
+\begin{frame}{Example of finding the basis $\mathcal{T}$}
+    Consider $m=2$ and the initial states in the computational basis:
+    \[
+        \ket{\phi^0} = \ket{00}, \quad \ket{\phi^1} = \frac{1}{\sqrt{2}} (\ket{01} + \ket{10})
+    \]
+    \vfill
+    \textbf{Goal:} Find an adaptive basis $\mathcal{T}$ such that both are phase states:
+    \[
+        |\langle \tau_y | \phi^i \rangle| = \frac{1}{\sqrt{2^2}} = \frac{1}{2} \quad \forall y \in \{0,1\}^2
+    \]
+
+    \textbf{Step 1}: Trace out qubit 2 to find reduced density matrices $\rho^i_1$:
+    \begin{itemize}
+        \item $\rho^0_1 = \ketbra{0}{0} \implies \vec{a}_0 = (0, 0, 1)$
+        \item $\rho^1_1 = \frac{1}{2}(\ketbra{0}{0} + \ketbra{1}{1}) = \frac{1}{2}\mathbb{I} \implies \vec{a}_1 = (0, 0, 0)$
+    \end{itemize}
+    Apply Lemma 1: Choose $\vec{b}$ orthogonal to $(0,0,1)$ and $(0,0,0)$.
+    \begin{itemize}
+        \item Selection: $\vec{b} = (1, 0, 0)$ (x-axis).
+        \item Round 1 Basis: $\mathcal{B}_1 = \{\ket{+}, \ket{-}\}$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Example of finding the basis $\mathcal{T}$}
+    Rewrite the first qubit of $\ket{\phi^0}$ and $\ket{\phi^1}$ in the $\mathcal{B}_1$ basis:
+    \begin{align*}
+        \ket{\phi^0} &= \frac{1}{\sqrt{2}}\ket{+}\ket{0} + \frac{1}{\sqrt{2}}\ket{-}\ket{0}, \\
+        \ket{\phi^1} &= \frac{1}{2}\ket{+}\ket{1} + \frac{1}{2}\ket{+}\ket{0} + \frac{1}{2}\ket{-}\ket{1} - \frac{1}{2}\ket{-}\ket{0} \\ 
+        &= \frac{1}{\sqrt{2}}\ketbra{+}{+} - \frac{1}{\sqrt{2}} \ketbra{-}{-}.
+    \end{align*}
+    For qubit 2, the two branches need to be treated separately:
+    \vspace{0.8em}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \centering \textbf{Outcome $\ket{+}$} \\
+            $\ket{(\phi^0)^+} = \ket{0} \to (0,0,1)$ \\
+            $\ket{(\phi^1)^+} = \ket{+} \to (1,0,0)$ \\
+            $\vec{b}_+ = (0,1,0)$ ($y$-axis) \\
+            $\mathcal{B}_+ = \{\ket{R}, \ket{L}\}$
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering \textbf{Outcome $\ket{-}$} \\
+            $\ket{(\phi^0)^-} = \ket{0} \to (0,0,1)$ \\
+            $\ket{(\phi^1)^-} = -\ket{-} \to (-1,0,0)$ \\
+            $\vec{b}_- = (0,1,0)$ ($y$-axis) \\
+            $\mathcal{B}_- = \{\ket{R}, \ket{L}\}$
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Verification of Example}
+    The combined basis is $\mathcal{T} = \{\ket{+,R}, \ket{+,L}, \ket{-,R}, \ket{-,L}\}$. 
+    Using $\ket{0} = \frac{1}{\sqrt{2}}(\ket{R} + \ket{L})$, we find:
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item $\ket{\phi^0} = \frac{1}{2}(\ket{+,R} + \ket{+,L} + \ket{-,R} + \ket{-,L})$
+        \item $\ket{\phi^1} = \frac{1-i}{2\sqrt{2}}\ket{+,R} + \frac{1+i}{2\sqrt{2}}\ket{+,L} - \frac{1+i}{2\sqrt{2}}\ket{-,R} - \frac{1-i}{2\sqrt{2}}\ket{-,L}$
+    \end{itemize}
+    \vspace{0.3cm}
+    In both cases, $|\text{Amplitude}| = 1/2$. Both are now \textbf{phase states}.
+\end{frame}
