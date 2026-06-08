@@ -1,0 +1,133 @@
+\definecolor{huangPurple}{RGB}{113,49,169}
+\definecolor{huangBlue}{RGB}{65,109,190}
+\definecolor{huangRed}{RGB}{196,0,0}
+\definecolor{huangOrange}{RGB}{239,126,45}
+\definecolor{huangGold}{RGB}{196,145,15}
+\definecolor{huangGreen}{RGB}{91,164,61}
+\definecolor{huangGray}{RGB}{120,120,120}
+\definecolor{huangPaleBlue}{RGB}{224,234,238}
+\definecolor{huangPaleGreen}{RGB}{225,240,216}
+\definecolor{huangPeach}{RGB}{246,185,139}
+\definecolor{huangLavender}{RGB}{216,205,236}
+
+\tikzset{
+  huang arrow/.style={-Stealth, thick, draw=huangGray},
+  huang dashed box/.style={draw, dashed, rounded corners=5pt, fill=huangPaleBlue, inner sep=5pt},
+  huang bit/.style={draw, dashed, rounded corners=4pt, minimum width=0.42cm, minimum height=0.36cm, inner sep=1pt, font=\scriptsize\bfseries},
+  huang gate/.style={draw, rounded corners=2pt, fill=huangPeach, minimum width=0.35cm, minimum height=0.54cm, inner sep=1pt},
+  huang meas/.style={draw, rounded corners=2pt, fill=huangLavender, minimum width=0.24cm, minimum height=0.24cm, inner sep=0pt},
+  huang label/.style={font=\scriptsize},
+  huang title/.style={font=\bfseries}
+}
+
+\providecommand{\HuangAtom}[2]{%
+  \begin{scope}[shift={(#1,#2)}, scale=0.18]
+    \foreach \a in {0,60,...,300} {
+      \draw[huangPurple, thick, rotate=\a] (0,0) ellipse (0.36 and 0.9);
+    }
+    \fill[huangGreen!85!black] (0,0) circle (0.11);
+  \end{scope}%
+}
+
+\providecommand{\HuangLabPatch}[3][1]{%
+  \begin{scope}[shift={(#2,#3)}, scale=#1]
+    \node[huang dashed box, minimum width=2.25cm, minimum height=1.55cm] (labpatch) at (0,0) {};
+    \foreach \x/\y in {-0.7/0.43,0/0.43,0.7/0.43,-0.7/-0.05,0/-0.05,0.7/-0.05,-0.35/-0.53,0.35/-0.53}
+      {\HuangAtom{\x}{\y}}
+  \end{scope}%
+}
+
+\providecommand{\HuangLabStack}[3][1]{%
+  \begin{scope}[shift={(#2,#3)}, scale=#1]
+    \foreach \dx in {-0.42,-0.18,0.06} {
+      \node[huang dashed box, minimum width=1.75cm, minimum height=1.25cm, fill=huangPaleBlue!85] at (\dx,0) {};
+    }
+    \foreach \x/\y in {-0.58/0.36,0/0.36,0.58/0.36,-0.58/-0.03,0/-0.03,0.58/-0.03,-0.3/-0.43,0.3/-0.43}
+      {\HuangAtom{\x}{\y}}
+  \end{scope}%
+}
+
+\providecommand{\HuangMonitor}[3][1]{%
+  \begin{scope}[shift={(#2,#3)}, scale=#1]
+    \fill[black] (-0.72,-0.54) rectangle (0.72,0.55);
+    \fill[huangLavender!60] (-0.6,-0.4) rectangle (0.6,0.4);
+    \fill[white, opacity=0.72] (-0.55,-0.35) -- (-0.12,0.35) -- (0.6,0.35) -- (0.6,-0.35) -- cycle;
+    \node[font=\scriptsize\bfseries, text=huangGray!80] at (0.12,0.02) {Model $\Psi$};
+    \fill[black] (0,-0.47) circle (0.06);
+    \fill[black] (-0.13,-0.8) rectangle (0.13,-0.54);
+    \draw[black, line width=1.5pt] (-0.38,-0.84) -- (0.38,-0.84);
+  \end{scope}%
+}
+
+\providecommand{\HuangMeasurementStack}[3][1]{%
+  \begin{scope}[shift={(#2,#3)}, scale=#1]
+    \foreach \i in {0,...,6} {
+      \node[huang meas] at (0,0.18*\i) {};
+      \draw[huangGold!80!black] (-0.08,0.18*\i-0.02) -- (0.08,0.18*\i+0.07);
+    }
+  \end{scope}%
+}
+
+\providecommand{\HuangCircuitGrid}[4][1]{%
+  \begin{scope}[shift={(#2,#3)}, scale=#1]
+    \foreach \x in {-0.75,-0.45,-0.15,0.15,0.45,0.75}
+      \draw[huangGray] (\x,0.9) -- (\x,-1.05);
+    \foreach \x/\y/\w/\h in {
+      -0.75/0.55/.34/.45,-0.45/0.18/.24/.42,-0.15/0.55/.24/.52,0.15/0.18/.50/.42,0.45/0.55/.34/.45,0.75/0.18/.24/.42,
+      -0.75/-0.25/.24/.46,-0.45/-0.63/.52/.42,-0.15/-0.25/.24/.52,0.15/-0.63/.52/.42,0.45/-0.25/.24/.46,0.75/-0.63/.34/.42}
+      \node[huang gate, minimum width=\w cm, minimum height=\h cm] at (\x,\y) {};
+    \node[font=\scriptsize] at (0,1.12) {$#4$};
+  \end{scope}%
+}
+
+\providecommand{\HuangNeuralNet}[3][1]{%
+  \begin{scope}[shift={(#2,#3)}, scale=#1]
+    \node[draw, dashed, rounded corners=8pt, fill=huangPaleGreen, minimum width=1.65cm, minimum height=2.45cm] at (0,0) {};
+    \foreach \x in {-0.45,0,0.45} \fill[huangBlue!38] (\x,0.75) circle (0.08);
+    \foreach \x in {-0.58,-0.18,0.22,0.58} \fill[huangBlue!38] (\x,0.15) circle (0.08);
+    \foreach \x in {-0.58,-0.18,0.22,0.58} \fill[huangBlue!38] (\x,-0.45) circle (0.08);
+    \fill[huangBlue!38] (0,-1.02) circle (0.08);
+    \foreach \a in {-0.45,0,0.45} \foreach \b in {-0.58,-0.18,0.22,0.58}
+      \draw[huangGray!65, thin] (\a,0.75) -- (\b,0.15);
+    \foreach \a in {-0.58,-0.18,0.22,0.58} \foreach \b in {-0.58,-0.18,0.22,0.58}
+      \draw[huangGray!65, thin] (\a,0.15) -- (\b,-0.45);
+    \foreach \a in {-0.58,-0.18,0.22,0.58}
+      \draw[huangGray!65, thin] (\a,-0.45) -- (0,-1.02);
+  \end{scope}%
+}
+
+\providecommand{\HuangDeviceIcon}[3][1]{%
+  \begin{scope}[shift={(#2,#3)}, scale=#1]
+    \fill[brown!80!black] (-0.72,0.82) rectangle (0.72,1.12);
+    \fill[brown!70!black] (-0.82,0.72) rectangle (0.82,0.78);
+    \foreach \x in {-0.48,-0.28,0.28,0.48}
+      \draw[line width=1.5pt, huangGold] (\x,0.7) -- (\x,-0.55);
+    \foreach \y in {0.42,0.12,-0.18}
+      \draw[line width=1.2pt, brown!70!black] (-0.65,\y) -- (0.65,\y);
+    \foreach \x in {-0.48,-0.38,0.38,0.48}
+      \foreach \y in {0.28,-0.08}
+        \draw[line width=1pt, huangGold] (\x,\y) circle (0.055);
+    \foreach \x in {-0.52,-0.42,0.42,0.52}
+      \foreach \y in {-0.38,-0.48,-0.58}
+        \draw[line width=1.5pt, huangGold] (\x-0.08,\y) -- (\x+0.08,\y);
+    \fill[huangGold!70] (-0.28,-0.6) rectangle (0.28,-0.85);
+    \fill[brown!85!black] (-0.15,-0.85) rectangle (0.15,-1.18);
+  \end{scope}%
+}
+
+\providecommand{\HuangHypercube}[3][1]{%
+  \begin{scope}[shift={(#2,#3)}, scale=#1]
+    \coordinate (z000) at (-1.2,-0.25);
+    \coordinate (z001) at (-0.25,0.85);
+    \coordinate (z010) at (-0.25,-0.25);
+    \coordinate (z011) at (0.65,0.85);
+    \coordinate (z100) at (-0.25,-1.2);
+    \coordinate (z101) at (0.65,-0.25);
+    \coordinate (z110) at (0.65,-1.2);
+    \coordinate (z111) at (1.55,-0.25);
+    \foreach \a/\b in {z000/z001,z000/z010,z000/z100,z001/z011,z001/z101,z010/z011,z010/z110,z100/z101,z100/z110,z011/z111,z101/z111,z110/z111}
+      \draw[line width=1.5pt, huangGray] (\a) -- (\b);
+    \foreach \p/\lab/\anch in {z000/000/below left,z001/001/above,z010/010/above left,z011/011/above,z100/100/below,z101/101/above,z110/110/below,z111/111/right}
+      \fill[huangRed] (\p) circle (0.08) node[\anch, font=\scriptsize, text=black] {\lab};
+  \end{scope}%
+}

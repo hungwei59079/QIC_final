@@ -1,0 +1,34 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\node[font=\bfseries] at (-3.1,1.85) {Lab state $\rho$};
+\node[draw, rounded corners=12pt, fill=huangPaleBlue, minimum width=2.15cm, minimum height=1.85cm] at (-3.1,0.7) {};
+\foreach \x/\y/\b in {-3.45/1.17/1,-2.85/1.17/0,-3.45/0.7/1,-2.85/0.7/0,-3.45/0.23/0,-2.85/0.23/1}
+  \node[huang bit, text=huangPurple, font=\scriptsize\bfseries] at (\x,\y) {$\b$};
+\node[huang bit, fill=orange!18, text=huangOrange] at (-2.25,0.7) {$s$};
+\node[anchor=west, font=\itshape\bfseries, text=huangGray] at (-2.0,0.88) {qubit $k$};
+
+\node[text=huangPurple, align=right] at (-4.75,0.92) {$Z$-basis};
+\node[text=huangOrange, align=right] at (-4.75,0.42) {Random\\X/Y/Z-basis};
+\node[huang bit, fill=huangLavender!70] at (-4.25,0.92) {};
+\node[huang bit, fill=orange!18] at (-4.25,0.42) {};
+
+\draw[huang arrow] (-3.1,-0.25) -- (-3.1,-0.95);
+\node[align=center] at (-3.1,-1.35)
+  {classical shadow of qubit $k$\\[1mm]$3|s\rangle\langle s|-I$};
+
+\draw[huang arrow] (-1.75,0.6) -- (0.05,0.6);
+\node[align=left, text=huangGray, font=\bfseries] at (-0.4,0.12)
+  {$z_0=1010001$\\$z_1=1010101$};
+\draw[huangGray] (-0.02,-0.17) -- (0.88,-0.17)
+  node[midway, below, font=\scriptsize] {$n$ bits};
+
+\node[font=\bfseries] at (2.7,1.85) {Target state};
+\node at (2.7,1.5) {$|\psi\rangle=\sum_x\psi(x)|x\rangle$};
+\HuangMonitor[0.95]{2.7}{0.6}
+\draw[huang arrow] (2.7,-0.2) -- (2.7,-0.95);
+\node[align=center] at (2.7,-1.35)
+  {$|\psi_{z_0,z_1}\rangle\propto\psi(z_0)|0\rangle+\psi(z_1)|1\rangle$\\
+   Post-meas. state of qubit $k$};
+
+\end{tikzpicture}

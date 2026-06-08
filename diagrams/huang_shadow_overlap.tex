@@ -1,0 +1,19 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\node[font=\large] at (0,1.55)
+  {Predict overlap $\omega$ of qubit $k$ and $|\psi_{z_0,z_1}\rangle$};
+\node[font=\large] at (0,0.85)
+  {$\omega=\langle\psi_{z_0,z_1}|(3|s\rangle\langle s|-I)|\psi_{z_0,z_1}\rangle$};
+\node[draw=huangGray, dashed, thick, inner sep=5pt, font=\large] at (0,0.1)
+  {Shadow overlap $=\mathbb{E}[\omega]$};
+
+\node[align=center] (left) at (-2.8,-1.25)
+  {classical shadow of qubit $k$\\[1mm]$3|s\rangle\langle s|-I$};
+\node[align=center] (right) at (2.8,-1.25)
+  {$|\psi_{z_0,z_1}\rangle\propto\psi(z_0)|0\rangle+\psi(z_1)|1\rangle$\\
+   Post-meas. state of qubit $k$};
+\draw[huang arrow] (left.north) -- (-0.7,0.0);
+\draw[huang arrow] (right.north) -- (0.7,0.0);
+
+\end{tikzpicture}

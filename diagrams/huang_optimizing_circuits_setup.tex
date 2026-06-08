@@ -1,0 +1,14 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\HuangCircuitGrid[1.1]{-3.5}{0}{|0^n\rangle}
+\node at (-3.5,-1.45) {$\rho_C$};
+
+\node[align=left, font=\large] at (0.9,0.95)
+  {$\rho_C$ is prepared by parametrized circuit $C$};
+\node[align=left, font=\large] at (0.9,0.15)
+  {$|\psi\rangle$ is a target state};
+\node[align=left, font=\large] at (0.9,-0.95)
+  {Goal:\\Optimize circuit to prepare $|\psi\rangle$: $\max_C\langle\psi|\rho_C|\psi\rangle$};
+
+\end{tikzpicture}

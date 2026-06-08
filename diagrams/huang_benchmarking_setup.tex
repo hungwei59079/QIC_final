@@ -1,0 +1,10 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\HuangDeviceIcon[1.0]{-3.4}{0.2}
+\node[align=left, font=\large] at (0.4,0.9) {$\rho$ is prepared by a noisy quantum device};
+\node[align=left, font=\large] at (0.4,0.15) {$|\psi\rangle$ is the ideal state};
+\node[align=left, font=\large] at (0.4,-0.85)
+  {Goal:\\Certify $\langle\psi|\rho|\psi\rangle$ is large};
+
+\end{tikzpicture}

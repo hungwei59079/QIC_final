@@ -1,0 +1,12 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[font=\footnotesize]
+
+\node[align=left, text width=4.0cm] at (-2.7,0.7)
+  {Preparing an $n$-qubit MPS\\with $H$, $CZ$, and $T$ gates};
+\node[align=left, text width=4.0cm] at (-2.7,-0.35)
+  {State is output of an IQP circuit plus $T$ gates};
+
+\HuangCircuitGrid[1.05]{1.8}{0}{|0^n\rangle}
+\node at (1.8,-1.42) {$|\psi\rangle$};
+
+\end{tikzpicture}

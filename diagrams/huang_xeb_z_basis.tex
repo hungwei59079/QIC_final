@@ -1,0 +1,17 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\node[font=\bfseries] at (0,1.75) {Cross-Entropy Benchmarking};
+\node[font=\large] at (0,1.2)
+  {$\mathrm{XEB}\propto \mathbb{E}_{z\sim\rho}|\langle z|\psi\rangle|^2-2^{-n}$};
+\node[text=huangPurple, align=center] at (0,0.6)
+  {Heuristic; can certify incorrectly when $\langle\psi|\rho|\psi\rangle\ll1$};
+
+\node[font=\bfseries] at (0,-0.05) {Lab state $\rho$};
+\node[draw, rounded corners=10pt, fill=huangPaleBlue, minimum width=1.85cm, minimum height=1.45cm] at (0,-0.85) {};
+\foreach \x/\y in {-0.45/-0.45,0.15/-0.45,-0.65/-0.86,-0.05/-0.86,0.55/-0.86,-0.25/-1.25,0.35/-1.25}
+  {\node[huang bit, fill=huangLavender!60] at (\x,\y) {}; \HuangAtom{\x}{\y}}
+\node[huang bit, fill=huangLavender!65] at (1.25,-1.45) {};
+\node[text=huangPurple] at (0,-1.75) {$Z$-basis};
+
+\end{tikzpicture}

@@ -1,0 +1,20 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\node[font=\bfseries] at (-2.2,1.55) {Lab state $\rho$};
+\node[draw, rounded corners=12pt, fill=huangPaleBlue, minimum width=2.15cm, minimum height=1.8cm] at (-2.2,0.55) {};
+\foreach \x/\y in {-2.55/1.0,-1.9/1.0,-2.85/0.55,-2.2/0.55,-2.55/0.1,-1.9/0.1}
+  \HuangAtom{\x}{\y}
+\node[huang bit, fill=orange!18] at (-1.45,0.55) {};
+\HuangAtom{-1.45}{0.55}
+\node[anchor=west, font=\itshape\bfseries, text=huangGray] at (-1.2,0.75) {qubit $k$};
+
+\node[font=\bfseries] at (2.5,1.55) {Target state};
+\node at (2.5,1.22) {$|\psi\rangle=\sum_x\psi(x)|x\rangle$};
+\HuangMonitor[0.95]{2.5}{0.35}
+
+\node[font=\large] at (0,-0.7) {Naive idea:};
+\node[font=\large] at (0,-1.18) {Choose a qubit at random and compare locally};
+\node[font=\large] at (0,-1.75) {Issue: one-qubit marginal $\approx$ maximally mixed};
+
+\end{tikzpicture}
