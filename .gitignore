@@ -5,3 +5,6 @@
 *.synctex.gz
 *.tar.gz
 *.pdf
+*.nav
+*.toc
+*.snm

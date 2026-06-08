@@ -1,0 +1,35 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% Packages
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{physics}
+\usepackage{algorithm}
+\usepackage[noend]{algorithmic}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{standalone}
+\usetikzlibrary{arrows.meta} 
+
+% Configuration
+\title[Quantum State Certification]{Quantum State Certification Algorithm}
+\subtitle{Adaptive Reduction via Phase States}
+\author[Hungwei]{Hungwei}
+\date{\today}
+
+% Define block styles if needed
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Ensure algorithm commands render nicely in Beamer
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\input{algorithm_slides.tex}
+
+\end{document}

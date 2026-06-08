@@ -37,6 +37,63 @@ for some phases $\theta_y \in \mathbb{R}$, i.e.\ every computational basis ampli
 The existence of the basis $\mathcal{T}_x$ needs to be proven, and we will do so in Subsection~\ref{sec:basis-existence}. 
 Given its existence, it then suffices to show that the acceptance and rejection probabilities of the above algorithm are as claimed in Section~\ref{sec:intro}; we do this in Subsection~\ref{sec:accept-reject}.
 
+\subsection{Example}
+This example is merely for the purpose of illustrating the algorithm. We will not analyze the acceptance and rejection probabilities for this example. 
+
+Consider $n=3$ and let the target state be $\ket{\psi_{target}} = \frac{1}{\sqrt{3}}\!\left(\ket{100} + \ket{010} + \ket{001}\right)$. 
+
+If we get $k=2$ in step 1, then we measure the first qubit of $\ket{\psi_{lab}}$ in the computational basis.
+Assume we get $x=0$, then $\ket{\psi_{target}^x} = \frac{1}{\sqrt{2}}\!\left(\ket{01} + \ket{10}\right)$. 
+According to step 3, we should write the reduced target state as: 
+\[
+    \ket{\psi_{target}^x} = \frac{1}{\sqrt{2}}\ket{0} \otimes \ket{1} + \frac{1}{\sqrt{2}} \ket{1} \otimes \ket{0}.
+\]
+Next, we should find a basis where both $\ket{1}$ and $\ket{0}$ are phase states. 
+In this case, it is simple. We just need to choose the Hadamard basis $\{\ket{+}, \ket{-}\}$. 
+For general cases, we need to follow the procedure described in Subsection~\ref{sec:existence}. 
+
+Now we do step 4. Assume we get $\ell = +$, then the reduced state is: 
+\[
+    \ket{\psi_{target}'} = \frac{1}{\sqrt{2}}\!\left(\ket{0} + \ket{1}\right).
+\]
+Hadamard basis again includes this state, so we could measure the reduced lab state in Hadamard basis again. 
+
+Let's assume that the lab state has an additional component $\ket{011}$ for some reason: 
+\[
+    \ket{\psi_{lab}} = \frac{1}{2}\!\left(\ket{100} + \ket{010} + \ket{001} + \ket{011}\right).
+\]
+Then in our scenario where we get $x=0$ in first step and $\ell = +$ in the second step, 
+\[
+    \begin{aligned}
+        \ket{\psi_{lab}} & \rightarrow \frac{1}{\sqrt{3}} \ket{0} \otimes \ket{1} + \frac{1}{\sqrt{3}} \ket{1} \otimes (\ket{0} + \ket{1}) \\ 
+        &= \frac{1}{\sqrt{3}} \ket{0} (\frac{1}{\sqrt{2}}\ket{+} - \frac{1}{\sqrt{2}}\ket{-}) + \sqrt{\frac{2}{3}} \ket{1}\ket{+} \\ 
+        & \rightarrow (\frac{1}{\sqrt{6}} \ket{0} + \sqrt{\frac{2}{3}} \ket{1}) \cdot A \\ 
+        &= \frac{1}{\sqrt{5}} \ket{0} + \frac{2}{\sqrt{5}} \ket{1} 
+    \end{aligned}
+\]
+
+Measure in Hadamard basis as mentioned earlier, the probability of obtaining the outcome $\ket+$ is
+\[
+    \left|
+        \braket{+}{\psi_{lab}'}
+    \right|^2
+    =
+    \left|
+        \frac{1}{\sqrt2}
+        \left(
+            \frac{1}{\sqrt5}
+            +
+            \frac{2}{\sqrt5}
+        \right)
+    \right|^2
+    =
+    \frac{9}{10}.
+\]
+
+This looks concerning. Although the lab state is quite different from the target state, we still have a very high acceptance probability. 
+However, this is just one particular scenario, and to evaluate the total acceptance probability we need to take the expectation over all possible scenarios. 
+We will proof that the acceptance probability and rejection probability are as claimed in theorem \ref{thm:main} in the next subsection.
+
 \subsection{Acceptance and rejection probabilities}\label{sec:accept-reject}
 
 We refer to Steps 3--4 of our algorithm as the \emph{subtest} 

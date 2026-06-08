@@ -1,3 +1,7 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{arrows.meta} % Required for >=Stealth
+
+\begin{document}
 \begin{tikzpicture}[>=Stealth]
 
 % SIC-POVM positions (projected tetrahedron on Bloch sphere)
@@ -29,21 +33,17 @@
   chi3/{|\chi_3\rangle}/below} {
   \draw[->, thick] (0,0) -- (\v);
   \fill (\v) circle (1.5pt);
-  \node[\pos, font=\footnotesize] at (\v)
-    {$\lbl$};
+  \node[\pos, font=\footnotesize] at (\v) {$\lbl$};
 }
 
 % Measurement axis
 \draw[->, dashed] (0,0) -- (phi);
 \draw[->, dashed] (0,0) -- (phip);
-\node[above right, font=\footnotesize]
-  at (phi)  {$|\phi\rangle$};
-\node[below left, font=\footnotesize]
-  at (phip) {$|\phi^\perp\rangle$};
+\node[above right, font=\footnotesize] at (phi)  {$|\phi\rangle$};
+\node[below left, font=\footnotesize] at (phip) {$|\phi^\perp\rangle$};
 
 % Annotation
-\node[font=\footnotesize, text width=5cm,
-  align=left, anchor=north west] at (2.2, 1.5)
+\node[font=\footnotesize, text width=5cm, align=left, anchor=north west] at (2.2, 1.5)
   {SIC-POVM vectors form a regular\\
    tetrahedron on the Bloch sphere.\\[4pt]
    For any basis
@@ -53,3 +53,4 @@
    is poorly resolved ($\leq 0.9/$).};
 
 \end{tikzpicture}
+\end{document}
