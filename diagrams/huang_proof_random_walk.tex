@@ -1,0 +1,23 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\node[anchor=west, font=\large] at (-4.8,1.65)
+  {Claim: Shadow overlap $\mathbb{E}[\omega]=\mathrm{Tr}(L\rho)$};
+\node[anchor=west, font=\large] at (-4.0,1.05)
+  {Observable $L=$ approximate projector onto $|\psi\rangle\langle\psi|$};
+\node[anchor=west, font=\large] at (-3.0,0.35) {$L|\psi\rangle=|\psi\rangle$};
+\node[anchor=west, font=\large] at (-3.0,-0.25)
+  {$\langle\psi^\perp|L|\psi^\perp\rangle\leq 1-1/\tau$};
+\draw[huang arrow] (1.0,-0.2) -- (1.85,0.35) node[right, font=\itshape] {Relaxation time};
+
+\node[font=\bfseries] at (2.4,0.95) {$L$ as random-walk transition matrix};
+\HuangHypercube[0.82]{2.4}{-0.5}
+\draw[-Stealth, line width=1.4pt, huangGreen] (1.2,-0.55) -- (1.92,0.18);
+\draw[-Stealth, line width=1.4pt, huangOrange] (1.05,-0.58) arc[start angle=190,end angle=-55,radius=0.22];
+\node[text=huangGreen, font=\scriptsize] at (0.75,0.2) {$\propto\pi(z_1)$};
+\node[text=huangOrange, font=\scriptsize] at (0.7,-0.95) {$\propto\pi(z_0)$};
+
+\node[anchor=west, font=\large] at (-4.8,-1.75)
+  {$I-L$ is like a sparse Hamiltonian with ground state $|\psi\rangle$};
+
+\end{tikzpicture}

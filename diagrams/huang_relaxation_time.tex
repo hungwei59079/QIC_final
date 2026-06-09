@@ -1,0 +1,19 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\node[align=left, anchor=west] at (-4.8,1.65)
+  {Measurement distribution: $\pi(z)=|\langle z|\psi\rangle|^2$ for $z\in\{0,1\}^n$};
+\node[align=left, anchor=west] at (-4.8,1.15)
+  {Think of $\pi(z)$ as the stationary distribution of a random walk};
+
+\HuangHypercube[1.25]{1.0}{-0.15}
+\node[font=\bfseries] at (-0.5,1.18) {$z_1$};
+\node[font=\bfseries] at (-1.95,-0.18) {$z_0$};
+\draw[-Stealth, line width=2.5pt, huangGreen] (-1.7,-0.2) -- (-0.65,0.85);
+\draw[-Stealth, line width=2.5pt, huangOrange] (-1.88,-0.22) arc[start angle=190,end angle=-60,radius=0.33];
+\node[text=huangGreen, align=center] at (-3.1,0.45)
+  {$\mathrm{prob.}\ \dfrac{\pi(z_1)}{\pi(z_0)+\pi(z_1)}$};
+\node[text=huangOrange, align=center] at (-3.25,-0.75)
+  {$\mathrm{prob.}\ \dfrac{\pi(z_0)}{\pi(z_0)+\pi(z_1)}$};
+
+\end{tikzpicture}

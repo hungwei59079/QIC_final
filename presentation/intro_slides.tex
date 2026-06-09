@@ -1,0 +1,148 @@
+\section{Introduction}
+
+\begin{frame}{State Certification}
+    \begin{center}
+        \resizebox{0.78\textwidth}{!}{\input{../diagrams/huang_state_certification.tex}}
+    \end{center}
+
+    \vspace{-0.3em}
+    \begin{block}{Goal}
+        Given a classical description of a target pure state $\ket{\psi_{\text{target}}}$ and one copy of an unknown lab state $\rho_{\text{lab}}$, decide whether
+        \[
+            \mathrm{Fid}=\bra{\psi_{\text{target}}}\rho_{\text{lab}}\ket{\psi_{\text{target}}}
+        \]
+        is large, using only simple measurements on $\rho_{\text{lab}}$.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Main Guarantee}
+    \begin{theorem}
+        There exists a certification algorithm that takes a classical description of an $n$-qubit pure state $\ket{\psi_{\text{target}}}$ and a single copy of an $n$-qubit state $\rho_{\text{lab}}$, performs only single-qubit measurements, and outputs:
+        \begin{itemize}
+            \item \textsc{Accept} with probability at least
+            $\mathrm{Fid} := \bra{\psi_{\text{target}}}\rho_{\text{lab}}\ket{\psi_{\text{target}}}$
+            \item \textsc{Reject} with probability at least
+            $\mathrm{Infid}/n := (1-\mathrm{Fid})/n$
+        \end{itemize}
+    \end{theorem}
+
+    %\begin{center}
+    %    One qubit at a time: compare locally, guarantee globally.
+    %\end{center}
+\end{frame}
+
+\begin{frame}{Why Not Tomography?}
+    \begin{columns}[T]
+        \begin{column}{0.56\textwidth}
+            \begin{itemize}
+                \item<1-> Tomography estimates the full density matrix $\rho \in \mathbb{C}^{d\times d}$
+                \item<1-> Number of copies is polynomial in $d$
+                \item<2-> With $d=2^n$, this is exponential in the number of qubits.
+            \end{itemize}
+
+            \vspace{0.6em}
+            \pause
+                We only need to distinguish high fidelity from low fidelity with one fixed target state, not reconstruct $\rho_{\text{lab}}$
+        \end{column}
+        \begin{column}{0.38\textwidth}
+            \centering
+            \begin{tikzpicture}[font=\small, >=Stealth]
+                \node[draw, rounded corners=3pt, minimum width=2.25cm, minimum height=0.8cm, fill=blue!8] (copies) at (0,1.2) {$\rho^{\otimes m}$};
+                \node[draw, rounded corners=3pt, minimum width=2.25cm, minimum height=0.8cm, fill=orange!12] (tomo) at (0,0) {Tomography};
+                \node[draw, rounded corners=3pt, minimum width=2.25cm, minimum height=0.8cm, fill=green!10] (est) at (0,-1.2) {$\widehat{\rho}$};
+                \draw[->, thick] (copies) -- (tomo);
+                \draw[->, thick] (tomo) -- (est);
+                \node[align=center, text=red!70!black] at (0,-2.1) {$m$ scales with\\$d=2^n$};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Sample-Optimal Certification Is Not Measurement-Friendly}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            For a known pure target, certification can be sample-efficient if we can perform the target projector
+            \[
+                \left\{\ket{\psi_{\text{target}}}\!\bra{\psi_{\text{target}}},
+                I-\ket{\psi_{\text{target}}}\!\bra{\psi_{\text{target}}}\right\}.
+            \]
+
+            \vspace{0.5em}
+            Equivalently, one may use a SWAP test against a freshly prepared copy of $\ket{\psi_{\text{target}}}$.
+        \end{column}
+        \begin{column}{0.46\textwidth}
+            \centering
+            \resizebox{\textwidth}{!}{\input{../diagrams/huang_previous_deep_circuit.tex}}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.3em}
+    \begin{alertblock}{Circularity}
+        These measurements require preparing or inverting the same highly entangled state whose preparation we wanted to certify.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Classical Shadows Help, But Have Tradeoffs}
+    \begin{center}
+        \resizebox{0.82\textwidth}{!}{\input{../diagrams/huang_classical_shadows.tex}}
+    \end{center}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Random Clifford shadows}
+                Dimension-independent sample complexity for fidelity estimation, but require deep circuits and hard target overlaps for general $\ket{\psi}$.
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Single-qubit Pauli shadows}
+                Experimentally simple, but worst-case sample complexity grows exponentially for highly entangled targets.
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Existing Simple-Measurement Protocols Are Specialized}
+    \begin{itemize}
+        \item Direct fidelity estimation and Pauli-shadow variants work well for structured observables and target families.
+        \item Efficient certification is known for stabilizer states, shallow-circuit outputs, hypergraph states, IQP outputs, and Gaussian states.
+        \item For generic random targets, XEB can work under suitable noise assumptions, but it is not a general certification guarantee.
+    \end{itemize}
+
+    \vspace{0.4em}
+    \begin{center}
+        \resizebox{0.58\textwidth}{!}{\input{../diagrams/huang_xeb_z_basis.tex}}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Motivating Applications}
+    \begin{center}
+        \resizebox{0.86\textwidth}{!}{\input{../diagrams/huang_applications_overview.tex}}
+    \end{center}
+
+    \begin{itemize}
+        \item Benchmark a noisy quantum device against its intended output.
+        \item Train or certify neural quantum-state models using fidelity as the objective.
+        \item Optimize parametrized circuits toward a target state without implementing the target projector.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{What We Need From the Protocol}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{enumerate}
+                \item Use only single-qubit measurements on $\rho_{\text{lab}}$.
+                \item Use the classical description of $\ket{\psi_{\text{target}}}$ only for choosing measurement bases and computing conditioned target states.
+                \item Accumulate local evidence that provably controls the global fidelity.
+            \end{enumerate}
+        \end{column}
+        \begin{column}{0.46\textwidth}
+            \centering
+            \resizebox{\textwidth}{!}{\input{../diagrams/huang_shadow_naive.tex}}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.4em}
+    \begin{center}
+        The algorithm resolves the ``locally maximally mixed'' obstacle by conditioning on previous measurement outcomes.
+    \end{center}
+\end{frame}

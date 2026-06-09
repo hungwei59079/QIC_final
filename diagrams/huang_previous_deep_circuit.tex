@@ -1,0 +1,15 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\node[font=\bfseries] at (-2.8,1.2) {Lab state $\rho$};
+\HuangLabPatch[0.85]{-2.8}{0.35}
+\foreach \y in {-0.45,-0.15,0.15,0.45} \draw[huangGray] (-1.65,\y) -- (-1.25,\y);
+\node[draw=huangBlue, dashed, rounded corners=4pt, fill=brown!25,
+  minimum width=1.95cm, minimum height=1.45cm, font=\large] at (0,0) {$U^\dagger$};
+\foreach \y in {-0.54,-0.36,-0.18,0,0.18,0.36,0.54}
+  \node[huang meas] at (1.25,\y) {};
+\draw[huang arrow] (1.45,0) -- (2.3,0) node[right] {$|0^n\rangle$?};
+\node[align=center] at (0,-1.35)
+  {Complex inverse circuit or SWAP test\\for general target $|\psi\rangle=U|0^n\rangle$};
+
+\end{tikzpicture}

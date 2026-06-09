@@ -1,0 +1,287 @@
+% Packages 
+%\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{commath}
+%\usepackage{physics}
+%\usepackage{braket}
+\usepackage{mathtools}
+\usepackage{wasysym}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{lipsum}
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{thmtools} 
+\usepackage{mdframed}
+%\SetCommentSty{color{blue}}
+%\usepackage{parskip}
+\usepackage[breaklinks=true, linktocpage=true,]{hyperref}
+\usepackage[nameinlink]{cleveref}
+% algorithms
+%\usepackage[ruled,vlined,linesnumbered,noend]{algorithm2e}
+%\SetAlCapSkip{0.5em}
+
+% samples
+\newcommand{\x}[1]{\bx^{(#1)}}
+\newcommand{\y}[1]{\by^{(#1)}}
+\renewcommand{\v}[1]{\bv^{(#1)}}
+
+% phi?
+\renewcommand{\phi}{\varphi}
+
+% Font 
+%\usepackage[]{libertine}
+%\usepackage[libertine]{newtxmath}
+%\usepackage{fouriernc}
+%\usepackage[mathscr]{euscript}
+%\usepackage[scaled=0.83]{beramono}
+
+% Links
+\hypersetup{
+	colorlinks = true,
+    linkcolor={magenta},
+    urlcolor={magenta},
+    citecolor={blue!80!black}
+}
+
+% Theorem environments
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}[definition]{Theorem}
+\declaretheorem[name=Main Theorem,numbered=no]{maintheorem}
+
+% 2. wrap it in a box
+\surroundwithmdframed[
+  linewidth=0.5pt,
+  roundcorner=6pt,
+  innertopmargin=0pt,
+  innerbottommargin=6pt,
+  innerleftmargin=8pt,
+  innerrightmargin=8pt
+]{maintheorem}
+
+\newtheorem{dream}[definition]{Dream}
+\newtheorem{hope}[definition]{Hope}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{claim}[definition]{Claim}
+\newtheorem{problem}[definition]{Problem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{fact}[definition]{Fact}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{openproblem}{Open Problem}
+\newtheorem{goal}{Goal}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{observation}[definition]{Observation}
+\newtheorem{notation}[definition]{Notation}
+\newtheorem{example}[definition]{Example}
+\newtheorem{examples}[definition]{Examples}
+\newtheorem{question}[definition]{Question}
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}\hrule}
+
+\makeatletter
+\newenvironment{proofof}[1]{\par
+  \pushQED{\qed}%
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep
+\emph{Proof of #1\@addpunct{.}}]\ignorespaces
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+\makeatother
+
+% Brackets
+\renewcommand{\abs}[1]{{\left| #1 \right|}}
+\newcommand{\vabs}[1]{{\left\| #1 \right\|}}
+\newcommand{\abra}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\pbra}[1]{{\left( #1 \right)}}
+\newcommand{\cbra}[1]{{\left\{ #1 \right\}}}
+\newcommand{\sbra}[1]{{\left[ #1 \right]}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+\newcommand{\ceil}[1]{{\left\lceil #1 \right\rceil}}
+\newcommand{\la}{\langle}
+\newcommand{\ra}{\rangle}
+
+% Number systems
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+
+% Short forms
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\epsilon}{\eps}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\sse}{\subseteq}
+\newcommand{\bits}{\{-1,+1\}}
+\newcommand{\zo}{\{0,1\}}
+\newcommand{\bn}{\bits^n}
+\newcommand{\isafunc}{:\bn\to\bits}
+\newcommand{\isazofunc}{:\zo^n\to\zo}
+\newcommand{\sumi}{\sum_{i=1}^n}
+
+% mathrm commands
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\polyloglog}{\mathrm{polyloglog}}
+\newcommand{\size}{\mathrm{size}}
+\newcommand{\avg}{\mathop{\mathrm{avg}}}
+\newcommand{\odd}{\mathrm{odd}}
+\newcommand{\even}{\mathrm{even}}
+\newcommand{\sign}{\mathrm{sign}}
+\newcommand{\dist}{\mathrm{dist}}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\vol}{\mathrm{Vol}}
+\newcommand{\Vol}{\mathrm{Vol}}
+\newcommand{\Indicator}{\mathbf{1}}
+
+% Probability
+\newcommand{\std}{\operatorname{{\bf std}}}
+\newcommand{\Var}{\operatorname{{\bf Var}}}
+\newcommand{\Cov}{\operatorname{{\bf Cov}}}
+\newcommand{\E}{\operatorname{{\bf E}}}
+\renewcommand{\Pr}{\operatorname{{\bf Pr}}}
+\newcommand{\Varx}{\mathop{{\bf Var}\/}}
+\newcommand{\Ex}{\mathop{{\bf E}\/}}
+\newcommand{\Prx}{\mathop{{\bf Pr}\/}}
+
+% Fourier stuff
+\newcommand{\hatf}{\wh{f}}
+\newcommand{\wtf}{\wt{f}}
+\newcommand{\sumS}{\sum_{S\sse [n]}}
+\newcommand{\chiS}{\chi_S}
+\newcommand{\Inf}{\mathbf{Inf}}
+\newcommand{\TInf}{\mathbf{I}}
+
+\newcommand{\UInf}{\underline{\Inf}}
+\newcommand{\MaxInf}{\mathbf{MaxInf}}
+\newcommand{\Ent}{\mathbf{Ent}}
+\newcommand{\NS}{\mathbf{NS}}
+\newcommand{\Stab}{\mathbf{Stab}}
+\renewcommand{\hat}{\wh}
+
+% Fourier operators
+\newcommand{\T}{\mathrm{T}}
+\renewcommand{\L}{\mathrm{L}}
+\newcommand{\U}{\mathrm{U}}
+\newcommand{\D}{\mathrm{D}}
+
+% Boolean functions
+\newcommand{\AND}{\mathrm{AND}}
+\newcommand{\OR}{\mathrm{OR}}
+\newcommand{\MAJ}{\mathrm{Maj}}
+\newcommand{\Tribes}{\mathrm{Tribes}}
+\newcommand{\Dict}{\mathrm{Dict}}
+
+% Calligraphy
+\newcommand{\calA}{\mathcal{A}}
+\newcommand{\calB}{\mathcal{B}}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calE}{\mathcal{E}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calG}{\mathcal{G}}
+\newcommand{\calH}{\mathcal{H}}
+\newcommand{\calI}{\mathcal{I}}
+\newcommand{\calJ}{\mathcal{J}}
+\newcommand{\calK}{\mathcal{K}}
+\newcommand{\calL}{\mathcal{L}}
+\newcommand{\calM}{\mathcal{M}}
+\newcommand{\calN}{\mathcal{N}}
+\newcommand{\calO}{\mathcal{O}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\calQ}{\mathcal{Q}}
+\newcommand{\calR}{\mathcal{R}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\calT}{\mathcal{T}}
+\newcommand{\calU}{\mathcal{U}}
+\newcommand{\calV}{\mathcal{V}}
+\newcommand{\calW}{\mathcal{W}}
+\newcommand{\calX}{\mathcal{X}}
+\newcommand{\calY}{\mathcal{Y}}
+\newcommand{\calZ}{\mathcal{Z}}
+
+\newcommand\smallO{
+  \mathchoice
+  {{\scriptstyle\mathcal{O}}}
+  {{\scriptstyle\mathcal{O}}}
+  {{\scriptscriptstyle\mathcal{O}}}
+  {\scalebox{.7}{$\scriptscriptstyle\mathcal{O}$}}
+}
+
+% Bold
+\newcommand{\bA}{\boldsymbol{A}}
+\newcommand{\bB}{\boldsymbol{B}}
+\newcommand{\bC}{\boldsymbol{C}}
+\newcommand{\bD}{\mathbf{D}}
+\newcommand{\bE}{\mathbf{E}}
+\newcommand{\bF}{\mathbf{F}}
+\newcommand{\bG}{\boldsymbol{G}}
+\newcommand{\bH}{\boldsymbol{H}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bJ}{\mathbf{J}}
+\newcommand{\bK}{\mathbf{K}}
+\newcommand{\bL}{\boldsymbol{L}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\bN}{\mathbf{N}}
+\newcommand{\bO}{\mathbf{O}}
+\newcommand{\bP}{\mathbf{P}}
+\newcommand{\bQ}{\mathbf{Q}}
+\newcommand{\bR}{\boldsymbol{R}}
+\newcommand{\bS}{\boldsymbol{S}}
+\newcommand{\bT}{\mathbf{T}}
+\newcommand{\bU}{\boldsymbol{U}}
+\newcommand{\bV}{\mathbf{V}}
+\newcommand{\bW}{\mathbf{W}}
+\newcommand{\bX}{\boldsymbol{X}}
+\newcommand{\bY}{\boldsymbol{Y}}
+\newcommand{\bZ}{\boldsymbol{Z}}
+\newcommand{\boldf}{\boldsymbol{f}} % \bf taken
+\newcommand{\ba}{\boldsymbol{a}}
+\newcommand{\bb}{\boldsymbol{b}}
+\newcommand{\bd}{\boldsymbol{d}}
+\newcommand{\bg}{\boldsymbol{g}}
+\newcommand{\bh}{\boldsymbol{h}}
+\newcommand{\bi}{\boldsymbol{i}}
+\newcommand{\bj}{\boldsymbol{j}}
+\newcommand{\bk}{\boldsymbol{k}}
+\newcommand{\bp}{\boldsymbol{p}}
+\newcommand{\bq}{\boldsymbol{q}}
+\newcommand{\br}{\boldsymbol{r}}
+\newcommand{\bs}{\boldsymbol{s}}
+\newcommand{\bt}{\boldsymbol{t}}
+\newcommand{\bu}{\boldsymbol{u}}
+\newcommand{\bv}{\boldsymbol{v}}
+\newcommand{\bw}{\boldsymbol{w}}
+\newcommand{\bx}{\boldsymbol{x}}
+\newcommand{\by}{\boldsymbol{y}}
+\newcommand{\bz}{\boldsymbol{z}}
+
+
+
+% new commands
+\newcommand{\paulis}[1][n]{\mathcal{P}_{#1}}
+\newcommand{\GHZ}{\mathrm{GHZ}}
+\newcommand{\dTV}{\mathrm{d}_{\mathrm{TV}}}
+\newcommand{\Id}{\mathrm{Id}}
+\newcommand{\tar}{\mathsf{hyp}}
+\newcommand{\lab}{\mathsf{lab}}
+\newcommand{\ii}{\mathfrak{i}}
+
+%\usepackage{color-edits}
+%\usepackage[suppress]{color-edits}
+\newcommand{\addauthor}[2]{}
+\newcommand{\williamcomment}[1]{}
+\newcommand{\OvOcomment}[1]{}
+\newcommand{\meghalcomment}[1]{}
+
+\newcommand{\ryancomment}[1]{}

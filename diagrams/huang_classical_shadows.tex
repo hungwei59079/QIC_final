@@ -1,0 +1,23 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\node[font=\bfseries] at (-2.95,1.65) {Random Clifford};
+\HuangLabPatch[0.75]{-4.0}{0.75}
+\foreach \y in {0.35,0.55,0.75,0.95,1.15} \draw[huangGray] (-3.08,\y) -- (-2.65,\y);
+\HuangCircuitGrid[0.72]{-1.75}{0.75}{}
+\HuangMeasurementStack[0.9]{-0.8}{0.2}
+\node[align=center, text width=3.3cm] at (-2.5,-0.85)
+  {Deep random circuits\\and $Z$-basis measurements};
+
+\draw[dashed, thick, huangGray!65] (0.45,2.0) -- (0.45,-1.6);
+
+\node[font=\bfseries] at (2.7,1.65) {Random Pauli};
+\node[draw, rounded corners=10pt, fill=huangPaleBlue, minimum width=1.85cm, minimum height=1.55cm] at (2.7,0.75) {};
+\foreach \x/\y in {2.25/1.15,2.75/1.15,2.25/0.72,2.75/0.72,3.2/0.72,2.45/0.3,2.95/0.3}
+  {\node[huang bit, fill=orange!16] at (\x,\y) {}; \HuangAtom{\x}{\y}}
+\node[huang bit, fill=orange!18] at (3.55,-0.15) {};
+\node[text=huangOrange] at (2.7,-0.65) {Random X/Y/Z-basis};
+\node[align=center, text width=3.1cm] at (2.7,-1.15)
+  {Single-qubit Pauli bases,\\but exponentially many samples};
+
+\end{tikzpicture}

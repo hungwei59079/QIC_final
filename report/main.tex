@@ -14,28 +14,29 @@
 \usepackage{physics}
 \usepackage{enumitem}
 \usepackage{mathtools}
-\usetikzlibrary{arrows.meta}
+\usetikzlibrary{arrows.meta, patterns}
+\usepackage{style}
 \usepackage{float}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{amssymb}
 
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}
-\newtheorem{theorem}[definition]{Theorem}
-\newtheorem{lemma}[definition]{Lemma}
-\newtheorem{corollary}[definition]{Corollary}
-\newtheorem{proposition}[definition]{Proposition}
-\newtheorem{remark}[definition]{Remark}
+%\theoremstyle{definition}
+%\newtheorem{definition}{Definition}
+%\newtheorem{theorem}[definition]{Theorem}
+%\newtheorem{lemma}[definition]{Lemma}
+%\newtheorem{corollary}[definition]{Corollary}
+%\newtheorem{proposition}[definition]{Proposition}
+%\newtheorem{remark}[definition]{Remark}
 
 \title{Few Single-Qubit Measurements Suffice\\to Certify Any Quantum State}
 \author{Hung-Wei, Liu; Joseph Swernofsky; Jin-Han, Liou}
 \begin{document}
 \maketitle
-\begin{abstract}
-    PlaceHolder
-\end{abstract}
 \input{intro.tex}
 \input{algorithm.tex}
+\input{access.tex}
 \input{lower_bound.tex}
+\bibliographystyle{alpha}
+\bibliography{references}
 \end{document}

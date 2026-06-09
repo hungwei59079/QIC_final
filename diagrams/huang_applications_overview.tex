@@ -1,0 +1,21 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[font=\footnotesize]
+
+\node[font=\bfseries, align=center] at (-3.9,1.85) {Benchmarking\\quantum devices};
+\HuangDeviceIcon[1.0]{-3.9}{0.05}
+
+\draw[dashed, thick, huangGray!65] (-1.55,2.1) -- (-1.55,-1.8);
+
+\node[font=\bfseries, align=center] at (0,1.85) {ML tomography\\of quantum states};
+\node at (0,1.05) {$x\in\{0,1\}^n$};
+\HuangNeuralNet[1.0]{0}{0}
+\draw[huang arrow] (0,-1.1) -- (0,-1.55);
+\node at (0,-1.75) {$\psi_\theta(x)$};
+
+\draw[dashed, thick, huangGray!65] (1.55,2.1) -- (1.55,-1.8);
+
+\node[font=\bfseries, align=center] at (3.9,1.85) {Optimizing\\quantum circuits};
+\HuangCircuitGrid[1.0]{3.9}{0}{|0^n\rangle}
+\node at (3.9,-1.35) {$|\psi\rangle$};
+
+\end{tikzpicture}

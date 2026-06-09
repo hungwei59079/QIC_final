@@ -1,0 +1,15 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+
+\node at (-3.5,1.1) {$x\in\{0,1\}^n$};
+\HuangNeuralNet[1.0]{-3.5}{0}
+\draw[huang arrow] (-3.5,-1.1) -- (-3.5,-1.55);
+\node at (-3.5,-1.75) {$\psi_\theta(x)$};
+
+\node[align=left, font=\large] at (0.7,0.95) {$\rho$ is an unknown quantum state};
+\node[align=left, font=\large] at (0.7,0.15)
+  {$|\psi_\theta\rangle$ is an ML model with parameters $\theta$};
+\node[align=left, font=\large] at (0.7,-0.95)
+  {Goal:\\Train/certify $\theta^\ast$ such that $\langle\psi_{\theta^\ast}|\rho|\psi_{\theta^\ast}\rangle$ is large};
+
+\end{tikzpicture}
