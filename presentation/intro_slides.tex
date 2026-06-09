@@ -17,37 +17,32 @@
 
 \begin{frame}{Main Guarantee}
     \begin{theorem}
-        There exists a certification algorithm that, given a classical description of an $n$-qubit pure state $\ket{\psi_{\text{target}}}$ and a single copy of an $n$-qubit state $\rho_{\text{lab}}$, performs only single-qubit measurements and outputs:
+        There exists a certification algorithm that takes a classical description of an $n$-qubit pure state $\ket{\psi_{\text{target}}}$ and a single copy of an $n$-qubit state $\rho_{\text{lab}}$, performs only single-qubit measurements, and outputs:
         \begin{itemize}
             \item \textsc{Accept} with probability at least
-            \[
-                \mathrm{Fid} := \bra{\psi_{\text{target}}}\rho_{\text{lab}}\ket{\psi_{\text{target}}};
-            \]
+            $\mathrm{Fid} := \bra{\psi_{\text{target}}}\rho_{\text{lab}}\ket{\psi_{\text{target}}}$
             \item \textsc{Reject} with probability at least
-            \[
-                \mathrm{Infid}/n := (1-\mathrm{Fid})/n.
-            \]
+            $\mathrm{Infid}/n := (1-\mathrm{Fid})/n$
         \end{itemize}
     \end{theorem}
 
-    \begin{center}
-        \textbf{One qubit at a time: compare locally, guarantee globally.}
-    \end{center}
+    %\begin{center}
+    %    One qubit at a time: compare locally, guarantee globally.
+    %\end{center}
 \end{frame}
 
 \begin{frame}{Why Not Tomography?}
     \begin{columns}[T]
         \begin{column}{0.56\textwidth}
             \begin{itemize}
-                \item Tomography estimates the full density matrix $\rho \in \mathbb{C}^{d\times d}$.
-                \item For general states, meaningful metrics require copy complexity polynomial in $d$.
-                \item With $d=2^n$, this is exponential in the number of qubits.
+                \item<1-> Tomography estimates the full density matrix $\rho \in \mathbb{C}^{d\times d}$
+                \item<1-> Number of copies is polynomial in $d$
+                \item<2-> With $d=2^n$, this is exponential in the number of qubits.
             \end{itemize}
 
             \vspace{0.6em}
-            \begin{block}{Certification is a property-testing problem}
-                We only need to distinguish high fidelity from low fidelity with one fixed target state, not reconstruct $\rho_{\text{lab}}$.
-            \end{block}
+            \pause
+                We only need to distinguish high fidelity from low fidelity with one fixed target state, not reconstruct $\rho_{\text{lab}}$
         \end{column}
         \begin{column}{0.38\textwidth}
             \centering

@@ -285,13 +285,3 @@
 \newcommand{\meghalcomment}[1]{}
 
 \newcommand{\ryancomment}[1]{}
-
-    % braket stuff
-\DeclarePairedDelimiter{\bra}{\langle}{\rvert}%
-\DeclarePairedDelimiter{\ket}{\lvert}{\rangle}%
-\DeclarePairedDelimiterX\innerp[2]{\langle}{\rangle}{#1\delimsize\vert\mathopen{}#2}%
-\DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1\delimsize\vert\mathopen{}#2}%
-\DeclarePairedDelimiterX\braketOP[3]{\langle}{\rangle}{#1\,\delimsize\vert\,\mathopen{}#2\,\delimsize\vert\,\mathopen{}#3}%
-\DeclarePairedDelimiterX\ketbra[2]{\lvert}{\rvert}{#1\delimsize\rangle\!\delimsize\langle#2}%
-\DeclarePairedDelimiterX\outerp[2]{\lvert}{\rvert}{#1\delimsize\rangle\!\delimsize\langle#2}%
-\DeclarePairedDelimiterX\projector[1]{\lvert}{\rvert}{#1\delimsize\rangle\!\delimsize\langle#1}%
