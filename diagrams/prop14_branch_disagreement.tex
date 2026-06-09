@@ -29,11 +29,11 @@
 % Dashed: "blind" arrow overlaid for comparison
 \draw[->, densely dashed, gray] (1.0, 1.8) -- (4.2, 1.8);
 
-% Gap brace between blind and average
-\draw[decorate,
-  decoration={brace, mirror, amplitude=3pt}]
-  (4.4, 1.8) -- (4.4, 2.45)
-  node[midway, right=4pt, font=\footnotesize]
+% Gap marker between blind and average
+\draw[thin] (4.35,1.8) -- (4.55,1.8);
+\draw[thin] (4.35,2.45) -- (4.55,2.45);
+\draw[thin] (4.45,1.8) -- (4.45,2.45);
+\node[font=\footnotesize, right=4pt] at (4.55,2.125)
   {$\Delta$};
 
 % --- Bottom: two arrows showing agreement ---

@@ -1,7 +1,3 @@
-\DeclarePairedDelimiterX\diverg[2]{(}{)}{#1 \mathrel{}\mathclose{}\delimsize{:}\mathopen{}\mathrel{} #2}
-\newcommand{\Del}[3]{\Delta_{#1}\diverg{#2}{#3}}
-\newcommand{\EFid}[3]{\mathrm{EFid}_{#1}\diverg{#2}{#3}}
-
 \newcommand{\ketbb}{\ket{\smash{b^\bot}}}
 \newcommand{\tpO}{\smash{\widetilde{\smash{\psi}}^0}}
 \newcommand{\ktpO}
@@ -25,7 +21,7 @@
 \newcommand{\labo}{\smash{\lab^{1}}}
 
 \section{Access Model} %and Computational Efficiency}
-Our proof relied on Corollary\ref{cor:perpy} to give us a basis. This is a pretty arbitrary and maybe computationally powerful black box, so let's try to reduce it to something a little more reasonable. The following is our reduced black box.
+Our proof relied on \Cref{cor:perpy} to give us a basis. This is a pretty arbitrary and maybe computationally powerful black box, so let's try to reduce it to something a little more reasonable. The following is our reduced black box.
 
 \begin{definition}\label{def:access model}
 We consider an oracle for $\ket{\psi}$. It takes as input any product operator $\Pi=\bigotimes_{i \in [n]} \Pi_i$ where each $\Pi_i$ is a single-qubit projection operator. It outputs the value $\bra{\psi} \Pi \ket{\psi}$. Note that $\Pi_k=\Id$ is allowed.

@@ -27,19 +27,4 @@
 \draw[densely dashed] (Wr) -- (Pr);
 \draw[thin] (0.7, 0) -- (0.7, -0.2) -- (0.9, -0.2);
 
-% --- Annotation ---
-\node[font=\footnotesize, text width=5.5cm,
-  align=left, anchor=north west] at (5.2, 1.5)
-  {$\|a^0 v^0 + a^1 \widetilde{v}^1\|^2
-    = \Pr[\textsc{Accept}]$\\
-   $\|a^1 v^0 - a^0 \widetilde{v}^1\|^2
-    = \Pr[\textsc{Reject}]$\\[2pt]
-   These sum to $1$.\\[6pt]
-   Projecting onto $|U^0\rangle$
-   (Cauchy--Schwarz):\\[2pt]
-   $|\langle U|V\rangle|^2
-    \leq \Pr[\textsc{Accept}]$\\[2pt]
-   $\Delta(|V\rangle\!:\!|U\rangle)
-    \leq \Pr[\textsc{Reject}]$};
-
 \end{tikzpicture}
