@@ -1,2 +1,141 @@
 \section{Lower Bound}
-Placeholder
+We aim to construct states $\ket{\varphi_C}$ and $\rho_C$ such that their measurement outcomes are close, while the fidelity is small enough so that the algorithm will reject.
+
+\subsection{SIC-POVM states}
+A POVM is said to be \textit{informationally complete} if the quantum state can be uniquely determined from the measurement outcome probabilities.
+Since the real vector space of Hermitian matrices on $\mathbb{C}^d$ has real dimension $d^2$, any such POVM must have at least $d^2$ elements.
+If we further require that the pairwise Hilbert--Schmidt inner products between distinct POVM elements are equal, we call such a POVM a SIC-POVM.
+Equivalently, a SIC-POVM in $\mathbb{C}^d$ can be specified by $d^2$ pure states $\ket{\chi_{k}}$ such that 
+\begin{align}\label{eq_202606101020}
+\left|\bra{\chi_{i}}\ket{\chi_j}\right|^2=\frac{1}{d+1},\quad i\neq j.
+\end{align}
+The corresponding POVM element is
+\begin{align}\label{eq_202606101437}
+E_k=\frac{1}{d}\ket{\chi_k}\bra{\chi_k}.
+\end{align}
+\begin{remark}
+It is still unknown whether SIC-POVMs exist in every dimension $d$~\cite{10.1063/1.1737053}.
+\end{remark}
+Luckily, in the qubit case $d=2$, we can construct a SIC-POVM as follows.
+Let
+\begin{align*}
+r_1&=\frac{1}{\sqrt{3}}(1,1,1),\quad r_2=\frac{1}{\sqrt{3}}(1,-1,-1),\quad r_3=\frac{1}{\sqrt{3}}(-1,1,-1),\quad r_4=\frac{1}{\sqrt{3}}(-1,-1,1).
+\end{align*}
+Define the rank-one projection
+\begin{align}\label{eq_202606101024}
+\ket{\chi_k}\bra{\chi_k}=\frac{1}{2}\left(I_2+r_k\cdot\sigma\right)
+\end{align}
+where $\sigma$ is the Pauli vector.
+Then, it is a valid POVM, since
+\begin{align*}
+\sum_{k=1}^4 E_k=I_2+\frac{1}{4}\left(\sum_{k=1}^4r_k\right)\cdot\sigma=I_2.
+\end{align*}
+
+To check \eqref{eq_202606101020}, we compute
+\begin{align}\label{eq_202606101002}
+\left|\bra{\chi_{i}}\ket{\chi_j}\right|^2&=\tr\left(\ket{\chi_i}\bra{\chi_i}\ket{\chi_j}\bra{\chi_j}\right)=\frac{1}{4}\tr\left(I_2+r_i\cdot\sigma+r_j\cdot\sigma+\left(r_i\cdot\sigma\right)\left(r_j\cdot\sigma\right)\right).
+\end{align}
+Note that 
+\begin{align*}
+\tr\left(r_i\cdot\sigma\right)=\sum_{\ell=1}^3r_{i\ell}\tr\sigma_{\ell}=0
+\end{align*}
+and
+\begin{align*}
+\tr\left(\left(r_i\cdot\sigma\right)\left(r_j\cdot\sigma\right)\right)&=\sum_{a,b=1}^3r_{ia}r_{jb}\tr\left(\sigma_a\sigma_b\right)=2\sum_{a,b=1}^3r_{ia}r_{jb}\delta_{ab}=2r_i\cdot r_j.
+\end{align*}
+Also, by computation,
+\begin{align*}
+r_i\cdot r_j=-\frac{1}{3},\quad i\neq j.
+\end{align*}
+Thus, \eqref{eq_202606101002} becomes
+\begin{align*}
+\left|\bra{\chi_{i}}\ket{\chi_j}\right|^2&=\frac{1}{2}\left(1+r_i\cdot r_j\right)=\frac{1}{3}=\frac{1}{2+1}.
+\end{align*}
+Hence, $\{E_k\}_{k=1}^4$ represents a valid SIC-POVM in dimension $2$.
+
+We now show that, for any one-qubit measurement basis, at least one of the cross terms $\ket{\chi_1}\bra{\chi_b}$ is suppressed for some $b\in\{2,3,4\}$.
+\begin{lemma}
+For any orthonormal basis $\{\ket{\varphi},\ket{\varphi^\perp}\}$ of $\mathbb{C}^2$, there exists $b\in\{2,3,4\}$ such that
+\begin{align}\label{eq_202606101458}
+\left|\bra{\varphi}\ket{\chi_1}\bra{\chi_b}\ket{\varphi}\right|+\left|\bra{\varphi^\perp}\ket{\chi_1}\bra{\chi_b}\ket{\varphi^\perp}\right|\le\sqrt{\frac{8}{9}}.
+\end{align}
+\end{lemma}
+\begin{proof}
+Let the Bloch vector of $\ket{\varphi}$ be $v\in\mathbb{R}^3$.
+Then, by orthogonality, the Bloch vector of $\ket{\varphi^\perp}$ is $-v$.
+As a result, we have
+\begin{align*}
+\left|\bra{\varphi}\ket{\chi_k}\right|^2&=\tr\left(\ket{\varphi}\bra{\varphi}\ket{\chi_k}\bra{\chi_k}\right)=\frac{1}{4}\tr\left(I_2+v\cdot\sigma+r_k\cdot\sigma+\left(v\cdot\sigma\right)\left(r_k\cdot\sigma\right)\right)=\frac{1}{2}\left(1+v\cdot r_k\right)
+\end{align*}
+and
+\begin{align*}
+\left|\bra{\varphi^\perp}\ket{\chi_k}\right|^2&=\tr\left(\ket{\varphi^\perp}\bra{\varphi^\perp}\ket{\chi_k}\bra{\chi_k}\right)=\frac{1}{4}\tr\left(I_2-v\cdot\sigma+r_k\cdot\sigma-\left(v\cdot\sigma\right)\left(r_k\cdot\sigma\right)\right)=\frac{1}{2}\left(1-v\cdot r_k\right)
+\end{align*}
+for any $k$.
+Let $\alpha=v\cdot r_1$ and $\beta=v\cdot r_k$.
+Then, \eqref{eq_202606101458} is equivalent to
+\begin{align*}
+\left(\frac{1}{2}\sqrt{(1+\alpha)(1+\beta)}+\frac{1}{2}\sqrt{(1-\alpha)(1-\beta)}\right)^2=\frac{1}{2}\left(1+\alpha\beta+\sqrt{\left(1-\alpha^2\right)\left(1-\beta^2\right)}\right)\le\frac{8}{9}.
+\end{align*}
+
+By direct computations,
+\begin{align*}
+v\cdot\left(r_1-r_2\right)&=\frac{2}{\sqrt{3}}\left(v_2+v_3\right)\\
+v\cdot\left(r_1-r_3\right)&=\frac{2}{\sqrt{3}}\left(v_1+v_3\right)\\
+v\cdot\left(r_1-r_4\right)&=\frac{2}{\sqrt{3}}\left(v_1+v_2\right).
+\end{align*}
+Also,
+\begin{align*}
+\left(v_1+v_2\right)^2+\left(v_2+v_3\right)^2+\left(v_1+v_3\right)^2=1+\left(v_1+v_2+v_3\right)^2\ge1.
+\end{align*}
+Thus, there exists $b\in\{2,3,4\}$ such that
+\begin{align*}
+|\alpha-\beta|=\left|v\cdot\left(r_1-r_b\right)\right|\ge\frac{2}{\sqrt{3}}\cdot\frac{1}{\sqrt{3}}=\frac{2}{3}.
+\end{align*}
+Observe that
+\begin{align*}
+\sqrt{\left(1-\alpha^2\right)\left(1-\beta^2\right)}\le\frac{2-\alpha^2-\beta^2}{2}.
+\end{align*}
+Hence,
+\begin{align*}
+\frac{1}{2}\left(1+\alpha\beta+\sqrt{\left(1-\alpha^2\right)\left(1-\beta^2\right)}\right)\le\frac{1}{2}\left(2-\frac{1}{2}\left(\alpha-\beta\right)^2\right)\le\frac{1}{2}\left(2-\frac{1}{2}\cdot\frac{4}{9}\right)=\frac{8}{9}.
+\end{align*}
+This proves the lemma.
+\end{proof}
+
+\iffalse
+\subsection{Proof of Theorem 2}
+Let $\left\{\ket{\chi_i}\right\}_{i=0}^3$ be the qubit SIC-POVM states.
+Let $N=\lfloor 2^{10^{-10}n}\rfloor$ and let $C=\left(c^1,\cdots,c^N\right)$ with $c^i\in\{0,1,2,3\}^n$.
+Define
+\[
+	v_C=\frac{1}{\sqrt{N}}\sum_{t=1}^N\ket{\varphi_{c^t}}\quad\text{and}\quad\rho_C=\frac{1}{N}\sum_{t=1}^N\ket{\varphi_{c^t}}\bra{\varphi_{c^t}}
+\]
+where
+\[
+	\ket{\varphi_{c^t}}=\ket{\chi_{c^t_1}}\otimes\cdots\otimes\ket{\chi_{c^t_n}}.
+\]
+Let $\ket{\varphi_C}$ be the state in the direction of $v_C$.
+Denote $\sigma_1=\ket{\varphi_C}\bra{\varphi_C}$ and $\sigma_2=\rho_C$.
+By Lemmas 20 and 21, we have
+\[
+	d_{\mathrm{TV}}\left(M(\sigma_1),M(\sigma_2)\right)\le\frac{5}{N}+2^{-0.0001n}=2^{-\Omega (n)}
+\]
+for any $10^{-8}n$-adaptive basis $M$.
+
+Consider any algorithm using $T=2^{o(n)}$ copies.
+Let $\mathfrak{D}_1$ and $\mathfrak{D}_2$ be the distributions corresponding to measuring $2^T$ copies of $\ket{\varphi_C}\bra{\varphi_C}$ and $\rho_C$.
+Denote the outcome $Y_{<t}=(Y_1,\cdots,Y_{t-1})$.
+Therefore,
+\begin{align*}
+d_{\mathrm{TV}}\left(\mathfrak{D}_1,\mathfrak{D}_2\right)&\le\sum_{t=1}^Td_{\mathrm{TV}}\left(M_t(y_{<t})(\sigma_1),M_t(y_{<t})(\sigma_2)\right)\\
+&\le\sum_{t=1}^T\sup_{y_{<t}}\ d_{\mathrm{TV}}\left(M_t(y_{<t})(\sigma_1),M_t(y_{<t})(\sigma_2)\right)\\
+&\le T\cdot2^{-\Omega(n)}=2^{-\Omega(n)}.
+\end{align*}
+We conclude the whole proof.
+\fi
+
+%To bound the fidelity, we compute
+%\begin{align*}
+%\bra{\varphi_C}\rho_C\ket{\varphi_C}&=\frac{1}{N^2}%\sum\bra{\varphi_{c^s}}\ket{\varphi_{c^t}}%%\bra{\varphi_{c^t}}\ket{\varphi_{c^q}}
+%\end{align*}
