@@ -31,7 +31,7 @@
     %\end{center}
 \end{frame}
 
-\begin{frame}{Why Not Tomography?}
+\begin{frame}{Tomography}
     \begin{columns}[T]
         \begin{column}{0.56\textwidth}
             \begin{itemize}
@@ -58,7 +58,7 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{Sample-Optimal Certification Is Not Measurement-Friendly}
+\begin{frame}{Naive Certification}
     \begin{columns}[T]
         \begin{column}{0.5\textwidth}
             For a known pure target, certification can be sample-efficient if we can perform the target projector
@@ -76,10 +76,9 @@
         \end{column}
     \end{columns}
 
+    \pause
     \vspace{0.3em}
-    \begin{alertblock}{Circularity}
-        These measurements require preparing or inverting the same highly entangled state whose preparation we wanted to certify.
-    \end{alertblock}
+      Circularity: We need $\ket{\psi_{\text{target}}}$ to test $\ket{\psi_{\text{target}}}$.
 \end{frame}
 
 \begin{frame}{Classical Shadows Help, But Have Tradeoffs}
@@ -93,6 +92,7 @@
                 Dimension-independent sample complexity for fidelity estimation, but require deep circuits and hard target overlaps for general $\ket{\psi}$.
             \end{block}
         \end{column}
+        \pause
         \begin{column}{0.48\textwidth}
             \begin{block}{Single-qubit Pauli shadows}
                 Experimentally simple, but worst-case sample complexity grows exponentially for highly entangled targets.

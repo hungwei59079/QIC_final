@@ -26,7 +26,26 @@ The setting is motivated by cases where a useful quantum state has a well unders
 \subsection{Tomography (density estimation)}
 Before discussing state certification, we start with the baseline problem of \emph{tomography}. Here the goal is to produce a full classical estimate $\wh{\rho}$ of an unknown density matrix $\rho \in \C^{d \times d}$, given $n$ copies $\rho^{\otimes n}$, up to error~$\eps$ (whp) for some notion of ``distance''. A basic strategy is to measure an informationally complete family of observables on many copies, estimate their expectation values, and then reconstruct a density matrix consistent with those estimates. We use $k$ to denote the \emph{rank} of $\rho$, which is $1$ when $\rho$ is a pure state, and in general is at most~$d$. The number of copies needed depends strongly on both $k$ and the distance measure (see \Cref{sec:distances} for a review).
 
-The sample-optimal tomography results make the scale of this task clear. Haah et al.~\cite{haah2016sample} showed that $n = O(kd/\epsilon) \cdot \log(d/\epsilon)$ copies suffice to obtain infidelity~$\eps$ (i.e., $\Fid{\rho}{\wh{\rho}} \leq 1 - \eps$), and proved nearly matching lower bounds in related regimes. Independently, O'Donnell and Wright~\cite{swan1swan2_2016efficient} gave Hilbert--Schmidt and trace-distance guarantees, including a ``PCA'' form: for arbitrary $\rho$, one can compete with the best rank-$k$ approximation using $n = O(kd/\epsilon^2)$ copies. Their followup~\cite{swan1swan2_2017efficient} sharpened the infidelity bounds and extended this low-rank approximation viewpoint.
+In practice, tomography turns measurement outcomes into estimates of the coordinates of~$\rho$. For example, one can measure Pauli observables on many independently prepared copies, estimate each expectation value from its empirical average, and expand the density matrix in the Pauli basis using those estimates. Since the reconstructed matrix may not be positive semidefinite or have trace~$1$, practical algorithms usually add a projection or maximum-likelihood step to return a valid density matrix.
+
+Here is how many copies are needed for tomography under different distance measures:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{p{0.16\linewidth}p{0.26\linewidth}p{0.20\linewidth}p{0.28\linewidth}}
+\toprule
+Reference & Setting & Copies \\
+\midrule
+\cite{haah2016sample} & Infidelity & $O(kd/\epsilon)\log(d/\epsilon)$ \\
+  \cite{haah2016sample} & Trace distance & $O(kd/\epsilon^2)\log(d/\epsilon)$ \\
+\cite{swan1swan2_2016efficient} & Hilbert--Schmidt distance & $O(d/\eps^2)$ \\
+\cite{swan1swan2_2016efficient} & Trace distance & $O(kd/\epsilon^2)$ \\
+\cite{swan1swan2_2016efficient} & Rank-$k$ approximator & $O(kd/\epsilon^2)$ \\
+\cite{swan1swan2_2017efficient} & Infidelity & $O(k^2d/\epsilon)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Density testing}
 
@@ -34,13 +53,29 @@ Tomography results face the inherent issue that $n = \wt{\Theta}(d^2)$ copies ar
 
 A typical quantum property testing problem involves two disjoint classes $\calC_1$, $\calC_2$ of $d$-dimensional quantum states. Given $n$ copies of an unknown $\rho$, promised to be in either~$\calC_1$ or~$\calC_2$, the task is to distinguish which is the case (whp) using few copies of~$\rho$. In particular, the \emph{quantum state certification} problem for fixed state $\sigma \in \C^{d \times d}$ is the case when $\calC_1 = \{\sigma\}$ and $\calC_2 = \{ \rho : \mathrm{D}(\rho,\sigma) > \eps\}$ for some notion $\mathrm{D}(\cdot, \cdot)$ of distance and some parameter~$\eps$.
 
-When $\sigma$ is a \emph{pure} state and arbitrary measurements are allowed, certification is much cheaper than tomography. A standard argument shows (see, e.g.,~\cite{montanaro2013survey}) that infidelity certification needs only $n = O(1/\eps)$ copies; this also implies $n = O(1/\eps^2)$ copies suffice for trace distance. The same copy bound is possible when both $\rho$ \emph{and} $\sigma$ are unknown pure states and one receives copies of each. If we additionally restrict the measurements to Pauli observables, direct fidelity estimation~\cite{flammia2011direct} still gives a general protocol for a known pure target, but with $n = O(d/\eps^2)$ copies.
+Here is how many copies are needed for tomography under different distance measures:
+When $\sigma$ is a \emph{pure} state and arbitrary measurements are allowed, certification is much cheaper than tomography. Mixed targets are less well understood. See the table below for a summary of results.
 
-Mixed targets behave differently. The maximally mixed state $\sigma = \Id/d$ is the main general benchmark: Badescu, O'Donnell, and Wright~\cite{odonnell2015quantum} showed that trace-distance certification requires and suffices with $n = \Theta(d/\eps^2)$ copies. The upper bound effectively estimates the \emph{purity} $\tr(\rho^2)$ well enough to distinguish purity $1/d$ from purity exceeding $1/d+\eps^2/d$. This is equivalent to distinguishing $\Id/d$ from states that are $\epsilon/\sqrt{d}$-far in Hilbert--Schmidt distance and $\epsilon^2$-far in Bures $\chi^2$-divergence. The lower bound was mentioned earlier as \Cref{thm:paninski-lower}.
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+Reference & Setting & Copies \\
+\midrule
+\cite{montanaro2013survey} & Pure target $\sigma$, infidelity & $O(1/\eps)$ \\
+\cite{montanaro2013survey} & Pure $\sigma$, trace-distance & $O(1/\eps^2)$ \\
+%\cite{montanaro2013survey} & Unknown pure $\sigma$ and lab states, infidelity & O(1/\eps)\\
+\cite{flammia2011direct,da2011practical,aolita2015reliable} & Pure $\sigma$, Pauli observables, fidelity & $O(d/\eps^2)$ \\
+\cite{odonnell2015quantum} & $\sigma = \Id/d$, fidelity & $\Theta(d/\eps^2)$ \\
+  \cite{odonnell2015quantum} & Purity $\tr(\rho^2)$ & $O(d/\eps)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\subsection{Certification with restricted measurements} \label{sec:restricted-measurement}
+\subsection{Restricted measurements} \label{sec:restricted-measurement}
 
-The copy-efficient protocols above hide a second resource: measurement complexity. They implicitly assume one can implement either the two-outcome POVM $\{\ket{\psi_{target}}\bra{\psi_{target}}, \Id - \ket{\psi_{target}}\bra{\psi_{target}}\}$ or a SWAP test~\cite{buhrman2001quantum} between $\rho_{lab}$ and a freshly prepared copy of $\ket{\psi_{target}}$. Both use few copies, but both require preparing or recognizing $\ket{\psi_{target}}$, which may be a highly entangled $n$-qubit pure state.
+The copy-efficient protocols above hide a second resource: measurement complexity. They implicitly assume one can implement either the two-outcome POVM $\{\ket{\psi_{target}}\bra{\psi_{target}}, \Id - \ket{\psi_{target}}\bra{\psi_{target}}\}$ or a SWAP test~\cite{buhrman2001quantum} between $\rho_{lab}$ and a freshly prepared copy of $\ket{\psi_{target}}$. Both use few copies, but both require preparing or recognizing $\ket{\psi_{target}}$, which may be a highly entangled $n$-qubit pure state. Therefore, a number of techniques and papers have sprung up bounding copy-efficiency using restrited measurements.  The main result~\cite{gupta2025few} that we present here falls into this category.
 
 The framework of \emph{classical shadows}~\cite{huang2020predicting} partially side-steps this circularity. It replaces target-dependent measurements with random Clifford measurements on independent copies of $\rho$, producing classical data from which many observables can later be estimated.
 
@@ -50,13 +85,28 @@ Applied to the observable $\ket{\psi_{target}}\bra{\psi_{target}}$, this gives a
 
 If the measurements must be single-qubit Pauli measurements, the closest prior protocols are direct fidelity estimation~\cite{flammia2011direct} and a Pauli-based variant of classical shadows~\cite{huang2020predicting}. These methods simplify the measurements, but they shift the burden back to sample complexity in the worst case: direct fidelity estimation depends on the system dimension $d = 2^n$, while Pauli shadows depend on the weight of the observable being estimated. Pauli shadows are therefore well suited to certifying small subsystems, but not to estimating fidelity with an arbitrary highly entangled $n$-qubit target.
 
-\subsection{Certification of structured state classes and mixed targets} \label{sec:structured-classes}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+Reference & Setting & Copies \\
+\midrule
+\cite{buhrman2001quantum} & SWAP test with target copies & copy-efficient \\
+\cite{huang2020predicting} & Random Clifford shadows, fidelity & $O(1/\eps^2)$ \\
+\cite{flammia2011direct} & Pauli observables, fidelity & $O(d/\eps^2)$ \\
+\cite{huang2020predicting} & Single-qubit Pauli shadows & observable-dependent \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Structured state classes} \label{sec:structured-classes}
 
 For target states drawn from structured classes, simple measurements can certify much more than they can for arbitrary targets. The common theme is that the target's structure makes the relevant fidelity information visible through a smaller family of observables. Stabilizer states and outputs of shallow quantum circuits admit efficient certification by direct fidelity estimation~\cite{flammia2011direct} or by randomized Pauli shadows~\cite{huang2020predicting}. Similar structure supports protocols for hypergraph states and output states of IQP circuits~\cite{takeuchi2018verification}, bosonic Gaussian states~\cite{aolita2015reliable}, and fermionic Gaussian states~\cite{gluza2018fidelity}. For generic random target states, cross-entropy benchmarking (XEB) estimates a related fidelity quantity under suitable noise models~\cite{arute2019quantum}.
 
 A complementary line of work asks how the answer changes when the target may be mixed or when we allow a different measurement model~\cite{buadescu2019quantum}.
 
-\subsection{The asymptotic regime for state discrimination} \label{sec:asympt-state-discrim}
+\subsection{The asymptotic regime} \label{sec:asympt-state-discrim}
 
 There is also a related asymptotic theory of state discrimination. In the simplest version, two states $\sigma_1,\sigma_2 \in \C^{d \times d}$ are known, and one receives copies of either $\sigma_1$ or $\sigma_2$. The non-asymptotic question asks for the least number of copies~$n$ needed to distinguish the two cases with high probability --- say, with both type~I and type~II errors at most $\delta=1/3$. One can reduce this~$\delta$ to any smaller constant by increasing~$n$ by a constant factor.
 

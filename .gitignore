@@ -9,3 +9,5 @@
 *.toc
 *.snm
 *.blg
+*.ps
+*.dvi
