@@ -1,0 +1,14 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+\node[font=\bfseries] at (0,1.65) {Random Pauli};
+\node[draw, rounded corners=10pt, fill=huangPaleBlue, minimum width=1.85cm, minimum height=1.55cm] at (0,0.75) {};
+\foreach \x/\y in {-0.45/1.15,0.05/1.15,-0.45/0.72,0.05/0.72,0.5/0.72,-0.25/0.3,0.25/0.3}
+  {\node[huang bit, fill=orange!16] at (\x,\y) {}; \HuangAtom{\x}{\y}}
+\node[huang bit, fill=orange!18] at (0.85,-0.15) {};
+\node[text=huangOrange] at (0,-0.65) {Random X/Y/Z-basis};
+\node[align=center, text width=3.1cm] at (0,-1.15)
+  {Single-qubit Pauli bases,\\but exponentially many samples};
+
+\HuangUseBoundingBox{-2.45}{-1.75}{2.45}{2.0}
+
+\end{tikzpicture}

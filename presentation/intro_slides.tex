@@ -1,4 +1,35 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+
 \section{Introduction}
+
+\begin{frame}{Tomography}
+    \begin{columns}[T,onlytextwidth]
+        \begin{column}{0.56\textwidth}
+            \begin{itemize}
+                \item<1-> Tomography estimates the full density matrix $\rho \in \mathbb{C}^{d\times d}$
+                \item<1-> Number of copies is polynomial in $d$
+                \item<2-> With $d=2^n$, this is exponential in the number of qubits.
+            \end{itemize}
+
+            \vspace{0.6em}
+            \uncover<3->{
+                We only need to distinguish high fidelity from low fidelity with one fixed target state, not reconstruct $\rho_{\text{lab}}$
+            }
+        \end{column}
+        \begin{column}{0.38\textwidth}
+            \centering
+            \begin{tikzpicture}[font=\small, >=Stealth]
+                \node[draw, rounded corners=3pt, minimum width=2.25cm, minimum height=0.8cm, fill=blue!8] (copies) at (0,1.2) {$\rho^{\otimes m}$};
+                \node[draw, rounded corners=3pt, minimum width=2.25cm, minimum height=0.8cm, fill=orange!12] (tomo) at (0,0) {Tomography};
+                \node[draw, rounded corners=3pt, minimum width=2.25cm, minimum height=0.8cm, fill=green!10] (est) at (0,-1.2) {$\widehat{\rho}$};
+                \draw[->, thick] (copies) -- (tomo);
+                \draw[->, thick] (tomo) -- (est);
+                \uncover<2->{\node[align=center, text=red!70!black] at (0,-2.1) {$m$ scales with\\$d=2^n$};}
+                \HuangUseBoundingBox{-1.35}{-2.45}{1.35}{1.65}
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
 
 \begin{frame}{State Certification}
     \begin{center}
@@ -15,93 +46,61 @@
     \end{block}
 \end{frame}
 
-\begin{frame}{Main Guarantee}
-    \begin{theorem}
-        There exists a certification algorithm that takes a classical description of an $n$-qubit pure state $\ket{\psi_{\text{target}}}$ and a single copy of an $n$-qubit state $\rho_{\text{lab}}$, performs only single-qubit measurements, and outputs:
-        \begin{itemize}
-            \item \textsc{Accept} with probability at least
-            $\mathrm{Fid} := \bra{\psi_{\text{target}}}\rho_{\text{lab}}\ket{\psi_{\text{target}}}$
-            \item \textsc{Reject} with probability at least
-            $\mathrm{Infid}/n := (1-\mathrm{Fid})/n$
-        \end{itemize}
-    \end{theorem}
-
-    %\begin{center}
-    %    One qubit at a time: compare locally, guarantee globally.
-    %\end{center}
-\end{frame}
-
-\begin{frame}{Tomography}
-    \begin{columns}[T]
-        \begin{column}{0.56\textwidth}
-            \begin{itemize}
-                \item<1-> Tomography estimates the full density matrix $\rho \in \mathbb{C}^{d\times d}$
-                \item<1-> Number of copies is polynomial in $d$
-                \item<2-> With $d=2^n$, this is exponential in the number of qubits.
-            \end{itemize}
-
-            \vspace{0.6em}
-            \pause
-                We only need to distinguish high fidelity from low fidelity with one fixed target state, not reconstruct $\rho_{\text{lab}}$
-        \end{column}
-        \begin{column}{0.38\textwidth}
-            \centering
-            \begin{tikzpicture}[font=\small, >=Stealth]
-                \node[draw, rounded corners=3pt, minimum width=2.25cm, minimum height=0.8cm, fill=blue!8] (copies) at (0,1.2) {$\rho^{\otimes m}$};
-                \node[draw, rounded corners=3pt, minimum width=2.25cm, minimum height=0.8cm, fill=orange!12] (tomo) at (0,0) {Tomography};
-                \node[draw, rounded corners=3pt, minimum width=2.25cm, minimum height=0.8cm, fill=green!10] (est) at (0,-1.2) {$\widehat{\rho}$};
-                \draw[->, thick] (copies) -- (tomo);
-                \draw[->, thick] (tomo) -- (est);
-                \node[align=center, text=red!70!black] at (0,-2.1) {$m$ scales with\\$d=2^n$};
-            \end{tikzpicture}
-        \end{column}
-    \end{columns}
-\end{frame}
-
 \begin{frame}{Naive Certification}
-    \begin{columns}[T]
+    \begin{columns}[T,onlytextwidth]
         \begin{column}{0.5\textwidth}
-            For a known pure target, certification can be sample-efficient if we can perform the target projector
+            It's trivial! Just use
             \[
                 \left\{\ket{\psi_{\text{target}}}\!\bra{\psi_{\text{target}}},
                 I-\ket{\psi_{\text{target}}}\!\bra{\psi_{\text{target}}}\right\}.
             \]
 
+            \pause
             \vspace{0.5em}
             Equivalently, one may use a SWAP test against a freshly prepared copy of $\ket{\psi_{\text{target}}}$.
+    \pause
+
+    \vspace{0.3em}
+      Circular: We need $\ket{\psi_{\text{target}}}$ to test $\ket{\psi_{\text{target}}}$
         \end{column}
         \begin{column}{0.46\textwidth}
             \centering
-            \resizebox{\textwidth}{!}{\input{../diagrams/huang_previous_deep_circuit.tex}}
+            \resizebox{\linewidth}{!}{\input{../diagrams/huang_previous_deep_circuit.tex}}
         \end{column}
     \end{columns}
 
-    \pause
-    \vspace{0.3em}
-      Circularity: We need $\ket{\psi_{\text{target}}}$ to test $\ket{\psi_{\text{target}}}$.
 \end{frame}
 
-\begin{frame}{Classical Shadows Help, But Have Tradeoffs}
-    \begin{center}
-        \resizebox{0.82\textwidth}{!}{\input{../diagrams/huang_classical_shadows.tex}}
-    \end{center}
-
-    \begin{columns}[T]
+\begin{frame}{Classical Shadows}
+    \begin{columns}[T,onlytextwidth]
         \begin{column}{0.48\textwidth}
+            \begin{center}
+                \makebox[0pt][c]{\hspace*{-2.5cm}\resizebox{0.95\linewidth}{!}{\input{../diagrams/huang_random_clifford.tex}}}
+            \end{center}
+
+            \vspace{0.4em}
             \begin{block}{Random Clifford shadows}
-                Dimension-independent sample complexity for fidelity estimation, but require deep circuits and hard target overlaps for general $\ket{\psi}$.
+                Number of samples fixed wrt dimension
+
+                Deep circuits and exponential classical postprocessing
             \end{block}
         \end{column}
-        \pause
-        \begin{column}{0.48\textwidth}
+        \begin{column}<2->{0.48\textwidth}
+            \begin{center}
+                \makebox[0pt][c]{\hspace*{-2.5cm}\resizebox{0.95\linewidth}{!}{\input{../diagrams/huang_random_pauli.tex}}}
+            \end{center}
+
+            \vspace{0.4em}
             \begin{block}{Single-qubit Pauli shadows}
-                Experimentally simple, but worst-case sample complexity grows exponentially for highly entangled targets.
+                Number of samples grows exponentially
+
+                Simple to build
             \end{block}
         \end{column}
     \end{columns}
 \end{frame}
 
-\begin{frame}{Existing Simple-Measurement Protocols Are Specialized}
+\begin{frame}{Restricted Measurements}
     \begin{itemize}
         \item Direct fidelity estimation and Pauli-shadow variants work well for structured observables and target families.
         \item Efficient certification is known for stabilizer states, shallow-circuit outputs, hypergraph states, IQP outputs, and Gaussian states.
@@ -112,6 +111,24 @@
     \begin{center}
         \resizebox{0.58\textwidth}{!}{\input{../diagrams/huang_xeb_z_basis.tex}}
     \end{center}
+\end{frame}
+
+\begin{frame}{Main Theorem}
+    \begin{theorem}
+      There exists a certification algorithm that takes a classical description of an $n$-qubit {\bf pure} state $\ket{\psi_{\text{target}}}$ and a single copy of an $n$-qubit {\bf mixed} state $\rho_{\text{lab}}$, performs only {\bf single-qubit measurements}, and outputs:
+        \begin{itemize}
+            \item \textsc{Accept} with probability at least
+            $\mathrm{Fid} := \bra{\psi_{\text{target}}}\rho_{\text{lab}}\ket{\psi_{\text{target}}}$
+            \item \textsc{Reject} with probability at least
+            $\mathrm{Infid}/n := (1-\mathrm{Fid})/n$
+        \end{itemize}
+    \end{theorem}
+
+    \pause
+    To get an arbitrarily high success rate $1 - \epsilon$, just repeat $\frac n {\mathrm{Infid}} \log(1/\epsilon)$ times.
+    %\begin{center}
+    %    One qubit at a time: compare locally, guarantee globally.
+    %\end{center}
 \end{frame}
 
 \begin{frame}{Motivating Applications}
@@ -127,17 +144,16 @@
 \end{frame}
 
 \begin{frame}{What We Need From the Protocol}
-    \begin{columns}[T]
+    \begin{columns}[T,onlytextwidth]
         \begin{column}{0.5\textwidth}
             \begin{enumerate}
-                \item Use only single-qubit measurements on $\rho_{\text{lab}}$.
-                \item Use the classical description of $\ket{\psi_{\text{target}}}$ only for choosing measurement bases and computing conditioned target states.
-                \item Accumulate local evidence that provably controls the global fidelity.
+                \item Single-qubit measurements
+                \item Only use classical description of target
             \end{enumerate}
         \end{column}
         \begin{column}{0.46\textwidth}
             \centering
-            \resizebox{\textwidth}{!}{\input{../diagrams/huang_shadow_naive.tex}}
+            \resizebox{\linewidth}{!}{\input{../diagrams/huang_shadow_naive.tex}}
         \end{column}
     \end{columns}
 

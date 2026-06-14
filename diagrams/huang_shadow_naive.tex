@@ -1,6 +1,5 @@
 \IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
 \begin{tikzpicture}[>=Stealth, font=\footnotesize]
-
 \node[font=\bfseries] at (-2.2,1.55) {Lab state $\rho$};
 \node[draw, rounded corners=12pt, fill=huangPaleBlue, minimum width=2.15cm, minimum height=1.8cm] at (-2.2,0.55) {};
 \foreach \x/\y in {-2.55/1.0,-1.9/1.0,-2.85/0.55,-2.2/0.55,-2.55/0.1,-1.9/0.1}
@@ -16,5 +15,7 @@
 \node[font=\large] at (0,-0.7) {Naive idea:};
 \node[font=\large] at (0,-1.18) {Choose a qubit at random and compare locally};
 \node[font=\large] at (0,-1.75) {Issue: one-qubit marginal $\approx$ maximally mixed};
+
+\HuangUseBoundingBox{-4.1}{-2.0}{4.1}{1.9}
 
 \end{tikzpicture}

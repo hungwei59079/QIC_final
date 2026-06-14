@@ -10,6 +10,14 @@
 \definecolor{huangPeach}{RGB}{246,185,139}
 \definecolor{huangLavender}{RGB}{216,205,236}
 
+\makeatletter
+\@ifundefined{ifHuangShowBoundingBoxes}{%
+  \newif\ifHuangShowBoundingBoxes
+  % Set this to \HuangShowBoundingBoxesfalse to hide diagram guide boxes.
+  \HuangShowBoundingBoxesfalse
+}{}
+\makeatother
+
 \tikzset{
   huang arrow/.style={-Stealth, thick, draw=huangGray},
   huang dashed box/.style={draw, dashed, rounded corners=5pt, fill=huangPaleBlue, inner sep=5pt},
@@ -18,6 +26,20 @@
   huang meas/.style={draw, rounded corners=2pt, fill=huangLavender, minimum width=0.24cm, minimum height=0.24cm, inner sep=0pt},
   huang label/.style={font=\scriptsize},
   huang title/.style={font=\bfseries}
+}
+
+\providecommand{\HuangUseBoundingBox}[4]{%
+  \ifHuangShowBoundingBoxes
+    \begingroup
+      \pgfmathsetmacro{\huangbbcx}{(#1+#3)/2}
+      \pgfmathsetmacro{\huangbbcy}{(#2+#4)/2}
+      \draw[red!75!black, densely dashed, line width=0.6pt] (#1,#2) rectangle (#3,#4);
+      \draw[red!75!black, opacity=0.45, line width=0.4pt] (\huangbbcx,#2) -- (\huangbbcx,#4);
+      \draw[red!75!black, opacity=0.45, line width=0.4pt] (#1,\huangbbcy) -- (#3,\huangbbcy);
+    \endgroup
+  \fi
+  \pgfresetboundingbox
+  \path[use as bounding box] (#1,#2) rectangle (#3,#4);
 }
 
 \providecommand{\HuangAtom}[2]{%
@@ -131,3 +153,5 @@
       \fill[huangRed] (\p) circle (0.08) node[\anch, font=\scriptsize, text=black] {\lab};
   \end{scope}%
 }
+
+\ignorespaces

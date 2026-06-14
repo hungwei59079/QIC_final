@@ -1,6 +1,5 @@
 \IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
 \begin{tikzpicture}[>=Stealth, font=\footnotesize]
-
 \node[font=\bfseries] at (0,1.75) {Cross-Entropy Benchmarking};
 \node[font=\large] at (0,1.2)
   {$\mathrm{XEB}\propto \mathbb{E}_{z\sim\rho}|\langle z|\psi\rangle|^2-2^{-n}$};
@@ -13,5 +12,7 @@
   {\node[huang bit, fill=huangLavender!60] at (\x,\y) {}; \HuangAtom{\x}{\y}}
 \node[huang bit, fill=huangLavender!65] at (1.25,-1.45) {};
 \node[text=huangPurple] at (0,-1.75) {$Z$-basis};
+
+\HuangUseBoundingBox{-3.25}{-2.0}{3.25}{2.05}
 
 \end{tikzpicture}

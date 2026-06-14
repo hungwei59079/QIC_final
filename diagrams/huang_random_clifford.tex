@@ -1,0 +1,13 @@
+\IfFileExists{../diagrams/huang_templates.tex}{\input{../diagrams/huang_templates.tex}}{\input{diagrams/huang_templates.tex}}
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+\node[font=\bfseries] at (-0.2,1.65) {Random Clifford};
+\HuangLabPatch[0.75]{-1.25}{0.75}
+\foreach \y in {0.35,0.55,0.75,0.95,1.15} \draw[huangGray] (-0.33,\y) -- (0.10,\y);
+\HuangCircuitGrid[0.72]{1.0}{0.75}{}
+\HuangMeasurementStack[0.9]{1.95}{0.2}
+\node[align=center, text width=3.3cm] at (0.25,-0.85)
+  {Deep random circuits\\and $Z$-basis measurements};
+
+\HuangUseBoundingBox{-2.45}{-1.75}{2.45}{2.0}
+
+\end{tikzpicture}
