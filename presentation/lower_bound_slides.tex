@@ -1,0 +1,89 @@
+\begin{frame}{The Lower Bound of Copies for Low-Adaptivity Algorithm}
+\begin{itemize}
+\item
+With sufficient adaptivity, $O(n)$ copies are enough.
+\item
+Under low-adaptivity constraint, linear copy complexity is not sufficient to work in the worst scenario.
+\end{itemize}
+
+\begin{theorem}[Theorem 2]
+There exists an $n$-qubit pure state $\ket{\mathsf{hyp}}$ and a mixed state $\rho_{\mathsf{lab}}$ such that
+\begin{align*}
+\bra{\mathsf{hyp}}\rho_{\mathsf{lab}}\ket{\mathsf{hyp}}
+\le 2^{-\Omega(n)}
+\end{align*}
+but any $cn$-adaptive certification algorithm with success probability at least $1/2+2^{-\Omega(n)}$ requires at least $2^{\Omega(n)}$ copies of $\rho_{\mathsf{lab}}$.
+\end{theorem}
+\end{frame}
+
+\begin{frame}{SIC-POVM}
+\begin{itemize}
+\item
+A SIC-POVM is a highly symmetric informationally complete POVM.
+\item
+In dimension $d$, it can be specified by $d^2$ pure states $\ket{\chi_k}$ such that
+\begin{align*}
+|\bra{\chi_i}\ket{\chi_j}|^2=\frac{1}{d+1},\quad i\neq j.
+\end{align*}
+\item
+For qubits, we have $4$ such states $\ket{\chi_1},\ket{\chi_2},\ket{\chi_3},\ket{\chi_4}$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The Hard-to-Certify State}
+\begin{itemize}
+\item
+Set $N=2^{10^{-10}n}$ and $C=(c^1,\cdots,c^N)$ where $c^k\in\{1,2,3,4\}^n$.
+\item
+Denote $\ket{\psi_{c^t}}=\ket{\chi_{c^t_1}}\otimes\cdots\otimes\ket{\chi_{c^t_n}}$.
+\item
+Define
+\begin{align*}
+v_C=\frac{1}{\sqrt{N}}\sum_{t=1}^N\ket{\psi_{c^t}}\quad\text{and}\quad\rho_C=\frac{1}{N}\sum_{s=1}^N\ket{\psi_{c^s}}\bra{\psi_{c^s}}.
+\end{align*}
+Put $\ket{\psi_C}={v_C}/{\|v_C\|}$.
+\item
+The states $\ket{\psi_C}\bra{\psi_C}$ and $\rho_C$ are hard to distinguish using low adaptive measurements.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The Cross Term Operator}
+\begin{lemma}
+Let $\{\ket{\varphi_x}\}_{x\in\{0,1\}^n}$ be an orthonormal basis for $(\mathbb{C}^2)^{\otimes n}$, and let $\mathcal{D}_1,\mathcal{D}_2$ be the outcome distributions by measuring $\ket{\psi_C}\bra{\psi_C}$ and $\rho_C$ in this basis, respectively.
+That is,
+\begin{align*}
+\mathcal{D}_1(x)=\left|\bra{\varphi_x}\ket{\psi_C}\right|^2 \quad\text{and}\quad\mathcal{D}_2(x)=\bra{\varphi_x}\rho_C\ket{\varphi_x}.
+\end{align*}
+Then, for large $n$, we have
+\begin{align*}
+d_{\mathrm{TV}}\left(\mathcal{D}_1,\mathcal{D}_2\right)\le\frac{1}{N}\sum_{x}\left|\sum_{s\neq t}\bra{\varphi_x}\ket{\psi_{c^s}}\bra{\psi_{c^t}}\ket{\varphi_{x}}\right|+2^{-0.0001n}.
+\end{align*}
+\end{lemma}
+\end{frame}
+
+\begin{frame}{The Cross Term Operator}
+\begin{lemma}
+With probability at least $0.9$, for large $n$, we have for all $10^{-8}n$-adaptive bases $\{\varphi_x\}$ that
+\begin{align*}
+\sum_{x\in\{0,1\}^n}\left|\sum_{s\neq t}\bra{\varphi_x}\ket{\psi_{c^s}}\bra{\psi_{c^t}}\ket{\varphi_{x}}\right|\le5.
+\end{align*}
+\end{lemma}
+\end{frame}
+
+\begin{frame}{Sketch of Proof}
+By those Lemmas, we have
+\[
+	d_{\mathrm{TV}}\left(M(\sigma_1),M(\sigma_2)\right)\le\frac{5}{N}+2^{-0.0001n}=2^{-\Omega (n)}
+\]
+for any $10^{-8}n$-adaptive basis $M$.
+
+Consider any algorithm using $T=2^{o(n)}$ copies.
+Let $\mathfrak{D}_1$ and $\mathfrak{D}_2$ be the distributions corresponding to measuring $2^T$ copies of $\ket{\varphi_C}\bra{\varphi_C}$ and $\rho_C$.
+Denote the outcome $Y_{<t}=(Y_1,\cdots,Y_{t-1})$.
+Therefore,
+\begin{align*}
+d_{\mathrm{TV}}\left(\mathfrak{D}_1,\mathfrak{D}_2\right)&\le\sum_{t=1}^Td_{\mathrm{TV}}\left(M_t(y_{<t})(\sigma_1),M_t(y_{<t})(\sigma_2)\right)\\
+&\le\sum_{t=1}^T\sup_{y_{<t}}\ d_{\mathrm{TV}}\left(M_t(y_{<t})(\sigma_1),M_t(y_{<t})(\sigma_2)\right)\\
+&\le T\cdot2^{-\Omega(n)}=2^{-\Omega(n)}.
+\end{align*}
+\end{frame}

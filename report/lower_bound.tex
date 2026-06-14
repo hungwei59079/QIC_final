@@ -103,7 +103,106 @@ Hence,
 This proves the lemma.
 \end{proof}
 
-\iffalse
+\subsection{The hard-to-certify state}
+Let $\ket{\chi_1},\ket{\chi_2},\ket{\chi_3},\ket{\chi_4}\in\mathbb{C}^2$ be pure states corresponding to a SIC-POVM.
+Pick any $N\in\mathbb{N}$ and set $C=(c^1,\cdots,c^N)$ where $c^k\in\{1,2,3,4\}^n$.
+We denote
+\begin{align*}
+\ket{\psi_{c^t}}=\ket{\chi_{c^t_1}}\otimes\cdots\otimes\ket{\chi_{c^t_n}}.
+\end{align*}
+Define
+\begin{align*}
+v_C=\frac{1}{\sqrt{N}}\sum_{t=1}^N\ket{\psi_{c^t}}\quad\text{and}\quad\rho_C=\frac{1}{N}\sum_{s=1}^N\ket{\psi_{c^s}}\bra{\psi_{c^s}}.
+\end{align*}
+Put $\ket{\psi_C}={v_C}/{\|v_C\|}$.
+
+We will choose $N$ and $C$ so that $\ket{\psi_C}\bra{\psi_C}$ and $\rho_C$ are hard to distinguish using low adaptive measurements.
+That is to say, for every allowed measurement basis, the corresponding outcome distributions are similar.
+The key is that the cross terms are small for every allowed measurement basis.
+Consequently, any low adaptive algorithm that accepts $\ket{\psi_C}\bra{\psi_C}$ with high probability must also accept $\rho_C$ with the same probability, and hence cannot reliably certify $\ket{\psi_C}$.
+
+We first show that $\|v_C\|^2$ is close to $1$ under suitable choice of $N$.
+
+\begin{lemma}
+Let $N=2^{10^{-10}n}$ and sample $C=(c^1,\cdots,c^N)$ uniformly from $\prod_{k=1}^N\{1,2,3,4\}^n$.
+If $n$ is large enough, then
+\begin{align}\label{eq_202606131546}
+\mathbb{P}\left(1-2^{-0.1n}\le\|v_C\|^2\le1+2^{-0.1n}\right)\ge0.9.
+\end{align}
+\end{lemma}
+\begin{proof}
+We first bound the probability that there exists a pair $s\neq t$ such that $d_{\text{H}}(c^s,c^t)\le0.3n$.
+For fixed $s\neq t$,
+\begin{align*}
+d_{\text{H}}(c^s,c^t)\sim\mathrm{Binomial}\left(n,\frac{3}{4}\right).
+\end{align*}
+Hence, by the Chernoff bound,
+\begin{align}\label{eq_202606111146}
+\mathbb{P}\left(d_{\text{H}}(c^s,c^t)\le 0.3n\right)\le\sum_{k=0}^{0.3n}\binom{n}{k}\left(\frac{3}{4}\right)^{k}\left(\frac{1}{4}\right)^{n-k}\le e^{-nD(0.3\|\frac{3}{4})}\le2^{-0.64n}.
+\end{align}
+By the union bound, we have
+\begin{align*}
+\mathbb{P}\left(\exists s\neq t, d_{\text{H}}(c^s,c^t)\le 0.3n\right)&\le2^{2\cdot10^{-10}n-0.64n}\le2^{-0.6n}\le0.1
+\end{align*}
+for large $n$.
+Thus,
+\begin{align*}
+\mathbb{P}\left(\forall s\neq t,d_{\text{H}}(c^s,c^t)> 0.3n\right)\ge1-0.1=0.9.
+\end{align*}
+
+Next, we estimate $\|v_C\|^2$.
+For any $a\neq b$, we have
+\begin{align*}
+\left|\bra{\chi_{a}}\ket{\chi_{b}}\right|^2=\frac{1}{2}\left(1+r_a\cdot r_b\right)=\frac{1}{2}\left(1+\left(-\frac{1}{3}\right)\right)=\frac{1}{3}.
+\end{align*}
+Therefore, with probability at least $0.9$, we have
+\begin{align*}
+\left|\|v_C\|^2-1\right|
+&=\left|\frac{1}{N}\sum_{s,t=1}^N\left(\bra{\chi_{c^s_1}}\otimes\cdots\otimes\bra{\chi_{c^s_n}}\right)\left(\ket{\chi_{c^t_1}}\otimes\cdots\otimes\ket{\chi_{c^t_n}}\right)-1\right|\\
+&=\left|\frac{1}{N}\sum_{s,t=1}^N\bra{\chi_{c^s_1}}\ket{\chi_{c^t_1}}\cdots\bra{\chi_{c^s_n}}\ket{\chi_{c^t_n}}-1\right|\\
+&=\frac{1}{N}\left|\sum_{s\neq t}\bra{\chi_{c^s_1}}\ket{\chi_{c^t_1}}\cdots\bra{\chi_{c^s_n}}\ket{\chi_{c^t_n}}\right|\\
+&\le\frac{1}{N}\sum_{s\neq t}\sqrt{\frac{1}{3}}^{0.3n}=\frac{1}{N}N(N-1)\cdot\sqrt{\frac{1}{3}}^{0.3n}
+\le N\cdot\sqrt{\frac{1}{3}}^{0.3n}\le2^{-0.1n}.
+\end{align*}
+This proves the lemma.
+\end{proof}
+
+From now on, suppose that $N=2^{10^{-10}n}$ and $C$ is sampled to satisfy \eqref{eq_202606131546}.
+\begin{lemma}
+Let $\{\ket{\varphi_x}\}_{x\in\{0,1\}^n}$ be an orthonormal basis for $(\mathbb{C}^2)^{\otimes n}$, and let $\mathcal{D}_1,\mathcal{D}_2$ be the outcome distributions by measuring $\ket{\psi_C}\bra{\psi_C}$ and $\rho_C$ in this basis, respectively.
+That is,
+\begin{align*}
+\mathcal{D}_1(x)=\left|\bra{\varphi_x}\ket{\psi_C}\right|^2 \quad\text{and}\quad\mathcal{D}_2(x)=\bra{\varphi_x}\rho_C\ket{\varphi_x}.
+\end{align*}
+Then, for large $n$, we have
+\begin{align*}
+d_{\mathrm{TV}}\left(\mathcal{D}_1,\mathcal{D}_2\right)\le\frac{1}{N}\sum_{x}\left|\sum_{s\neq t}\bra{\varphi_x}\ket{\psi_{c^s}}\bra{\psi_{c^t}}\ket{\varphi_{x}}\right|+2^{-0.0001n}.
+\end{align*}
+\end{lemma}
+\begin{proof}
+
+\end{proof}
+
+
+\begin{definition}
+An orthonormal basis $\{\ket{\varphi_x}\}$ is said to be $\ell$-\textit{adaptive} if there exists $S\subset[n]$ with $|S|\le\ell$ such that
+\begin{align*}
+\ket{\varphi_x}=\bigotimes_{k\notin S}\ket{\varphi^k_{x_k}}\otimes\ket{\varphi^{x_{[n]-S}}_{x_S}}
+\end{align*}
+for each $x\in\{0,1\}^n$.
+\end{definition}
+This definition has the following operational interpretation.
+The qubits with indices $k\notin S$ can be measured non-adaptively first, using the fixed bases $\{\ket{\varphi^k_0},\ket{\varphi^k_1}\}$.
+If this measurement gives outcome $y=x_{[n]-S}$, then the remaining compatible basis becomes
+\begin{align*}
+\left\{\bigotimes_{k\notin S}\ket{\varphi^k_{y_k}}\otimes\ket{\varphi^y_z}\mid z\in\{0,1\}^{|S|}\right\}.
+\end{align*}
+Thus, after observing $y$, one measures the qubits in $S$ in the basis $\{\ket{\varphi^y_z}\mid z\in\{0,1\}^{|S|}\}$.
+This shows that measurement in this basis can be performed adaptively.
+
+
+
+%\iffalse
 \subsection{Proof of Theorem 2}
 Let $\left\{\ket{\chi_i}\right\}_{i=0}^3$ be the qubit SIC-POVM states.
 Let $N=\lfloor 2^{10^{-10}n}\rfloor$ and let $C=\left(c^1,\cdots,c^N\right)$ with $c^i\in\{0,1,2,3\}^n$.
@@ -133,7 +232,7 @@ d_{\mathrm{TV}}\left(\mathfrak{D}_1,\mathfrak{D}_2\right)&\le\sum_{t=1}^Td_{\mat
 &\le T\cdot2^{-\Omega(n)}=2^{-\Omega(n)}.
 \end{align*}
 We conclude the whole proof.
-\fi
+%\fi
 
 %To bound the fidelity, we compute
 %\begin{align*}
