@@ -26,12 +26,11 @@ Our proof relied on \Cref{cor:perpy} to give us a basis. This is a pretty arbitr
 \begin{definition}\label{def:access model}
 We consider an oracle for $\ket{\psi}$. It takes as input any product operator $\Pi=\bigotimes_{i \in [n]} \Pi_i$ where each $\Pi_i$ is a single-qubit projection operator. It outputs the value $\bra{\psi} \Pi \ket{\psi}$. Note that $\Pi_k=\Id$ is allowed.
 \end{definition}
-Huang et al. used the same oracle, but only allowed $\Pi$ to be projectors for computational basis strings. It is useful to observe, for example, that if we had a description of $\ket{\tar}$ as a matrix product state of small bond dimension, we could efficiently emulate the oracle.
+Huang et al.~\cite{huang2024certifying} used the same oracle, but only allowed $\Pi$ to be projectors for computational basis strings. It is useful to observe, for example, that if we had a description of $\ket{\tar}$ as a matrix product state of small bond dimension, we could efficiently emulate the oracle.
 
-Now, we will show that this access model allows us to adaptively compute a DT basis as in \Cref{cor:perpy} and implement the corresponding measurements efficiently.% We now clarify the access model to $\ket{\tar}$ that our algorithm works under, and analyze the running time in this access model. Essentially, we show that \Cref{alg:main} does not require computation of all the $\calT_x$'s; rather, computation of a suitable $\calT_x$ can be done on the fly.
+Now, we will show that this access model allows us to adaptively compute a DT basis as in \Cref{cor:perpy} and implement the corresponding measurements efficiently.
 
 
-%\meghalcomment{change to $O(n)$ time}\ryancomment{Would it not be better to just say, ``We can implement measuring in the basis defined in \Cref{lem:angle bisector}?''}\ryancomment{Not sure what the meaning of t is here.  Or Id, either.  Do we not mean that $\Pi$ starts out as the empty product?  In other words, $1$, not $\Id$?}.\ryancomment{Are there typos in the above? Should it say we query for $\bra{\smash{\psi^j}}\Pi\ket{\smash{\psi^j}}$ for $j = 0, 1$ where $\Pi = \Pi_\ell \otimes \ketbra{b}{b} \otimes \Id^{\otimes (n - \ell - 1)}$?} 
 \begin{lemma}\label{lem:computational efficiency}
     Given access to $\ket{\smash{\psi^{ 0}}}$ and $\ket{\smash{\psi^{ 1}}}$ via this model, we can implement measuring in the DT basis defined in \Cref{cor:perpy} (making $\ket{\smash{\psi^0}}$ and $\ket{\smash{\psi^1}}$ phase states), using $O(n)$ time and single-qubit measurements.
 \end{lemma}
@@ -50,31 +49,5 @@ Now, we will show that this access model allows us to adaptively compute a DT ba
 
     Repeating for all $t$ gives a measurement outcome in a DT basis satisfying the conclusion of \Cref{cor:perpy}. Computing the $t^{th}$ measurement and updating the query take $O(1)$ time, so the overall runtime is $O(n)$.
 
-%\textcolor{blue}{\textbf{Note}: Two clarifications, for $j\in\{0,1\}$. 
-%(a) The symbol $\ket{b}$ appears in two roles. In the query above, 
-%$b$ ranges over the probe states $\{\ket{0},\ket{+},\ket{\mathfrak{i}}\}$---the 
-%$+1$ eigenstates of the Pauli operators $Z,X,Y$---used only to 
-%tomograph the single-qubit state $\rho^j_t$. 
-%In the update $\Pi_{t+1}=\Pi_t\otimes\ketbra{b}{b}$, instead, 
-%$\ket{b}$ is the actual outcome observed when qubit 
-%$t+1$ is physically measured in the basis $\{\ket{e_t},\ket{\smash{e_t^\perp}}\}$.}
-%
-%\textcolor{blue}{(b). Why the queries recover $\rho^j_t$: 
-%let $P_t=\Pi_t\otimes\Id^{\otimes(n-t)}$ be the projector onto the outcomes seen so far, 
-%and $p_t=\bra{\smash{\psi^j}}P_t\ket{\smash{\psi^j}}$ the probability of that outcome path, 
-%so that $\ket{\smash{\psi^j_t}}=P_t\ket{\smash{\psi^j}}/\sqrt{p_t}$. 
-%The query operator factors as $\Pi=P_t\,Q_b$, 
-%where $Q_b=\Id^{\otimes t}\otimes\ketbra{b}{b}\otimes\Id^{\otimes(n-t-1)}$ measures qubit $t+1$. 
-%Since $P_t$ and $Q_b$ act on disjoint qubits and $P_t$ is a projector, 
-%$\bra{\smash{\psi^j}}\Pi\ket{\smash{\psi^j}}=p_t\cdot\bra{\smash{\psi^j_t}}Q_b\ket{\smash{\psi^j_t}} = p_t\cdot\bra{b}\rho^j_t\ket{b}$. 
-%(The second equality holds by expanding the partial trace in the definition of $\rho_t^j$.)
-%So each query returns $p_t\cdot\bra{b}\rho^j_t\ket{b}$, the joint probability of the observed path together with outcome $b$ on qubit $t+1$. 
-%To recover $\rho^j_t$ from these, write it in Bloch form $\rho^j_t=\tfrac12(\Id+r_xX+r_yY+r_zZ)$; since $\ket{0},\ket{+},\ket{\mathfrak{i}}$ are the $+1$ eigenstates of $Z,X,Y$, \
-%this gives $\bra{0}\rho^j_t\ket{0}=\tfrac{1+r_z}{2}$, $\bra{+}\rho^j_t\ket{+}=\tfrac{1+r_x}{2}$, and $\bra{\mathfrak{i}}\rho^j_t\ket{\mathfrak{i}}=\tfrac{1+r_y}{2}$. 
-%Dividing the three query values by $p_t$ yields $\bra{b}\rho^j_t\ket{b}$ for $b\in\{0,+,\mathfrak{i}\}$, 
-%and rearranging gives the Bloch components $r_z=2\bra{0}\rho^j_t\ket{0}-1$, $r_x=2\bra{+}\rho^j_t\ket{+}-1$, $r_y=2\bra{\mathfrak{i}}\rho^j_t\ket{\mathfrak{i}}-1$; 
-%substituting these back into the Bloch form determines $\rho^j_t$.}
-%
-%\textcolor{blue}{The normalization $p_t$ is maintained recursively, not queried: $p_0=1$, and once $\rho^j_t$ has been reconstructed and qubit $t+1$ has been measured with outcome $\ket{b}\in\{\ket{e_t},\ket{\smash{e_t^\perp}}\}$, the next path probability is computed from the reconstructed state as $p_{t+1}=p_t\cdot\bra{b}\rho^j_t\ket{b}$.}
 \end{proof}
 Given \Cref{lem:computational efficiency}, we see that \Cref{alg:main} can be implemented in time $O(n)$ under the access model of \Cref{def:access model}. For measurement in the decision tree basis $\calT_x$ (where $x$ is the outcome of measuring the first $k-1$ qubits), we use \Cref{lem:computational efficiency} with $\ket{\psi^0}=\ket{\tar^{x0}}$ and $\ket{\psi^1}=\ket{\tar^{x1}}$.
