@@ -123,7 +123,7 @@ Consequently, any low adaptive algorithm that accepts $\ket{\psi_C}\bra{\psi_C}$
 
 We first show that $\|v_C\|^2$ is close to $1$ under suitable choice of $N$.
 
-\begin{lemma}
+\begin{lemma}\label{lemma_19}
 Let $N=2^{10^{-10}n}$ and sample $C=(c^1,\cdots,c^N)$ uniformly from $\prod_{k=1}^N\{1,2,3,4\}^n$.
 If $n$ is large enough, then
 \begin{align}\label{eq_202606131546}
@@ -161,8 +161,8 @@ Therefore, with probability at least $0.9$, we have
 &=\left|\frac{1}{N}\sum_{s,t=1}^N\left(\bra{\chi_{c^s_1}}\otimes\cdots\otimes\bra{\chi_{c^s_n}}\right)\left(\ket{\chi_{c^t_1}}\otimes\cdots\otimes\ket{\chi_{c^t_n}}\right)-1\right|\\
 &=\left|\frac{1}{N}\sum_{s,t=1}^N\bra{\chi_{c^s_1}}\ket{\chi_{c^t_1}}\cdots\bra{\chi_{c^s_n}}\ket{\chi_{c^t_n}}-1\right|\\
 &=\frac{1}{N}\left|\sum_{s\neq t}\bra{\chi_{c^s_1}}\ket{\chi_{c^t_1}}\cdots\bra{\chi_{c^s_n}}\ket{\chi_{c^t_n}}\right|\\
-&\le\frac{1}{N}\sum_{s\neq t}\sqrt{\frac{1}{3}}^{0.3n}=\frac{1}{N}N(N-1)\cdot\sqrt{\frac{1}{3}}^{0.3n}
-\le N\cdot\sqrt{\frac{1}{3}}^{0.3n}\le2^{-0.1n}.
+&\le\frac{1}{N}\sum_{s\neq t}\left(\sqrt{\frac{1}{3}}\right)^{0.3n}=\frac{1}{N}N(N-1)\cdot\left(\sqrt{\frac{1}{3}}\right)^{0.3n}
+\le N\cdot\left(\sqrt{\frac{1}{3}}\right)^{0.3n}\le2^{-0.1n}.
 \end{align*}
 This proves the lemma.
 \end{proof}
@@ -180,9 +180,39 @@ d_{\mathrm{TV}}\left(\mathcal{D}_1,\mathcal{D}_2\right)\le\frac{1}{N}\sum_{x}\le
 \end{align*}
 \end{lemma}
 \begin{proof}
-
+By direct computations,
+\begin{align}\label{eq_202606151049}
+d_{\mathrm{TV}}\left(\mathcal{D}_1,\mathcal{D}_2\right)&=
+\frac{1}{2}\sum_{x}\left|\mathcal{D}_1(x)-\mathcal{D}_2(x)\right|\notag\\
+&=\frac{1}{2}\sum_{x}\left|\bra{\varphi_x}\ket{\psi_C}\bra{\psi_C}\ket{\varphi_x}-\bra{\varphi_x}\rho_C\ket{\varphi_x}\right|=\frac{1}{2}\sum_{x}\left|\bra{\varphi_x}\left(\ket{\psi_C}\bra{\psi_C}-\rho_C\right)\ket{\varphi_x}\right|.
+\end{align}
+Notice that
+\begin{align*}
+\|v_Cv_C^\dagger\|_1&=\tr\left(v_Cv_C^\dagger\right)=v_C^\dagger v_C=\|v_C\|^2.
+\end{align*}
+Thus, by Lemma~\ref{lemma_19}, we have
+\begin{align}\label{eq_202606151045}
+\|\ket{\psi_C}\bra{\psi_C}-v_Cv_C^\dagger\|_1&=\left\|\frac{1}{\|v_C\|^2}v_Cv_C^\dagger-v_Cv_C^\dagger\right\|_1=\left|\frac{1}{\|v_C\|^2}-1\right|\left\|v_Cv_C^\dagger\right\|_1\notag\\
+&=\left|\frac{1}{\|v_C\|^2}-1\right|\|v_C\|^2=\left|1-\|v_C\|^2\right|\le2^{-0.1n}.
+\end{align}
+Moreover,
+\begin{align*}
+\rho_C=v_Cv_C^\dagger-\frac{1}{N}\sum_{s\neq t}\ket{\psi_{c^s}}\bra{\psi_{c^t}}.
+\end{align*}
+Therefore, we can write
+\begin{align*}
+\ket{\psi_C}\bra{\psi_C}-\rho_C=\frac{1}{N}\sum_{s\neq t}\ket{\psi_{c^s}}\bra{\psi_{c^t}}+E
+\end{align*}
+where $\|E\|_1\le2^{-0.1n}$ by \eqref{eq_202606151045}.
+Continue \eqref{eq_202606151049},
+\begin{align*}
+d_{\mathrm{TV}}\left(\mathcal{D}_1,\mathcal{D}_2\right)&\le
+\frac{1}{2}\left(\frac{1}{N}\sum_{x}\left|\sum_{s\neq t}\bra{\varphi_x}\ket{\psi_{c^s}}\bra{\psi_{c^t}}\ket{\varphi_x}\right|+\sum_{x}\left|\bra{\varphi_x}E\ket{\varphi_x}\right|\right)\\
+&\le\frac{1}{N}\sum_{x}\left|\sum_{s\neq t}\bra{\varphi_x}\ket{\psi_{c^s}}\bra{\psi_{c^t}}\ket{\varphi_x}\right|+2^{-0.1n}\\
+&\le\frac{1}{N}\sum_{x}\left|\sum_{s\neq t}\bra{\varphi_x}\ket{\psi_{c^s}}\bra{\psi_{c^t}}\ket{\varphi_x}\right|+2^{-0.0001n}.\\
+\end{align*}
+This proves the lemma.
 \end{proof}
-
 
 \begin{definition}
 An orthonormal basis $\{\ket{\varphi_x}\}$ is said to be $\ell$-\textit{adaptive} if there exists $S\subset[n]$ with $|S|\le\ell$ such that
@@ -200,12 +230,112 @@ If this measurement gives outcome $y=x_{[n]-S}$, then the remaining compatible b
 Thus, after observing $y$, one measures the qubits in $S$ in the basis $\{\ket{\varphi^y_z}\mid z\in\{0,1\}^{|S|}\}$.
 This shows that measurement in this basis can be performed adaptively.
 
+We now show the most crucial estimation.
+\begin{lemma}\label{lemma_21}
+If $n$ is large enough, then we have for all $10^{-8}n$-adaptive bases $\{\ket{\varphi_x}\}$ that
+\begin{align*}
+\sum_{x}\left|\sum_{s\neq t}\bra{\varphi_x}\ket{\psi_{c^s}}\bra{\psi_{c^t}}\ket{\varphi_{x}}\right|\le5.
+\end{align*}
+\end{lemma}
+Before proving Lemma~\ref{lemma_21}, we show a key obsevation.
+A pair $(s,t)$ is \textit{bad} for an $\ell$-adaptive basis $\{\ket{\varphi_x}\}$ if for at least $10^{-6}n$ indices $k\in[n]-S$, one has $(c^s_k,c^t_k)=(0,b(\varphi^k)$.
+
+
+\begin{claim}
+Let $\{s_1,t_1\},\cdots,\{s_5,t_5\}$ be five distinct pairs in $[N]\times[N]$.
+Then, with probability at least $1-2^{-10^{-5}n}$, at least one pair is bad for that $10^{-8}n$-adaptive basis.
+\end{claim}
+\begin{proof}
+Let $G=(V=[N],E)$ be a graph such that $\{s_1,t_1\},\cdots,\{s_5,t_5\}\in E$.
+We first show that there exists a labeling so that they form 
+\begin{align*}
+\{1,2\},\{1,3\},\{1,4\}
+\end{align*}
+in certain $k$.
+We consider two cases.
+\begin{enumerate}
+\item
+If $G$ contains a vertex $u$ with three edges from the five ones, then we can set
+\begin{align*}
+c^u_k=1,\,c^{v_1}_k=2,\,c^{v_2}_k=3,\,c^{v_3}_k=4.
+\end{align*}
+\item
+If $G$ has maximum degree at most at most $2$, then $G$ is a disjoint union of paths and cycles.
+Hence, among these five edges, we can choose either three disjoint edges or two adjacent edges together with one edge disjoint from them.
+In both cases, we can assign a valid labeling.
+\end{enumerate}
+Since each label is choosing randomly from $[4]$, the probability that such pattern happens is at least $4^{-6}$.
+Define a random variable $X_k$ such that $X_k=1$ if coordinate $k$ has the desired labeling, while $X_k=0$ if not.
+Thus, we have
+\begin{align*}
+\mathbb{P}\left(X_k=1\right)\ge4^{-6}.
+\end{align*}
+Let $w=\sum_{k=1}^nX_k$.
+By the Chernoff inequality, we have
+\begin{align*}
+\mathbb{P}\left(w\le\frac{4^{-6}n}{4}\right)\le e^{-\frac{(3/4)^2}{2}\cdot4^{-6}n}\le2^{-10^{-5}n}.
+\end{align*}
+Thus, by the pigeonhole principle, at least one pair is hit at least $4^{-6}n/20>10^{-5}n$ times.
+Since $|S|\le10^{-8}n$, this pair is hit on at least
+\begin{align*}
+10^{-5}n-10^{-8}n\ge10^{-6}n
+\end{align*}
+coordinates in $S^c$.
+Hence this pair is bad for the chosen basis.
+
+Finally, because the basis is arbitrary, for every $10^{-8}n$-adaptive basis, at least one of the five pairs is bad for that basis.
+This proves the claim.
+\end{proof}
+
+We now prove the key lemma.
+\begin{proof}[Proof of Lemma \ref{lemma_21}]
+By adaptivity, there is $S\subset[n]$ with $|S|\le10^{-8}n$.
+Thus,
+\begin{align*}
+\sum_{x}\left|\sum_{s\neq t}\bra{\varphi_x}\ket{\psi_{c^s}}\bra{\psi_{c^t}}\ket{\varphi_{x}}\right|
+&\le\sum_{x}\sum_{s\neq t}\left|\bra{\varphi_x}\ket{\psi_{c^s}}\bra{\psi_{c^t}}\ket{\varphi_{x}}\right|\\
+&\le\sum_{s\neq t}\sum_{x}\prod_{k\notin S}\left|\bra{\varphi_{x_k}^k}\ket{\psi^s_{{c_k}}}\bra{\psi^t_{{c_k}}}\ket{\varphi^k_{x_{k}}}\right|\\
+&=\sum_{s\neq t}\prod_{k\notin S}\left(\left|\bra{\varphi_{0}^k}\ket{\psi^s_{{c_k}}}\bra{\psi^t_{{c_k}}}\ket{\varphi^k_{0}}\right|+\left|\bra{\varphi_{1}^k}\ket{\psi^s_{{c_k}}}\bra{\psi^t_{{c_k}}}\ket{\varphi^k_{1}}\right|\right).
+\end{align*}
+By the union bound over all $N^{10}$ quintuples, the probability that $C$ is such that for every $10^{-8}n$-adaptive basis, at least one pair is bad for that basis is at least
+\begin{align*}
+1-2^{10^{-5}n}\cdot N^{10}\ge1-2^{-10^{-6}n}.
+\end{align*}
+Hence, at most four pairs are not bad.
+Therefore,
+\begin{align*}
+\sum_{s\neq t}\prod_{k\notin S}\left(\left|\bra{\varphi_{0}^k}\ket{\psi^s_{{c_k}}}\bra{\psi^t_{{c_k}}}\ket{\varphi^k_{0}}\right|+\left|\bra{\varphi_{1}^k}\ket{\psi^s_{{c_k}}}\bra{\psi^t_{{c_k}}}\ket{\varphi^k_{1}}\right|\right)\le4+N^2\cdot\left(\sqrt{\frac{8}{9}}\right)^{-10^{-6}n}\le5
+\end{align*}
+for large $n$.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 %\iffalse
 \subsection{Proof of Theorem 2}
 Let $\left\{\ket{\chi_i}\right\}_{i=0}^3$ be the qubit SIC-POVM states.
-Let $N=\lfloor 2^{10^{-10}n}\rfloor$ and let $C=\left(c^1,\cdots,c^N\right)$ with $c^i\in\{0,1,2,3\}^n$.
+Let $N=\lfloor 2^{10^{-10}n}\rfloor$ and let $C=\left(c^1,\cdots,c^N\right)$ with $c^i\in\{1,2,3,4\}^n$.
 Define
 \[
 	v_C=\frac{1}{\sqrt{N}}\sum_{t=1}^N\ket{\varphi_{c^t}}\quad\text{and}\quad\rho_C=\frac{1}{N}\sum_{t=1}^N\ket{\varphi_{c^t}}\bra{\varphi_{c^t}}
@@ -223,14 +353,15 @@ By Lemmas 20 and 21, we have
 for any $10^{-8}n$-adaptive basis $M$.
 
 Consider any algorithm using $T=2^{o(n)}$ copies.
-Let $\mathfrak{D}_1$ and $\mathfrak{D}_2$ be the distributions corresponding to measuring $2^T$ copies of $\ket{\varphi_C}\bra{\varphi_C}$ and $\rho_C$.
+Let $\mathfrak{D}_1$ and $\mathfrak{D}_2$ be the distributions corresponding to measuring $T$ copies of $\ket{\varphi_C}\bra{\varphi_C}$ and $\rho_C$.
 Denote the outcome $Y_{<t}=(Y_1,\cdots,Y_{t-1})$.
-Therefore,
+Therefore, by the coupling argument,
 \begin{align*}
 d_{\mathrm{TV}}\left(\mathfrak{D}_1,\mathfrak{D}_2\right)&\le\sum_{t=1}^Td_{\mathrm{TV}}\left(M_t(y_{<t})(\sigma_1),M_t(y_{<t})(\sigma_2)\right)\\
 &\le\sum_{t=1}^T\sup_{y_{<t}}\ d_{\mathrm{TV}}\left(M_t(y_{<t})(\sigma_1),M_t(y_{<t})(\sigma_2)\right)\\
 &\le T\cdot2^{-\Omega(n)}=2^{-\Omega(n)}.
 \end{align*}
+The fidelity is similar to the proof in Lemma~\ref{lemma_19}.
 We conclude the whole proof.
 %\fi
 
