@@ -1,13 +1,14 @@
 \begin{frame}{The Lower Bound of Copies for Low-Adaptivity Algorithm}
+We aim to construct two states with close measurement outcome distributions but small fidelity.
 \begin{itemize}
 \item
-With sufficient adaptivity, $O(n)$ copies are enough.
+A low-adaptivity algorithm cannot reliably distinguish the two states.
 \item
-Under low-adaptivity constraint, linear copy complexity is not sufficient to work in the worst scenario.
+Under a low-adaptivity constraint, linear copy complexity is not sufficient in the worst scenario.
 \end{itemize}
 
 \begin{theorem}[Theorem 2]
-There exists an $n$-qubit pure state $\ket{\mathsf{hyp}}$ and a mixed state $\rho_{\mathsf{lab}}$ such that
+There exists a constant $c>0$ such that, for all sufficiently large $n$, there exist an $n$-qubit pure state $\ket{\mathsf{hyp}}$ and a mixed state $\rho_{\mathsf{lab}}$ satisfying
 \begin{align*}
 \bra{\mathsf{hyp}}\rho_{\mathsf{lab}}\ket{\mathsf{hyp}}
 \le 2^{-\Omega(n)}
@@ -47,21 +48,32 @@ The states $\ket{\psi_C}\bra{\psi_C}$ and $\rho_C$ are hard to distinguish using
 \end{itemize}
 \end{frame}
 
+\begin{frame}{The $\ell$-adaptive Basis}
+\begin{definition}
+An orthonormal basis $\{\ket{\varphi_x}\}$ is said to be $\ell$-\textit{adaptive} if there exists $S\subset[n]$ with $|S|\le\ell$ such that
+\begin{align*}
+\ket{\varphi_x}=\bigotimes_{k\notin S}\ket{\varphi^k_{x_k}}\otimes\ket{\varphi^{x_{[n]-S}}_{x_S}}
+\end{align*}
+for each $x\in\{0,1\}^n$.
+\end{definition}
+\begin{itemize}
+\item
+The qubits outside $S$ are measured first in fixed one-qubit bases $\{\ket{\varphi^k_0},\ket{\varphi^k_1}\}$.
+\item
+After seeing $y=x_{[n]-S}$, the qubits in $S$ are measured in a basis $\{\ket{\varphi^y_z}\in{0,1}^{|S|}\}$ depending on $y$.
+\end{itemize}
+
+\end{frame}
+
 \begin{frame}{The Cross Term Operator}
 \begin{lemma}
-Let $\{\ket{\varphi_x}\}_{x\in\{0,1\}^n}$ be an orthonormal basis for $(\mathbb{C}^2)^{\otimes n}$, and let $\mathcal{D}_1,\mathcal{D}_2$ be the outcome distributions by measuring $\ket{\psi_C}\bra{\psi_C}$ and $\rho_C$ in this basis, respectively.
-That is,
-\begin{align*}
-\mathcal{D}_1(x)=\left|\bra{\varphi_x}\ket{\psi_C}\right|^2 \quad\text{and}\quad\mathcal{D}_2(x)=\bra{\varphi_x}\rho_C\ket{\varphi_x}.
-\end{align*}
+Let $\{\ket{\varphi_x}\}_{x\in\{0,1\}^n}$ be an orthonormal basis for $(\mathbb{C}^2)^{\otimes n}$, and let $\mathcal{D}_1=\left|\bra{\varphi_x}\ket{\psi_C}\right|^2$ and $\mathcal{D}_2=\bra{\varphi_x}\rho_C\ket{\varphi_x}$ be the outcome distributions by measuring $\ket{\psi_C}\bra{\psi_C}$ and $\rho_C$ in this basis.
 Then, for large $n$, we have
 \begin{align*}
 d_{\mathrm{TV}}\left(\mathcal{D}_1,\mathcal{D}_2\right)\le\frac{1}{N}\sum_{x}\left|\sum_{s\neq t}\bra{\varphi_x}\ket{\psi_{c^s}}\bra{\psi_{c^t}}\ket{\varphi_{x}}\right|+2^{-0.0001n}.
 \end{align*}
 \end{lemma}
-\end{frame}
 
-\begin{frame}{The Cross Term Operator}
 \begin{lemma}
 With probability at least $0.9$, for large $n$, we have for all $10^{-8}n$-adaptive bases $\{\varphi_x\}$ that
 \begin{align*}
@@ -70,20 +82,24 @@ With probability at least $0.9$, for large $n$, we have for all $10^{-8}n$-adapt
 \end{lemma}
 \end{frame}
 
-\begin{frame}{Sketch of Proof}
+\begin{frame}{Sketch of Proof for Theorem 2}
+Let $\sigma_1=\ket{\psi_C}\bra{\psi_C}$ and $\sigma_2=\rho_C$.
 By those Lemmas, we have
 \[
 	d_{\mathrm{TV}}\left(M(\sigma_1),M(\sigma_2)\right)\le\frac{5}{N}+2^{-0.0001n}=2^{-\Omega (n)}
 \]
 for any $10^{-8}n$-adaptive basis $M$.
 
-Consider any algorithm using $T=2^{o(n)}$ copies.
-Let $\mathfrak{D}_1$ and $\mathfrak{D}_2$ be the distributions corresponding to measuring $2^T$ copies of $\ket{\varphi_C}\bra{\varphi_C}$ and $\rho_C$.
+Let $\mathfrak{D}_1$ and $\mathfrak{D}_2$ be the distributions corresponding to measuring $T=2^{o(n)}$ copies of $\ket{\psi_C}\bra{\psi_C}$ and $\rho_C$.
 Denote the outcome $Y_{<t}=(Y_1,\cdots,Y_{t-1})$.
-Therefore,
+Therefore, by coupling argument\footnote{Levin--Peres--Wilmer, Markov Chains and Mixing Times},
 \begin{align*}
 d_{\mathrm{TV}}\left(\mathfrak{D}_1,\mathfrak{D}_2\right)&\le\sum_{t=1}^Td_{\mathrm{TV}}\left(M_t(y_{<t})(\sigma_1),M_t(y_{<t})(\sigma_2)\right)\\
 &\le\sum_{t=1}^T\sup_{y_{<t}}\ d_{\mathrm{TV}}\left(M_t(y_{<t})(\sigma_1),M_t(y_{<t})(\sigma_2)\right)\\
 &\le T\cdot2^{-\Omega(n)}=2^{-\Omega(n)}.
 \end{align*}
+\end{frame}
+
+\begin{frame}
+\centering\Large Thank you for your attention =)
 \end{frame}
