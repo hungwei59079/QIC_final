@@ -1,0 +1,15 @@
+Joseph Swernofsky:
+  Report sections "Introduction" and "Access Model"
+  Slides sections "Introduction" and "Access Model"
+  Literature review
+  Diagrams
+Hung-Wei Liu
+  Report section "Algorithm"
+  Slides section "Algorithm"
+  Video editing
+Jin-Han Liou
+  Report section "Lower Bound"
+  Slides section "Lower Bound"
+
+Youtube link: https://www.youtube.com/watch?v=gnZ5vE_lLHc
+Drive link: https://drive.google.com/file/d/1nhfOpHh9jOMc_j_DEwO1-i5eIUsR3cAj/view

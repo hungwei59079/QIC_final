@@ -24,7 +24,7 @@
                 \node[draw, rounded corners=3pt, minimum width=2.25cm, minimum height=0.8cm, fill=green!10] (est) at (0,-1.2) {$\widehat{\rho}$};
                 \draw[->, thick] (copies) -- (tomo);
                 \draw[->, thick] (tomo) -- (est);
-                \uncover<2->{\node[align=center, text=red!70!black] at (0,-2.1) {$m$ scales with\\$d=2^n$};}
+                \uncover<2->{\node[align=center, text=red!70!black] at (0,-2.1) {$m$ scales with $d=2^n$};}
                 \HuangUseBoundingBox{-1.35}{-2.45}{1.35}{1.65}
             \end{tikzpicture}
         \end{column}
@@ -36,6 +36,7 @@
         \resizebox{0.78\textwidth}{!}{\input{../diagrams/huang_state_certification.tex}}
     \end{center}
 
+    \pause
     \vspace{-0.3em}
     \begin{block}{Goal}
         Given a classical description of a target pure state $\ket{\psi_{\text{target}}}$ and one copy of an unknown lab state $\rho_{\text{lab}}$, decide whether
@@ -52,12 +53,12 @@
             It's trivial! Just use
             \[
                 \left\{\ket{\psi_{\text{target}}}\!\bra{\psi_{\text{target}}},
-                I-\ket{\psi_{\text{target}}}\!\bra{\psi_{\text{target}}}\right\}.
+                I-\ket{\psi_{\text{target}}}\!\bra{\psi_{\text{target}}}\right\}
             \]
 
             \pause
             \vspace{0.5em}
-            Equivalently, one may use a SWAP test against a freshly prepared copy of $\ket{\psi_{\text{target}}}$.
+            Equivalently, one may use a SWAP test against a freshly prepared copy of $\ket{\psi_{\text{target}}}$
     \pause
 
     \vspace{0.3em}
@@ -73,7 +74,24 @@
 
 \begin{frame}{Classical Shadows}
     \begin{columns}[T,onlytextwidth]
-        \begin{column}{0.48\textwidth}
+        \begin{column}<1->{0.48\textwidth}
+            \begin{center}
+                \makebox[0pt][c]{\hspace*{-2.5cm}\resizebox{0.95\linewidth}{!}{\input{../diagrams/huang_random_pauli.tex}}}
+            \end{center}
+
+            \vspace{0.4em}
+            \begin{block}{Single-qubit Pauli shadows}
+                \uncover<2->{
+                Simple to build
+              }
+
+                \uncover<3->{
+                    \vspace{0.4em}
+                    Number of samples grows exponentially
+                }
+            \end{block}
+        \end{column}
+        \begin{column}<4->{0.48\textwidth}
             \begin{center}
                 \makebox[0pt][c]{\hspace*{-2.5cm}\resizebox{0.95\linewidth}{!}{\input{../diagrams/huang_random_clifford.tex}}}
             \end{center}
@@ -82,29 +100,22 @@
             \begin{block}{Random Clifford shadows}
                 Number of samples fixed wrt dimension
 
-                Deep circuits and exponential classical postprocessing
-            \end{block}
-        \end{column}
-        \begin{column}<2->{0.48\textwidth}
-            \begin{center}
-                \makebox[0pt][c]{\hspace*{-2.5cm}\resizebox{0.95\linewidth}{!}{\input{../diagrams/huang_random_pauli.tex}}}
-            \end{center}
-
-            \vspace{0.4em}
-            \begin{block}{Single-qubit Pauli shadows}
-                Number of samples grows exponentially
-
-                Simple to build
+                \uncover<5->{
+                    \vspace{0.4em}
+                    Deep circuits and exponential classical postprocessing
+                }
             \end{block}
         \end{column}
     \end{columns}
 \end{frame}
 
-\begin{frame}{Restricted Measurements}
+\begin{frame}{Structured Target States}
     \begin{itemize}
-        \item Direct fidelity estimation and Pauli-shadow variants work well for structured observables and target families.
-        \item Efficient certification is known for stabilizer states, shallow-circuit outputs, hypergraph states, IQP outputs, and Gaussian states.
-        \item For generic random targets, XEB can work under suitable noise assumptions, but it is not a general certification guarantee.
+        \item Stabilizer states, shallow circuits - direct fidelity estimation or randomized Pauli shadows
+        \pause
+        \item Hypergraph states, IQP outputs, Gaussian states
+        \pause
+        \item Random targets - XEB can work under suitable noise assumptions, but it is not a general certification guarantee
     \end{itemize}
 
     \vspace{0.4em}
@@ -137,28 +148,39 @@
     \end{center}
 
     \begin{itemize}
-        \item Benchmark a noisy quantum device against its intended output.
-        \item Train or certify neural quantum-state models using fidelity as the objective.
-        \item Optimize parametrized circuits toward a target state without implementing the target projector.
+        \item Benchmark a noisy quantum device against its intended output
+        \item Train or certify neural quantum-state models using fidelity as the objective
+        \item Optimize parametrized circuits toward a target state without implementing the target projector
     \end{itemize}
 \end{frame}
 
-\begin{frame}{What We Need From the Protocol}
-    \begin{columns}[T,onlytextwidth]
-        \begin{column}{0.5\textwidth}
-            \begin{enumerate}
-                \item Single-qubit measurements
-                \item Only use classical description of target
-            \end{enumerate}
-        \end{column}
-        \begin{column}{0.46\textwidth}
-            \centering
-            \resizebox{\linewidth}{!}{\input{../diagrams/huang_shadow_naive.tex}}
-        \end{column}
-    \end{columns}
+\begin{frame}{Access Model}
+  \begin{block}{Definition (Oracle)}
+    Input: product operator $ \Pi=\bigotimes_{i=1}^n \Pi_i $, each $\Pi_i$ operates on only 1 bit
+      \pause
 
-    \vspace{0.4em}
-    \begin{center}
-        The algorithm resolves the ``locally maximally mixed'' obstacle by conditioning on previous measurement outcomes.
-    \end{center}
+      \vspace{0.5em}
+      Output: $ \bra{\psi_{\text{target}}}\Pi\ket{\psi_{\text{target}}}$
+    \end{block}
+
+    \pause
+    \vspace{0.5em}
+        Huang et al. use a similar oracle restricted to the computational basis
+\end{frame}
+
+\begin{frame}{Using the Access Model}
+          
+            \begin{itemize}
+              \item Iteratively build $\Pi_t$ and query
+            \[
+                \Pi_t \otimes \ketbra{a}{a} \otimes I^{\otimes(n-t-1)}
+            \]
+            for $a\in\{0,+,\mathfrak{i}\}$
+
+            \pause
+          \item Reconstruct the marginal on bit $t+1$
+            \pause
+          \item Query the lab state and update $\Pi_t$
+          \item Repeat
+            \end{itemize}
 \end{frame}
